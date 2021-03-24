@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src/lib",
+    "declaration": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "./src/lib"
+  ]
+}
