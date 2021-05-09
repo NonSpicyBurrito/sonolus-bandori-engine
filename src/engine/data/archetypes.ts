@@ -36,7 +36,10 @@ export const archetypes = defineArchetypes({
     simLine: {
         script: scripts.simLineIndex,
     },
-    slider: {
-        script: scripts.sliderIndex,
+    straightSlider: {
+        script: scripts.straightSliderIndex,
+    },
+    curvedSlider: {
+        script: scripts.curvedSliderIndex,
     },
 })

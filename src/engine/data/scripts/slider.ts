@@ -102,7 +102,7 @@ class SliderDataPointer extends Pointer {
 
 const SliderData = createEntityData(SliderDataPointer)
 
-export function slider(): SScript {
+export function slider(sprite: SkinSprite): SScript {
     const headData = NoteData.of(SliderData.headIndex)
     const tailData = NoteData.of(SliderData.tailIndex)
 
@@ -249,7 +249,7 @@ export function slider(): SScript {
             ),
 
             Draw(
-                SkinSprite.NoteConnectionGreen,
+                sprite,
                 Multiply(headLeft, headScale),
                 slideBottom,
                 Multiply(SliderData.tailBottomLeft, tailScale),

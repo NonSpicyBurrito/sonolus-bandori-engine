@@ -28,9 +28,10 @@ export const scripts = defineScripts({
     slideTickNote,
     slideEndNote,
     slideFlickNote,
+    straightSlider: () => slider(SkinSprite.NoteConnectionGreen),
+    curvedSlider: () => slider(11102),
 
     simLine,
-    slider,
 
     autoSFX,
     autoTapEffect: () => autoTapOrFlickEffect(false),

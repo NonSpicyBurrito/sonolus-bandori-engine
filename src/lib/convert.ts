@@ -24,12 +24,16 @@ type SingleObject = NoteBase & {
 
 type SlideObject = {
     type: 'Slide'
-    connections: NoteBase[]
+    connections: Connection[]
 }
 
 type LongObject = {
     type: 'Long'
-    connections: NoteBase[]
+    connections: Connection[]
+}
+
+type Connection = NoteBase & {
+    hidden?: true
 }
 
 type BPMObject = ObjectBase & {
@@ -53,7 +57,8 @@ export function fromBestdori(
         slideTickNoteIndex: number
         slideEndNoteIndex: number
         slideFlickNoteIndex: number
-        sliderIndex: number
+        straightSliderIndex: number
+        curvedSliderIndex: number
     } = require(__dirname + '/info').archetypes
 ): SLevelData {
     type WrappedNoteEntity = {
@@ -132,73 +137,107 @@ export function fromBestdori(
             }
             case 'Slide':
             case 'Long': {
+                let segments: {
+                    time: number
+                    lane: number
+                }[] = []
                 chartObject.connections.forEach((connection, index) => {
                     const time = beatToTime(connection.beat)
                     const lane = connection.lane - 3
-                    if (index === 0) {
-                        wrappedNoteEntities.push({
-                            entity: {
-                                archetype: archetypes.slideStartNoteIndex,
-                                data: {
-                                    index: 1,
-                                    values: [time, lane],
-                                },
-                            },
+                    if (connection.hidden) {
+                        segments.push({
                             time,
                             lane,
                         })
                     } else {
-                        const head =
-                            wrappedNoteEntities[wrappedNoteEntities.length - 1]
-                        if (index === chartObject.connections.length - 1) {
+                        if (index === 0) {
                             wrappedNoteEntities.push({
                                 entity: {
-                                    archetype: connection.flick
-                                        ? archetypes.slideFlickNoteIndex
-                                        : archetypes.slideEndNoteIndex,
+                                    archetype: archetypes.slideStartNoteIndex,
                                     data: {
-                                        index: 0,
-                                        values: [0, time, lane],
+                                        index: 1,
+                                        values: [time, lane],
                                     },
                                 },
                                 time,
                                 lane,
-                                head,
                             })
                         } else {
-                            wrappedNoteEntities.push({
-                                entity: {
-                                    archetype: archetypes.slideTickNoteIndex,
-                                    data: {
-                                        index: 0,
-                                        values: [0, time, lane],
+                            const head =
+                                wrappedNoteEntities[
+                                    wrappedNoteEntities.length - 1
+                                ]
+                            if (index === chartObject.connections.length - 1) {
+                                wrappedNoteEntities.push({
+                                    entity: {
+                                        archetype: connection.flick
+                                            ? archetypes.slideFlickNoteIndex
+                                            : archetypes.slideEndNoteIndex,
+                                        data: {
+                                            index: 0,
+                                            values: [0, time, lane],
+                                        },
                                     },
-                                },
+                                    time,
+                                    lane,
+                                    head,
+                                })
+                            } else {
+                                wrappedNoteEntities.push({
+                                    entity: {
+                                        archetype:
+                                            archetypes.slideTickNoteIndex,
+                                        data: {
+                                            index: 0,
+                                            values: [0, time, lane],
+                                        },
+                                    },
+                                    time,
+                                    lane,
+                                    head,
+                                })
+                            }
+                            segments.push({
                                 time,
                                 lane,
-                                head,
                             })
+
+                            const tail =
+                                wrappedNoteEntities[
+                                    wrappedNoteEntities.length - 1
+                                ]
+                            const archetype = chartObject.connections.some(
+                                (connection) => connection.hidden
+                            )
+                                ? archetypes.curvedSliderIndex
+                                : archetypes.straightSliderIndex
+                            let prevSegment = {
+                                time: head.time,
+                                lane: head.lane,
+                            }
+                            segments.forEach((segment) => {
+                                wrappedSliderEntities.push({
+                                    entity: {
+                                        archetype,
+                                        data: {
+                                            index: 0,
+                                            values: [
+                                                0,
+                                                0,
+                                                prevSegment.time,
+                                                segment.time,
+                                                prevSegment.lane,
+                                                segment.lane,
+                                            ],
+                                        },
+                                    },
+                                    head,
+                                    tail,
+                                })
+                                prevSegment = segment
+                            })
+                            segments = []
                         }
-                        const tail =
-                            wrappedNoteEntities[wrappedNoteEntities.length - 1]
-                        wrappedSliderEntities.push({
-                            entity: {
-                                archetype: archetypes.sliderIndex,
-                                data: {
-                                    index: 0,
-                                    values: [
-                                        0,
-                                        0,
-                                        head.time,
-                                        tail.time,
-                                        head.lane,
-                                        tail.lane,
-                                    ],
-                                },
-                            },
-                            head,
-                            tail,
-                        })
                     }
                 })
                 break
@@ -248,14 +287,35 @@ function repair(chartObjects: ChartObject[]) {
         switch (chartObject.type) {
             case 'Long':
             case 'Slide':
-                if (chartObject.connections.length === 1) {
-                    const connection = chartObject.connections[0]
-                    replace(chartObject, {
-                        type: 'Single',
-                        lane: connection.lane,
-                        beat: connection.beat,
-                        flick: connection.flick,
-                    })
+                chartObject.connections.sort((a, b) => a.beat - b.beat)
+                const visibleConnections = chartObject.connections.filter(
+                    (connection) => !connection.hidden
+                )
+                switch (visibleConnections.length) {
+                    case 0:
+                        remove(chartObject)
+                        break
+                    case 1:
+                        const connection = visibleConnections[0]
+                        replace(chartObject, {
+                            type: 'Single',
+                            lane: connection.lane,
+                            beat: connection.beat,
+                            flick: connection.flick,
+                        })
+                        break
+                    default:
+                        while (chartObject.connections[0]?.hidden) {
+                            chartObject.connections.shift()
+                        }
+                        while (
+                            chartObject.connections[
+                                chartObject.connections.length - 1
+                            ]?.hidden
+                        ) {
+                            chartObject.connections.pop()
+                        }
+                        break
                 }
                 break
         }
@@ -265,5 +325,9 @@ function repair(chartObjects: ChartObject[]) {
 
     function replace(o: ChartObject, n: ChartObject) {
         chartObjects.splice(chartObjects.indexOf(o), 1, n)
+    }
+
+    function remove(o: ChartObject) {
+        chartObjects.splice(chartObjects.indexOf(o), 1)
     }
 }
