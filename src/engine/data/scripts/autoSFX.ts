@@ -28,6 +28,7 @@ export function autoSFX(): SScript {
     const initialize = noteIndex.set(2)
 
     const updateParallel = Or(
+        Equal(noteInfo.archetype, archetypes.sliderIndex),
         Not(bool(noteInfo.archetype)),
         And(GreaterOr(Time, Subtract(noteData.time, 1)), [
             PlayScheduled(

@@ -44,7 +44,6 @@ import {
     setupAutoSlider,
     setupAutoTapEffect,
     setupPreprocess,
-    setupSlider,
     updateSlideNoteTailScale,
 } from './common/note'
 import { playJudgmentSFX } from './common/sfx'
@@ -64,8 +63,6 @@ export function slideTickNote(): SScript {
     const shouldSpawn = GreaterOr(Time, NoteData.head.spawnTime)
 
     const initialize = [
-        setupSlider(),
-
         setupAutoInput(bucket),
         setupAutoTapEffect(),
         setupAutoSlider(),

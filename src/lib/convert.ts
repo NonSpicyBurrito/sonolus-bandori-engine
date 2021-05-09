@@ -79,6 +79,7 @@ export function fromBestdori(
         slideTickNoteIndex: number
         slideEndNoteIndex: number
         slideFlickNoteIndex: number
+        sliderIndex: number
     } = require(__dirname + '/info').archetypes
 ): SLevelData {
     type Note = NoteObject & {
@@ -91,7 +92,7 @@ export function fromBestdori(
         note?: Note
     }
 
-    const wrappedEntities: WrappedEntity[] = [
+    const wrappedNoteEntities: WrappedEntity[] = [
         {
             entity: {
                 archetype: archetypes.initializationIndex,
@@ -103,6 +104,8 @@ export function fromBestdori(
             },
         },
     ]
+
+    const wrappedSliderEntities: WrappedEntity[] = []
 
     const notes = appendTime(repair(data)).filter(
         (obj): obj is Note => obj.type === 'Note'
@@ -150,7 +153,7 @@ export function fromBestdori(
         .forEach((note) => {
             switch (note.note) {
                 case 'Single':
-                    wrappedEntities.push({
+                    wrappedNoteEntities.push({
                         entity: {
                             archetype: note.flick
                                 ? archetypes.flickNoteIndex
@@ -166,7 +169,7 @@ export function fromBestdori(
                 case 'Long':
                 case 'Slide':
                     if (note.start) {
-                        wrappedEntities.push({
+                        wrappedNoteEntities.push({
                             entity: {
                                 archetype: archetypes.slideStartNoteIndex,
                                 data: {
@@ -176,39 +179,58 @@ export function fromBestdori(
                             },
                             note,
                         })
-                    } else if (note.end) {
-                        wrappedEntities.push({
-                            entity: {
-                                archetype: note.flick
-                                    ? archetypes.slideFlickNoteIndex
-                                    : archetypes.slideEndNoteIndex,
-                                data: {
-                                    index: 0,
-                                    values: [
-                                        wrappedEntities.findIndex(
-                                            (entity) =>
-                                                entity.note === note.head
-                                        ),
-                                        note.time,
-                                        note.lane - 4,
-                                    ],
-                                },
-                            },
-                            note,
-                        })
                     } else {
-                        wrappedEntities.push({
+                        const headIndex = wrappedNoteEntities.findIndex(
+                            (entity) => entity.note === note.head
+                        )
+                        if (note.end) {
+                            wrappedNoteEntities.push({
+                                entity: {
+                                    archetype: note.flick
+                                        ? archetypes.slideFlickNoteIndex
+                                        : archetypes.slideEndNoteIndex,
+                                    data: {
+                                        index: 0,
+                                        values: [
+                                            headIndex,
+                                            note.time,
+                                            note.lane - 4,
+                                        ],
+                                    },
+                                },
+                                note,
+                            })
+                        } else {
+                            wrappedNoteEntities.push({
+                                entity: {
+                                    archetype: archetypes.slideTickNoteIndex,
+                                    data: {
+                                        index: 0,
+                                        values: [
+                                            headIndex,
+                                            note.time,
+                                            note.lane - 4,
+                                        ],
+                                    },
+                                },
+                                note,
+                            })
+                        }
+                        const tailIndex = wrappedNoteEntities.length - 1
+                        const headEntity = wrappedNoteEntities[headIndex]
+                        const tailEntity = wrappedNoteEntities[tailIndex]
+                        wrappedSliderEntities.push({
                             entity: {
-                                archetype: archetypes.slideTickNoteIndex,
+                                archetype: archetypes.sliderIndex,
                                 data: {
                                     index: 0,
                                     values: [
-                                        wrappedEntities.findIndex(
-                                            (entity) =>
-                                                entity.note === note.head
-                                        ),
-                                        note.time,
-                                        note.lane - 4,
+                                        headIndex,
+                                        tailIndex,
+                                        headEntity.note!.time,
+                                        tailEntity.note!.time,
+                                        headEntity.note!.lane - 4,
+                                        tailEntity.note!.lane - 4,
                                     ],
                                 },
                             },
@@ -220,7 +242,9 @@ export function fromBestdori(
         })
 
     return {
-        entities: wrappedEntities.map(({ entity }) => entity),
+        entities: [...wrappedNoteEntities, ...wrappedSliderEntities].map(
+            ({ entity }) => entity
+        ),
     }
 }
 

@@ -52,7 +52,6 @@ import {
     setupAutoSlider,
     setupPreprocess,
     setupSimLine,
-    setupSlider,
     updateSlideNoteTailScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
@@ -77,7 +76,6 @@ export function slideFlickNote(): SScript {
 
     const initialize = [
         setupSimLine(),
-        setupSlider(),
 
         setupAutoInput(bucket),
         setupAutoFlickEffect(),

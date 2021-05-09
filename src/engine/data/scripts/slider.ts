@@ -1,6 +1,8 @@
 import {
     Add,
     And,
+    Code,
+    createEntityData,
     Divide,
     Draw,
     EntityInfo,
@@ -11,6 +13,8 @@ import {
     If,
     Multiply,
     Or,
+    Pointer,
+    Remap,
     RemapClamped,
     SkinSprite,
     SScript,
@@ -22,6 +26,7 @@ import {
 import { options } from '../../configuration/options'
 import {
     halfNoteHeight,
+    halfNoteWidth,
     laneBottom,
     laneYMultiplier,
     laneYOffset,
@@ -32,36 +37,146 @@ import {
     noteWidth,
 } from './common/constants'
 import { moveHoldEffect } from './common/effect'
-import { approachNote, NoteData, NoteSharedMemory } from './common/note'
+import {
+    approachNote,
+    getSpawnTime,
+    NoteData,
+    NoteSharedMemory,
+} from './common/note'
+import { getLaneBottomCenter } from './common/stage'
+
+class SliderDataPointer extends Pointer {
+    public get headIndex() {
+        return this.to<number>(0)
+    }
+
+    public get tailIndex() {
+        return this.to<number>(1)
+    }
+
+    public get headTime() {
+        return this.to<number>(2)
+    }
+
+    public get tailTime() {
+        return this.to<number>(3)
+    }
+
+    public get headLane() {
+        return this.to<number>(4)
+    }
+
+    public get tailLane() {
+        return this.to<number>(5)
+    }
+
+    public get spawnTime() {
+        return this.to<number>(6)
+    }
+
+    public get headBottomLeft() {
+        return this.to<number>(7)
+    }
+
+    public get headBottomRight() {
+        return this.to<number>(8)
+    }
+
+    public get tailBottomLeft() {
+        return this.to<number>(9)
+    }
+
+    public get tailBottomRight() {
+        return this.to<number>(10)
+    }
+
+    public get headSpeedMultiplier() {
+        return this.to<number>(11)
+    }
+
+    public get tailSpeedMultiplier() {
+        return this.to<number>(12)
+    }
+}
+
+const SliderData = createEntityData(SliderDataPointer)
 
 export function slider(): SScript {
-    const tailIndex = EntityMemory.to<number>(0)
+    const headData = NoteData.of(SliderData.headIndex)
+    const tailData = NoteData.of(SliderData.tailIndex)
 
-    const tailData = NoteData.of(tailIndex)
-    const headData = tailData.head
+    const headScale = EntityMemory.to<number>(0)
+    const slideBottom = EntityMemory.to<number>(1)
+    const headCenter = EntityMemory.to<number>(2)
+    const headLeft = EntityMemory.to<number>(3)
+    const headRight = EntityMemory.to<number>(4)
 
-    const headScale = EntityMemory.to<number>(1)
-    const slideBottom = EntityMemory.to<number>(2)
-    const headCenter = EntityMemory.to<number>(3)
-    const headLeft = EntityMemory.to<number>(4)
-    const headRight = EntityMemory.to<number>(5)
+    const tailScale = EntityMemory.to<number>(5)
+    const slideTop = EntityMemory.to<number>(6)
 
-    const tailScale = EntityMemory.to<number>(6)
-    const slideTop = EntityMemory.to<number>(7)
+    const preprocess = [
+        And(options.isRandom, [
+            reposition(SliderData.headLane, SliderData.headTime),
+            reposition(SliderData.tailLane, SliderData.tailTime),
+        ]),
+
+        SliderData.headBottomLeft.set(
+            Subtract(getLaneBottomCenter(SliderData.headLane), halfNoteWidth)
+        ),
+        SliderData.headBottomRight.set(
+            Add(SliderData.headBottomLeft, noteWidth)
+        ),
+        SliderData.tailBottomLeft.set(
+            Subtract(getLaneBottomCenter(SliderData.tailLane), halfNoteWidth)
+        ),
+        SliderData.tailBottomRight.set(
+            Add(SliderData.tailBottomLeft, noteWidth)
+        ),
+
+        SliderData.headSpeedMultiplier.set(
+            Remap(
+                headData.time,
+                tailData.time,
+                headData.speedMultiplier,
+                tailData.speedMultiplier,
+                SliderData.headTime
+            )
+        ),
+        SliderData.tailSpeedMultiplier.set(
+            Remap(
+                headData.time,
+                tailData.time,
+                headData.speedMultiplier,
+                tailData.speedMultiplier,
+                SliderData.tailTime
+            )
+        ),
+
+        SliderData.spawnTime.set(
+            getSpawnTime(SliderData.headTime, SliderData.headSpeedMultiplier)
+        ),
+    ]
+
+    const spawnOrder = SliderData.spawnTime
+
+    const shouldSpawn = GreaterOr(Time, SliderData.spawnTime)
 
     const initialize = [
-        headLeft.set(headData.bottomLeft),
-        headRight.set(headData.bottomRight),
+        headLeft.set(SliderData.headBottomLeft),
+        headRight.set(SliderData.headBottomRight),
     ]
 
     const updateParallel = Or(
-        Equal(EntityInfo.of(tailIndex).state, State.Despawned),
-        Greater(Time, tailData.time),
+        Equal(EntityInfo.of(SliderData.tailIndex).state, State.Despawned),
+        Greater(Time, SliderData.tailTime),
         [
             If(
                 Or(
-                    NoteSharedMemory.of(tailIndex).isSliding,
-                    And(options.isAutoplay, GreaterOr(Time, headData.time))
+                    NoteSharedMemory.of(SliderData.tailIndex).isSliding,
+                    And(
+                        options.isAutoplay,
+                        GreaterOr(Time, SliderData.headTime)
+                    )
                 ),
                 [
                     headScale.set(1),
@@ -69,10 +184,10 @@ export function slider(): SScript {
 
                     headLeft.set(
                         RemapClamped(
-                            headData.time,
-                            tailData.time,
-                            headData.bottomLeft,
-                            tailData.bottomLeft,
+                            SliderData.headTime,
+                            SliderData.tailTime,
+                            SliderData.headBottomLeft,
+                            SliderData.tailBottomLeft,
                             Time
                         )
                     ),
@@ -95,20 +210,30 @@ export function slider(): SScript {
                     And(options.isNoteEffectEnabled, [
                         headCenter.set(Divide(Add(headLeft, headRight), 2)),
                         moveHoldEffect(
-                            NoteSharedMemory.of(tailIndex),
+                            NoteSharedMemory.of(SliderData.tailIndex),
                             headCenter
                         ),
                     ]),
                 ],
                 [
-                    headScale.set(approachNote(headData)),
+                    headScale.set(
+                        approachNote(
+                            SliderData.headTime,
+                            SliderData.headSpeedMultiplier
+                        )
+                    ),
                     slideBottom.set(
                         Add(laneYOffset, Multiply(laneYMultiplier, headScale))
                     ),
                 ]
             ),
 
-            tailScale.set(approachNote(tailData)),
+            tailScale.set(
+                approachNote(
+                    SliderData.tailTime,
+                    SliderData.tailSpeedMultiplier
+                )
+            ),
             slideTop.set(
                 Add(laneYOffset, Multiply(laneYMultiplier, tailScale))
             ),
@@ -117,9 +242,9 @@ export function slider(): SScript {
                 SkinSprite.NoteConnectionGreen,
                 Multiply(headLeft, headScale),
                 slideBottom,
-                Multiply(tailData.bottomLeft, tailScale),
+                Multiply(SliderData.tailBottomLeft, tailScale),
                 slideTop,
-                Multiply(tailData.bottomRight, tailScale),
+                Multiply(SliderData.tailBottomRight, tailScale),
                 slideTop,
                 Multiply(headRight, headScale),
                 slideBottom,
@@ -130,11 +255,44 @@ export function slider(): SScript {
     )
 
     return {
+        preprocess: {
+            code: preprocess,
+        },
+        spawnOrder: {
+            code: spawnOrder,
+        },
+        shouldSpawn: {
+            code: shouldSpawn,
+        },
         initialize: {
             code: initialize,
         },
         updateParallel: {
             code: updateParallel,
         },
+    }
+
+    function reposition(lane: Pointer<number>, time: Code<number>) {
+        return lane.set(
+            Add(
+                lane,
+                Subtract(
+                    Remap(
+                        headData.time,
+                        tailData.time,
+                        headData.lane,
+                        tailData.lane,
+                        time
+                    ),
+                    Remap(
+                        headData.time,
+                        tailData.time,
+                        headData.originalLane,
+                        tailData.originalLane,
+                        time
+                    )
+                )
+            )
+        )
     }
 }

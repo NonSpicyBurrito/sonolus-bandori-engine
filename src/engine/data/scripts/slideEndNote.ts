@@ -48,7 +48,6 @@ import {
     setupAutoTapEffect,
     setupPreprocess,
     setupSimLine,
-    setupSlider,
     updateSlideNoteTailScale,
 } from './common/note'
 import { playJudgmentSFX } from './common/sfx'
@@ -69,7 +68,6 @@ export function slideEndNote(): SScript {
 
     const initialize = [
         setupSimLine(),
-        setupSlider(),
 
         setupAutoInput(bucket),
         setupAutoTapEffect(),

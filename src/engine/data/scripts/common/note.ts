@@ -204,14 +204,20 @@ export function checkNoteTimeInGoodWindow() {
 export function approach(x: Code<number>) {
     return Add(0.05, Multiply(0.95, Power(117.39085, x)))
 }
-export function approachNote(noteData: NoteDataPointer) {
+export function approachNote(
+    time: Code<number>,
+    speedMultiplier: Code<number>
+) {
     return approach(
-        Divide(
-            Subtract(Time, noteData.time),
-            noteOnScreenDuration,
-            noteData.speedMultiplier
-        )
+        Divide(Subtract(Time, time), noteOnScreenDuration, speedMultiplier)
     )
+}
+
+export function getSpawnTime(
+    time: Code<number>,
+    speedMultiplier: Code<number>
+) {
+    return Subtract(time, Multiply(noteOnScreenDuration, speedMultiplier))
 }
 
 export function setupPreprocess() {
@@ -234,10 +240,7 @@ export function setupPreprocess() {
             If(options.isNoteSpeedRandom, Random(1, 2), 1)
         ),
         NoteData.spawnTime.set(
-            Subtract(
-                NoteData.time,
-                Multiply(noteOnScreenDuration, NoteData.speedMultiplier)
-            )
+            getSpawnTime(NoteData.time, NoteData.speedMultiplier)
         ),
 
         And(options.isRandom, [
@@ -330,10 +333,6 @@ export function setupSimLine() {
     )
 }
 
-export function setupSlider() {
-    return Spawn(scripts.sliderIndex, [EntityInfo.index])
-}
-
 export function setupAutoTapEffect() {
     return setupAutoTapOrFlickEffect(false)
 }
@@ -402,7 +401,9 @@ export function processTouchDiscontinue() {
 }
 
 export function updateNoteTailScale() {
-    return noteTailScale.set(approachNote(NoteData))
+    return noteTailScale.set(
+        approachNote(NoteData.time, NoteData.speedMultiplier)
+    )
 }
 export function updateSlideNoteTailScale() {
     return If(
