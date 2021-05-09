@@ -1,71 +1,45 @@
 import { SEntity, SLevelData } from 'sonolus.js'
 
-type ChartObject = NoteObject | BPMObject | SystemObject
+type ChartObject =
+    | SingleObject
+    | SlideObject
+    | LongObject
+    | BPMObject
+    | SystemObject
 
 type ObjectBase = {
     beat: number
 }
 
-type NoteObjectBase = ObjectBase & {
-    type: 'Note'
+type NoteBase = ObjectBase & {
     lane: number
+    flick?: true
+    skill?: true
+    charge?: true
 }
 
-type NoteObject = SingleObject | SlideObject | LongObject
-
-type SingleObject = NoteObjectBase & {
-    note: 'Single'
-    flick: boolean
+type SingleObject = NoteBase & {
+    type: 'Single'
 }
 
-type SlideObject = SlideStartObject | SlideTickObject | SlideEndObject
-
-type SlideStartObject = NoteObjectBase & {
-    note: 'Slide'
-    pos: 'A' | 'B'
-    start: true
-    end: false
+type SlideObject = {
+    type: 'Slide'
+    connections: NoteBase[]
 }
 
-type SlideTickObject = NoteObjectBase & {
-    note: 'Slide'
-    pos: 'A' | 'B'
-    start: false
-    end: false
-}
-
-type SlideEndObject = NoteObjectBase & {
-    note: 'Slide'
-    pos: 'A' | 'B'
-    start: false
-    end: true
-    flick: boolean
-}
-
-type LongObject = LongStartObject | LongEndObject
-
-type LongStartObject = NoteObjectBase & {
-    note: 'Long'
-    start: true
-    end: false
-}
-
-type LongEndObject = NoteObjectBase & {
-    note: 'Long'
-    start: false
-    end: true
-    flick: boolean
+type LongObject = {
+    type: 'Long'
+    connections: NoteBase[]
 }
 
 type BPMObject = ObjectBase & {
-    type: 'System'
-    cmd: 'BPM'
+    type: 'BPM'
     bpm: number
 }
 
 type SystemObject = ObjectBase & {
     type: 'System'
-    cmd: 'FeverReady' | 'FeverStart' | 'FeverEnd' | 'unknown'
+    data: string
 }
 
 export function fromBestdori(
@@ -82,123 +56,114 @@ export function fromBestdori(
         sliderIndex: number
     } = require(__dirname + '/info').archetypes
 ): SLevelData {
-    type Note = NoteObject & {
-        time: number
-        head?: Note
-    }
-
-    type WrappedEntity = {
+    type WrappedNoteEntity = {
         entity: SEntity
-        note?: Note
+        time: number
+        lane: number
+        head?: WrappedNoteEntity
     }
 
-    const wrappedNoteEntities: WrappedEntity[] = [
+    type WrappedSliderEntity = {
+        entity: SEntity
+        head: WrappedNoteEntity
+        tail: WrappedNoteEntity
+    }
+
+    const chartObjects = repair(data)
+
+    const timings: {
+        beat: number
+        time: number
+        timePerBeat: number
+    }[] = []
+
+    let beats = 0
+    let time = 0
+    chartObjects.forEach((chartObject) => {
+        if (chartObject.type === 'BPM') {
+            const timePerBeat = 60 / chartObject.bpm
+            time += (chartObject.beat - beats) * timePerBeat
+            beats = chartObject.beat
+            timings.unshift({
+                beat: beats,
+                time,
+                timePerBeat,
+            })
+        }
+    })
+
+    const wrappedNoteEntities: WrappedNoteEntity[] = [
         {
             entity: {
                 archetype: archetypes.initializationIndex,
             },
+            time: Number.NEGATIVE_INFINITY,
+            lane: 0,
         },
         {
             entity: {
                 archetype: archetypes.stageIndex,
             },
+            time: Number.NEGATIVE_INFINITY,
+            lane: 0,
         },
     ]
+    const wrappedSliderEntities: WrappedSliderEntity[] = []
 
-    const wrappedSliderEntities: WrappedEntity[] = []
-
-    const notes = appendTime(repair(data)).filter(
-        (obj): obj is Note => obj.type === 'Note'
-    )
-    notes.forEach((note, index) => {
-        switch (note.note) {
-            case 'Long':
-                if (!note.start) {
-                    for (let i = index - 1; i >= 0; i--) {
-                        const head = notes[i]
-                        if (
-                            head.note === 'Long' &&
-                            !head.end &&
-                            head.lane === note.lane
-                        ) {
-                            note.head = head
-                            break
-                        }
-                    }
-                }
-                break
-            case 'Slide':
-                if (!note.start) {
-                    for (let i = index - 1; i >= 0; i--) {
-                        const head = notes[i]
-                        if (
-                            head.note === 'Slide' &&
-                            !head.end &&
-                            head.pos === note.pos
-                        ) {
-                            note.head = head
-                            break
-                        }
-                    }
-                }
-                break
-        }
-    })
-
-    notes
-        .sort(
-            (a, b) =>
-                a.time - b.time || Math.abs(b.lane - 4) - Math.abs(a.lane - 4)
-        )
-        .forEach((note) => {
-            switch (note.note) {
-                case 'Single':
-                    wrappedNoteEntities.push({
-                        entity: {
-                            archetype: note.flick
-                                ? archetypes.flickNoteIndex
-                                : archetypes.tapNoteIndex,
-                            data: {
-                                index: 1,
-                                values: [note.time, note.lane - 4],
-                            },
+    chartObjects.forEach((chartObject) => {
+        switch (chartObject.type) {
+            case 'Single': {
+                const time = beatToTime(chartObject.beat)
+                const lane = chartObject.lane - 3
+                wrappedNoteEntities.push({
+                    entity: {
+                        archetype: chartObject.flick
+                            ? archetypes.flickNoteIndex
+                            : archetypes.tapNoteIndex,
+                        data: {
+                            index: 1,
+                            values: [time, lane],
                         },
-                        note,
-                    })
-                    break
-                case 'Long':
-                case 'Slide':
-                    if (note.start) {
+                    },
+                    time,
+                    lane,
+                })
+                break
+            }
+            case 'Slide':
+            case 'Long': {
+                chartObject.connections.forEach((connection, index) => {
+                    const time = beatToTime(connection.beat)
+                    const lane = connection.lane - 3
+                    if (index === 0) {
                         wrappedNoteEntities.push({
                             entity: {
                                 archetype: archetypes.slideStartNoteIndex,
                                 data: {
                                     index: 1,
-                                    values: [note.time, note.lane - 4],
+                                    values: [time, lane],
                                 },
                             },
-                            note,
+                            time,
+                            lane,
                         })
                     } else {
-                        const headIndex = wrappedNoteEntities.findIndex(
-                            (entity) => entity.note === note.head
-                        )
-                        if (note.end) {
+                        const head =
+                            wrappedNoteEntities[wrappedNoteEntities.length - 1]
+                        if (index === chartObject.connections.length - 1) {
                             wrappedNoteEntities.push({
                                 entity: {
-                                    archetype: note.flick
+                                    archetype: connection.flick
                                         ? archetypes.slideFlickNoteIndex
                                         : archetypes.slideEndNoteIndex,
                                     data: {
                                         index: 0,
-                                        values: [
-                                            headIndex,
-                                            note.time,
-                                            note.lane - 4,
-                                        ],
+                                        values: [0, time, lane],
                                     },
                                 },
-                                note,
+                                time,
+                                lane,
+                                head,
                             })
                         } else {
                             wrappedNoteEntities.push({
@@ -206,134 +171,93 @@ export function fromBestdori(
                                     archetype: archetypes.slideTickNoteIndex,
                                     data: {
                                         index: 0,
-                                        values: [
-                                            headIndex,
-                                            note.time,
-                                            note.lane - 4,
-                                        ],
+                                        values: [0, time, lane],
                                     },
                                 },
-                                note,
+                                time,
+                                lane,
+                                head,
                             })
                         }
-                        const tailIndex = wrappedNoteEntities.length - 1
-                        const headEntity = wrappedNoteEntities[headIndex]
-                        const tailEntity = wrappedNoteEntities[tailIndex]
+                        const tail =
+                            wrappedNoteEntities[wrappedNoteEntities.length - 1]
                         wrappedSliderEntities.push({
                             entity: {
                                 archetype: archetypes.sliderIndex,
                                 data: {
                                     index: 0,
                                     values: [
-                                        headIndex,
-                                        tailIndex,
-                                        headEntity.note!.time,
-                                        tailEntity.note!.time,
-                                        headEntity.note!.lane - 4,
-                                        tailEntity.note!.lane - 4,
+                                        0,
+                                        0,
+                                        head.time,
+                                        tail.time,
+                                        head.lane,
+                                        tail.lane,
                                     ],
                                 },
                             },
-                            note,
+                            head,
+                            tail,
                         })
                     }
-                    break
-            }
-        })
-
-    return {
-        entities: [...wrappedNoteEntities, ...wrappedSliderEntities].map(
-            ({ entity }) => entity
-        ),
-    }
-}
-
-function repair(chartObjects: ChartObject[]): ChartObject[] {
-    const slides = new Map<string, SlideStartObject | SlideTickObject>()
-
-    chartObjects.sort((a, b) => a.beat - b.beat)
-    chartObjects.forEach((chartObject) => {
-        if (chartObject.type === 'Note' && chartObject.note === 'Slide') {
-            if (chartObject.start) {
-                const prevSlide = slides.get(chartObject.pos)
-                if (prevSlide !== undefined) {
-                    if (prevSlide.start) {
-                        replace(prevSlide, {
-                            type: 'Note',
-                            note: 'Single',
-                            beat: prevSlide.beat,
-                            lane: prevSlide.lane,
-                            flick: false,
-                        })
-                    } else {
-                        replace(prevSlide, {
-                            type: 'Note',
-                            note: 'Slide',
-                            beat: prevSlide.beat,
-                            lane: prevSlide.lane,
-                            pos: prevSlide.pos,
-                            start: false,
-                            end: true,
-                            flick: false,
-                        })
-                    }
-                }
-
-                slides.set(chartObject.pos, chartObject)
-            } else if (chartObject.end) {
-                const prevSlide = slides.get(chartObject.pos)
-                if (prevSlide === undefined) {
-                    replace(chartObject, {
-                        type: 'Note',
-                        note: 'Single',
-                        beat: chartObject.beat,
-                        lane: chartObject.lane,
-                        flick: chartObject.flick,
-                    })
-                } else {
-                    slides.delete(chartObject.pos)
-                }
-            } else {
-                const prevSlide = slides.get(chartObject.pos)
-                if (prevSlide === undefined) {
-                    const newChartObject: SlideStartObject = {
-                        type: 'Note',
-                        note: 'Slide',
-                        beat: chartObject.beat,
-                        lane: chartObject.lane,
-                        pos: chartObject.pos,
-                        start: true,
-                        end: false,
-                    }
-                    replace(chartObject, newChartObject)
-                    chartObject = newChartObject
-                }
-
-                slides.set(chartObject.pos, chartObject)
+                })
+                break
             }
         }
     })
 
-    slides.forEach((slideObject) => {
-        if (slideObject.start) {
-            replace(slideObject, {
-                type: 'Note',
-                note: 'Single',
-                beat: slideObject.beat,
-                lane: slideObject.lane,
-                flick: false,
-            })
-        } else {
-            replace(slideObject, {
-                type: 'Note',
-                note: 'Slide',
-                beat: slideObject.beat,
-                lane: slideObject.lane,
-                pos: slideObject.pos,
-                start: false,
-                end: true,
-                flick: false,
-            })
+    return {
+        entities: [
+            ...wrappedNoteEntities
+                .sort(
+                    (a, b) =>
+                        a.time - b.time || Math.abs(b.lane) - Math.abs(a.lane)
+                )
+                .map((wrappedNoteEntity) => {
+                    if (wrappedNoteEntity.head) {
+                        wrappedNoteEntity.entity.data!.values[0] = wrappedNoteEntities.indexOf(
+                            wrappedNoteEntity.head
+                        )
+                    }
+                    return wrappedNoteEntity.entity
+                }),
+            ...wrappedSliderEntities.map((wrappedSliderEntity) => {
+                wrappedSliderEntity.entity.data!.values[0] = wrappedNoteEntities.indexOf(
+                    wrappedSliderEntity.head
+                )
+                wrappedSliderEntity.entity.data!.values[1] = wrappedNoteEntities.indexOf(
+                    wrappedSliderEntity.tail
+                )
+                return wrappedSliderEntity.entity
+            }),
+        ],
+    }
+
+    function beatToTime(beat: number) {
+        for (const timing of timings) {
+            if (beat >= timing.beat) {
+                return timing.time + (beat - timing.beat) * timing.timePerBeat
+            }
+        }
+        return 0
+    }
+}
+
+function repair(chartObjects: ChartObject[]) {
+    chartObjects.forEach((chartObject) => {
+        switch (chartObject.type) {
+            case 'Long':
+            case 'Slide':
+                if (chartObject.connections.length === 1) {
+                    const connection = chartObject.connections[0]
+                    replace(chartObject, {
+                        type: 'Single',
+                        lane: connection.lane,
+                        beat: connection.beat,
+                        flick: connection.flick,
+                    })
+                }
+                break
         }
     })
 
@@ -342,27 +266,4 @@ function repair(chartObjects: ChartObject[]): ChartObject[] {
     function replace(o: ChartObject, n: ChartObject) {
         chartObjects.splice(chartObjects.indexOf(o), 1, n)
     }
-}
-
-function appendTime(
-    chartObjects: ChartObject[]
-): (ChartObject & { time: number })[] {
-    let timePerBeat = 0
-    let totalTime = 0
-    let totalBeats = 0
-
-    return chartObjects.map((chartObject) => {
-        const time = totalTime + (chartObject.beat - totalBeats) * timePerBeat
-
-        if (chartObject.type === 'System' && chartObject.cmd === 'BPM') {
-            timePerBeat = 60 / chartObject.bpm || 0
-            totalTime = time
-            totalBeats = chartObject.beat
-        }
-
-        return {
-            ...chartObject,
-            time,
-        }
-    })
 }
