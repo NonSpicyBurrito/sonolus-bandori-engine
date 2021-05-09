@@ -124,6 +124,10 @@ export class NoteDataPointer extends Pointer {
     public get originalLane() {
         return this.to<number>(10)
     }
+
+    public get slideSpawnTime() {
+        return this.to<number>(11)
+    }
 }
 
 export const NoteData = createEntityData(NoteDataPointer)
@@ -304,6 +308,10 @@ export function setupPreprocess() {
         NoteData.z.set(Subtract(layerNoteBody, Divide(NoteData.time, 1000))),
 
         NoteData.isStraightSlide.set(Equal(NoteData.lane, NoteData.head.lane)),
+
+        NoteData.slideSpawnTime.set(
+            Min(NoteData.spawnTime, NoteData.head.spawnTime)
+        ),
     ]
 }
 

@@ -70,9 +70,9 @@ export function slideFlickNote(): SScript {
 
     const preprocess = setupPreprocess()
 
-    const spawnOrder = NoteData.head.spawnTime
+    const spawnOrder = NoteData.slideSpawnTime
 
-    const shouldSpawn = GreaterOr(Time, NoteData.head.spawnTime)
+    const shouldSpawn = GreaterOr(Time, NoteData.slideSpawnTime)
 
     const initialize = [
         setupSimLine(),

@@ -11,6 +11,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    Min,
     Multiply,
     Or,
     Pointer,
@@ -153,7 +154,16 @@ export function slider(): SScript {
         ),
 
         SliderData.spawnTime.set(
-            getSpawnTime(SliderData.headTime, SliderData.headSpeedMultiplier)
+            Min(
+                getSpawnTime(
+                    SliderData.headTime,
+                    SliderData.headSpeedMultiplier
+                ),
+                getSpawnTime(
+                    SliderData.tailTime,
+                    SliderData.tailSpeedMultiplier
+                )
+            )
         ),
     ]
 
