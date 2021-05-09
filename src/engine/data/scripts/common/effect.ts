@@ -84,7 +84,11 @@ export function playLaneEffect(lane: Code<number>) {
     )
 }
 
-export function playTapOrFlickEffect(center: Code<number>, isFlick: boolean) {
+export function playNoteEffect(
+    center: Code<number>,
+    linear: ParticleEffect,
+    circular: ParticleEffect
+) {
     const linearTapEffectLeft = Subtract(center, halfLinearTapEffectWidth)
     const linearTapEffectRight = Add(center, halfLinearTapEffectWidth)
     const circularTapEffectLeft = Subtract(center, halfCircularTapEffectWidth)
@@ -92,9 +96,7 @@ export function playTapOrFlickEffect(center: Code<number>, isFlick: boolean) {
 
     return And(options.isNoteEffectEnabled, [
         SpawnParticleEffect(
-            isFlick
-                ? ParticleEffect.NoteLinearAlternativeRed
-                : ParticleEffect.NoteLinearTapCyan,
+            linear,
             linearTapEffectLeft,
             linearTapEffectBottom,
             linearTapEffectLeft,
@@ -107,9 +109,7 @@ export function playTapOrFlickEffect(center: Code<number>, isFlick: boolean) {
             false
         ),
         SpawnParticleEffect(
-            isFlick
-                ? ParticleEffect.NoteCircularAlternativeRed
-                : ParticleEffect.NoteCircularTapCyan,
+            circular,
             circularTapEffectLeft,
             circularTapEffectBottom,
             circularTapEffectLeft,

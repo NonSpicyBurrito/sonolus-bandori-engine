@@ -17,6 +17,14 @@ export const archetypes = defineArchetypes({
         script: scripts.flickNoteIndex,
         input: true,
     },
+    leftDirectionalFlickNote: {
+        script: scripts.leftDirectionalFlickNoteIndex,
+        input: true,
+    },
+    rightDirectionalFlickNote: {
+        script: scripts.rightDirectionalFlickNoteIndex,
+        input: true,
+    },
     slideStartNote: {
         script: scripts.slideStartNoteIndex,
         input: true,

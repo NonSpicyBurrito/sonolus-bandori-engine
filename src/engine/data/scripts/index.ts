@@ -1,9 +1,10 @@
-import { defineScripts, SkinSprite } from 'sonolus.js'
+import { defineScripts, ParticleEffect, SkinSprite } from 'sonolus.js'
 
 import { buckets } from '../buckets'
+import { autoNoteEffect } from './autoNoteEffect'
 import { autoSFX } from './autoSFX'
 import { autoSlider } from './autoSlider'
-import { autoTapOrFlickEffect } from './autoTapEffect'
+import { directionalFlickNote } from './directionalFlickNote'
 import { flickNote } from './flickNote'
 import { initialization } from './initialization'
 import { simLine } from './simLine'
@@ -23,6 +24,18 @@ export const scripts = defineScripts({
 
     tapNote: () => tapNote(buckets.tapNoteIndex, SkinSprite.NoteHeadCyan),
     flickNote,
+    leftDirectionalFlickNote: () =>
+        directionalFlickNote(
+            SkinSprite.NoteHeadPurple,
+            SkinSprite.DirectionalMarkerPurple,
+            true
+        ),
+    rightDirectionalFlickNote: () =>
+        directionalFlickNote(
+            SkinSprite.NoteHeadYellow,
+            SkinSprite.DirectionalMarkerYellow,
+            false
+        ),
     slideStartNote: () =>
         tapNote(buckets.slideStartNoteIndex, SkinSprite.NoteHeadGreen),
     slideTickNote,
@@ -34,7 +47,25 @@ export const scripts = defineScripts({
     simLine,
 
     autoSFX,
-    autoTapEffect: () => autoTapOrFlickEffect(false),
-    autoFlickEffect: () => autoTapOrFlickEffect(true),
+    autoTapEffect: () =>
+        autoNoteEffect(
+            ParticleEffect.NoteLinearTapCyan,
+            ParticleEffect.NoteCircularTapCyan
+        ),
+    autoFlickEffect: () =>
+        autoNoteEffect(
+            ParticleEffect.NoteLinearAlternativeRed,
+            ParticleEffect.NoteCircularAlternativeRed
+        ),
+    autoLeftDirectionalFlickEffect: () =>
+        autoNoteEffect(
+            ParticleEffect.NoteLinearAlternativePurple,
+            ParticleEffect.NoteCircularAlternativePurple
+        ),
+    autoRightDirectionalFlickEffect: () =>
+        autoNoteEffect(
+            ParticleEffect.NoteLinearAlternativeYellow,
+            ParticleEffect.NoteCircularAlternativeYellow
+        ),
     autoSlider,
 })

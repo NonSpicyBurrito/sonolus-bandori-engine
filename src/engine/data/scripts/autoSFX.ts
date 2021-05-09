@@ -38,6 +38,14 @@ export function autoSFX(): SScript {
                         Equal(noteInfo.archetype, archetypes.flickNoteIndex),
                         Equal(
                             noteInfo.archetype,
+                            archetypes.leftDirectionalFlickNoteIndex
+                        ),
+                        Equal(
+                            noteInfo.archetype,
+                            archetypes.rightDirectionalFlickNoteIndex
+                        ),
+                        Equal(
+                            noteInfo.archetype,
                             archetypes.slideFlickNoteIndex
                         )
                     ),

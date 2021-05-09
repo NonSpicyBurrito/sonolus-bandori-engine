@@ -2,6 +2,7 @@ import { SEntity, SLevelData } from 'sonolus.js'
 
 type ChartObject =
     | SingleObject
+    | DirectionalObject
     | SlideObject
     | LongObject
     | BPMObject
@@ -20,6 +21,12 @@ type NoteBase = ObjectBase & {
 
 type SingleObject = NoteBase & {
     type: 'Single'
+}
+
+type DirectionalObject = NoteBase & {
+    type: 'Directional'
+    direction: 'Left' | 'Right'
+    width: number
 }
 
 type SlideObject = {
@@ -53,6 +60,8 @@ export function fromBestdori(
         stageIndex: number
         tapNoteIndex: number
         flickNoteIndex: number
+        leftDirectionalFlickNoteIndex: number
+        rightDirectionalFlickNoteIndex: number
         slideStartNoteIndex: number
         slideTickNoteIndex: number
         slideEndNoteIndex: number
@@ -128,6 +137,25 @@ export function fromBestdori(
                         data: {
                             index: 1,
                             values: [time, lane],
+                        },
+                    },
+                    time,
+                    lane,
+                })
+                break
+            }
+            case 'Directional': {
+                const time = beatToTime(chartObject.beat)
+                const lane = chartObject.lane - 3
+                wrappedNoteEntities.push({
+                    entity: {
+                        archetype:
+                            chartObject.direction === 'Left'
+                                ? archetypes.leftDirectionalFlickNoteIndex
+                                : archetypes.rightDirectionalFlickNoteIndex,
+                        data: {
+                            index: 1,
+                            values: [time, lane, chartObject.width],
                         },
                     },
                     time,
