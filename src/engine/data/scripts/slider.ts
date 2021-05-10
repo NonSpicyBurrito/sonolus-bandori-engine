@@ -71,32 +71,36 @@ class SliderDataPointer extends Pointer {
         return this.to<number>(5)
     }
 
+    public get isFirst() {
+        return this.to<boolean>(6)
+    }
+
     public get spawnTime() {
-        return this.to<number>(6)
+        return this.to<number>(16)
     }
 
     public get headBottomLeft() {
-        return this.to<number>(7)
+        return this.to<number>(17)
     }
 
     public get headBottomRight() {
-        return this.to<number>(8)
+        return this.to<number>(18)
     }
 
     public get tailBottomLeft() {
-        return this.to<number>(9)
+        return this.to<number>(19)
     }
 
     public get tailBottomRight() {
-        return this.to<number>(10)
+        return this.to<number>(20)
     }
 
     public get headSpeedMultiplier() {
-        return this.to<number>(11)
+        return this.to<number>(21)
     }
 
     public get tailSpeedMultiplier() {
-        return this.to<number>(12)
+        return this.to<number>(22)
     }
 }
 
@@ -182,7 +186,11 @@ export function slider(sprite: SkinSprite): SScript {
         [
             If(
                 Or(
-                    NoteSharedMemory.of(SliderData.tailIndex).isSliding,
+                    If(
+                        SliderData.isFirst,
+                        NoteSharedMemory.of(SliderData.tailIndex).isSliding,
+                        GreaterOr(Time, SliderData.headTime)
+                    ),
                     And(
                         options.isAutoplay,
                         GreaterOr(Time, SliderData.headTime)
