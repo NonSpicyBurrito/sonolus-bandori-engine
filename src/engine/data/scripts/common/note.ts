@@ -190,28 +190,32 @@ export function playNoteTapEffect() {
     return playNoteEffect(
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearTapCyan,
-        ParticleEffect.NoteCircularTapCyan
+        ParticleEffect.NoteCircularTapCyan,
+        0
     )
 }
 export function playNoteFlickEffect() {
     return playNoteEffect(
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearAlternativeRed,
-        ParticleEffect.NoteCircularAlternativeRed
+        ParticleEffect.NoteCircularAlternativeRed,
+        0
     )
 }
 export function playNoteLeftDirectionalFlickEffect() {
     return playNoteEffect(
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearAlternativePurple,
-        ParticleEffect.NoteCircularAlternativePurple
+        ParticleEffect.NoteCircularAlternativePurple,
+        -1
     )
 }
 export function playNoteRightDirectionalFlickEffect() {
     return playNoteEffect(
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearAlternativeYellow,
-        ParticleEffect.NoteCircularAlternativeYellow
+        ParticleEffect.NoteCircularAlternativeYellow,
+        1
     )
 }
 

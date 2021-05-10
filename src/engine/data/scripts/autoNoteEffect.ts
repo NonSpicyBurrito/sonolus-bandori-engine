@@ -12,14 +12,15 @@ import { NoteData } from './common/note'
 
 export function autoNoteEffect(
     linear: ParticleEffect,
-    circular: ParticleEffect
+    circular: ParticleEffect,
+    direction: -1 | 0 | 1
 ): SScript {
     const noteIndex = EntityMemory.to<number>(0)
     const noteData = NoteData.of(noteIndex)
 
     const updateParallel = And(GreaterOr(Time, noteData.time), [
         playLaneEffect(noteData.lane),
-        playNoteEffect(noteData.bottomCenter, linear, circular),
+        playNoteEffect(noteData.bottomCenter, linear, circular, direction),
     ])
 
     return {

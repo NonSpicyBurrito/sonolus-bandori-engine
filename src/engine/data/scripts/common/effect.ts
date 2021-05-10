@@ -16,9 +16,8 @@ import { options } from '../../../configuration/options'
 import {
     circularHoldEffectBottom,
     circularHoldEffectTop,
-    circularTapEffectBottom,
-    circularTapEffectTop,
     halfCircularHoldEffectWidth,
+    halfCircularTapEffectHeight,
     halfCircularTapEffectWidth,
     halfLinearHoldEffectWidth,
     halfLinearTapEffectWidth,
@@ -27,8 +26,6 @@ import {
     laneTop,
     linearHoldEffectBottom,
     linearHoldEffectTop,
-    linearTapEffectBottom,
-    linearTapEffectTop,
 } from './constants'
 import { NoteSharedMemoryPointer } from './note'
 import {
@@ -87,27 +84,23 @@ export function playLaneEffect(lane: Code<number>) {
 export function playNoteEffect(
     center: Code<number>,
     linear: ParticleEffect,
-    circular: ParticleEffect
+    circular: ParticleEffect,
+    direction: -1 | 0 | 1
 ) {
-    const linearTapEffectLeft = Subtract(center, halfLinearTapEffectWidth)
-    const linearTapEffectRight = Add(center, halfLinearTapEffectWidth)
     const circularTapEffectLeft = Subtract(center, halfCircularTapEffectWidth)
     const circularTapEffectRight = Add(center, halfCircularTapEffectWidth)
+    const circularTapEffectBottom = Add(laneBottom, halfCircularTapEffectHeight)
+    const circularTapEffectTop = Subtract(
+        laneBottom,
+        halfCircularTapEffectHeight
+    )
 
     return And(options.isNoteEffectEnabled, [
-        SpawnParticleEffect(
-            linear,
-            linearTapEffectLeft,
-            linearTapEffectBottom,
-            linearTapEffectLeft,
-            linearTapEffectTop,
-            linearTapEffectRight,
-            linearTapEffectTop,
-            linearTapEffectRight,
-            linearTapEffectBottom,
-            0.4,
-            false
-        ),
+        {
+            [-1]: playLinearNoteEffectLeft,
+            [0]: playLinearNoteEffectUp,
+            [1]: playLinearNoteEffectRight,
+        }[direction](center, linear),
         SpawnParticleEffect(
             circular,
             circularTapEffectLeft,
@@ -122,6 +115,81 @@ export function playNoteEffect(
             false
         ),
     ])
+}
+function playLinearNoteEffectUp(center: Code<number>, linear: ParticleEffect) {
+    const linearTapEffectLeft = Subtract(center, halfLinearTapEffectWidth)
+    const linearTapEffectRight = Add(center, halfLinearTapEffectWidth)
+    const linearTapEffectBottom = laneBottom
+    const linearTapEffectTop = Add(
+        laneBottom,
+        Multiply(2, halfLinearTapEffectWidth)
+    )
+
+    return SpawnParticleEffect(
+        linear,
+        linearTapEffectLeft,
+        linearTapEffectBottom,
+        linearTapEffectLeft,
+        linearTapEffectTop,
+        linearTapEffectRight,
+        linearTapEffectTop,
+        linearTapEffectRight,
+        linearTapEffectBottom,
+        0.4,
+        false
+    )
+}
+function playLinearNoteEffectLeft(
+    center: Code<number>,
+    linear: ParticleEffect
+) {
+    const linearTapEffectLeft = Subtract(laneBottom, halfLinearTapEffectWidth)
+    const linearTapEffectRight = Add(laneBottom, halfLinearTapEffectWidth)
+    const linearTapEffectBottom = center
+    const linearTapEffectTop = Subtract(
+        center,
+        Multiply(2, halfLinearTapEffectWidth)
+    )
+
+    return SpawnParticleEffect(
+        linear,
+        linearTapEffectBottom,
+        linearTapEffectLeft,
+        linearTapEffectTop,
+        linearTapEffectLeft,
+        linearTapEffectTop,
+        linearTapEffectRight,
+        linearTapEffectBottom,
+        linearTapEffectRight,
+        0.4,
+        false
+    )
+}
+function playLinearNoteEffectRight(
+    center: Code<number>,
+    linear: ParticleEffect
+) {
+    const linearTapEffectLeft = Add(laneBottom, halfLinearTapEffectWidth)
+    const linearTapEffectRight = Subtract(laneBottom, halfLinearTapEffectWidth)
+    const linearTapEffectBottom = center
+    const linearTapEffectTop = Add(
+        center,
+        Multiply(2, halfLinearTapEffectWidth)
+    )
+
+    return SpawnParticleEffect(
+        linear,
+        linearTapEffectBottom,
+        linearTapEffectLeft,
+        linearTapEffectTop,
+        linearTapEffectLeft,
+        linearTapEffectTop,
+        linearTapEffectRight,
+        linearTapEffectBottom,
+        linearTapEffectRight,
+        0.4,
+        false
+    )
 }
 
 export function spawnHoldEffect(

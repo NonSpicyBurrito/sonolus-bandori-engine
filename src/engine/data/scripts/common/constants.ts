@@ -119,11 +119,6 @@ export const halfLinearTapEffectWidth = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize
 )
-export const linearTapEffectBottom = laneBottom
-export const linearTapEffectTop = Add(
-    laneBottom,
-    Multiply(2, halfLinearTapEffectWidth)
-)
 
 export const halfCircularTapEffectWidth = Multiply(
     halfBaseNoteWidth,
@@ -134,14 +129,6 @@ export const halfCircularTapEffectHeight = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize,
     2
-)
-export const circularTapEffectTop = Subtract(
-    laneBottom,
-    halfCircularTapEffectHeight
-)
-export const circularTapEffectBottom = Add(
-    laneBottom,
-    halfCircularTapEffectHeight
 )
 
 // Hold Effect
