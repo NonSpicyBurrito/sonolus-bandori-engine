@@ -91,13 +91,14 @@ export function fromBestdori(
         timePerBeat: number
     }[] = []
 
+    let timePerBeat = 0
     let beats = 0
     let time = 0
     chartObjects.forEach((chartObject) => {
         if (chartObject.type === 'BPM') {
-            const timePerBeat = 60 / chartObject.bpm
             time += (chartObject.beat - beats) * timePerBeat
             beats = chartObject.beat
+            timePerBeat = 60 / chartObject.bpm
             timings.unshift({
                 beat: beats,
                 time,
