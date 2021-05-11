@@ -245,6 +245,12 @@ export function initialization(): SScript {
                 -100
             ),
             ArchetypeLife.of(
+                archetypes.leftDirectionalFlickNoteIndex
+            ).missLifeIncrement.set(-100),
+            ArchetypeLife.of(
+                archetypes.rightDirectionalFlickNoteIndex
+            ).missLifeIncrement.set(-100),
+            ArchetypeLife.of(
                 archetypes.slideStartNoteIndex
             ).missLifeIncrement.set(-100),
             ArchetypeLife.of(
