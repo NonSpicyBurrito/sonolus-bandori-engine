@@ -21,6 +21,7 @@ import {
 
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
+import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
@@ -29,26 +30,29 @@ import {
     slideWindow,
 } from './common/constants'
 import {
-    checkTouchXInNoteLane,
+    checkTouchXInNoteHitbox,
     destroyNoteHoldEffect,
-    drawNoteTail,
+    drawNote,
+    initializeAutoSlider,
+    initializeNoteAutoEffect,
+    initializeNoteAutoInput,
     InputState,
     NoteData,
     noteInputState,
     NoteSharedMemory,
     playNoteLaneEffect,
     playNoteTapEffect,
-    processTouchDiscontinue,
-    processTouchHead,
-    setupAutoInput,
-    setupAutoSlider,
-    setupAutoTapEffect,
-    setupPreprocess,
-    updateSlideNoteTailScale,
+    prepareDrawNote,
+    preprocessIsStraightSlide,
+    preprocessNote,
+    preprocessSlideSpawnTime,
+    touchProcessDiscontinue,
+    touchProcessHead,
+    updateNoteSlideScale,
 } from './common/note'
 import { playJudgmentSFX } from './common/sfx'
 import {
-    checkTouchYInHitBox,
+    checkTouchYInHitbox,
     isTouchOccupied,
     updateTouchTilt,
 } from './common/touch'
@@ -56,20 +60,24 @@ import {
 export function slideTickNote(): SScript {
     const bucket = buckets.slideTickNoteIndex
 
-    const preprocess = setupPreprocess()
+    const preprocess = [
+        preprocessNote(),
+        preprocessSlideSpawnTime(),
+        preprocessIsStraightSlide(),
+    ]
 
     const spawnOrder = NoteData.slideSpawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.slideSpawnTime)
 
     const initialize = [
-        setupAutoInput(bucket),
-        setupAutoTapEffect(),
-        setupAutoSlider(),
+        initializeNoteAutoInput(bucket),
+        initializeNoteAutoEffect(scripts.autoTapEffectIndex),
+        initializeAutoSlider(),
     ]
 
     const touch = Or(options.isAutoplay, [
-        processTouchHead(),
+        touchProcessHead(),
         And(
             Equal(noteInputState, InputState.Activated),
             Equal(TouchId, NoteSharedMemory.inputTouchId),
@@ -78,11 +86,11 @@ export function slideTickNote(): SScript {
                 updateTouchTilt(),
                 And(
                     GreaterOr(Subtract(Time, inputOffset), NoteData.time),
-                    checkTouchYInHitBox(),
-                    checkTouchXInNoteLane(),
+                    checkTouchYInHitbox(),
+                    checkTouchXInNoteHitbox(),
                     onComplete()
                 ),
-                processTouchDiscontinue(),
+                touchProcessDiscontinue(),
             ]
         ),
     ])
@@ -113,8 +121,9 @@ export function slideTickNote(): SScript {
             destroyNoteHoldEffect()
         ),
         And(GreaterOr(Time, NoteData.spawnTime), [
-            updateSlideNoteTailScale(),
-            drawNoteTail(SkinSprite.NoteTickGreen),
+            updateNoteSlideScale(),
+            prepareDrawNote(),
+            drawNote(SkinSprite.NoteTickGreen),
         ])
     )
 

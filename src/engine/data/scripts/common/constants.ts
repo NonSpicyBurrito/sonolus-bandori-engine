@@ -33,15 +33,17 @@ export const minSFXDistance = 0.02
 
 // Layers
 
-export const layerCover = 1000
-export const layerNoteMarker = 101
-export const layerNoteBody = 100
-export const layerNoteSlide = 99
-export const layerNoteConnector = 98
-export const layerSimLine = 97
-export const layerSlot = 3
-export const layerJudgmentLine = 2
-export const layerStage = 0
+export enum Layer {
+    Cover = 1000,
+    NoteMarker = 101,
+    NoteBody = 100,
+    NoteSlide = 99,
+    NoteConnector = 98,
+    SimLine = 97,
+    Slot = 3,
+    JudgmentLine = 2,
+    Stage = 0,
+}
 
 // Screen
 
@@ -108,14 +110,14 @@ export const noteOnScreenDuration = Divide(Subtract(12, options.noteSpeed), 2)
 
 // Slot Effect
 
-export const halfSlotEffectWidth = Multiply(
+export const halfSlotEffectSize = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize
 )
 
 // Tap Effect
 
-export const halfLinearTapEffectWidth = Multiply(
+export const halfLinearTapEffectSize = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize
 )
@@ -133,14 +135,9 @@ export const halfCircularTapEffectHeight = Multiply(
 
 // Hold Effect
 
-export const halfLinearHoldEffectWidth = Multiply(
+export const halfLinearHoldEffectSize = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize
-)
-export const linearHoldEffectBottom = laneBottom
-export const linearHoldEffectTop = Add(
-    laneBottom,
-    Multiply(2, halfLinearHoldEffectWidth)
 )
 
 export const halfCircularHoldEffectWidth = Multiply(
@@ -152,12 +149,4 @@ export const halfCircularHoldEffectHeight = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize,
     1.2
-)
-export const circularHoldEffectBottom = Subtract(
-    laneBottom,
-    halfCircularHoldEffectHeight
-)
-export const circularHoldEffectTop = Add(
-    laneBottom,
-    halfCircularHoldEffectHeight
 )

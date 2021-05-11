@@ -25,6 +25,7 @@ import {
 
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
+import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
@@ -35,28 +36,31 @@ import {
 } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
-    checkTouchXInNoteLane,
+    checkTouchXInNoteHitbox,
     destroyNoteHoldEffect,
-    drawNoteTail,
-    drawNoteTailArrow,
+    drawNote,
+    drawNoteFlickArrow,
+    initializeAutoSlider,
+    initializeNoteAutoEffect,
+    initializeNoteAutoInput,
+    initializeNoteSimLine,
     InputState,
     NoteData,
     noteInputState,
     NoteSharedMemory,
     playNoteFlickEffect,
     playNoteLaneEffect,
-    processTouchDiscontinue,
-    processTouchHead,
-    setupAutoFlickEffect,
-    setupAutoInput,
-    setupAutoSlider,
-    setupPreprocess,
-    setupSimLine,
-    updateSlideNoteTailScale,
+    prepareDrawNote,
+    preprocessIsStraightSlide,
+    preprocessNote,
+    preprocessSlideSpawnTime,
+    touchProcessDiscontinue,
+    touchProcessHead,
+    updateNoteSlideScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
 import {
-    checkTouchYInHitBox,
+    checkTouchYInHitbox,
     isTouchOccupied,
     updateTouchTilt,
 } from './common/touch'
@@ -68,22 +72,26 @@ export function slideFlickNote(): SScript {
     const flickActivationX = EntityMemory.to<number>(0)
     const flickActivationY = EntityMemory.to<number>(1)
 
-    const preprocess = setupPreprocess()
+    const preprocess = [
+        preprocessNote(),
+        preprocessSlideSpawnTime(),
+        preprocessIsStraightSlide(),
+    ]
 
     const spawnOrder = NoteData.slideSpawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.slideSpawnTime)
 
     const initialize = [
-        setupSimLine(),
+        initializeNoteSimLine(),
 
-        setupAutoInput(bucket),
-        setupAutoFlickEffect(),
-        setupAutoSlider(),
+        initializeNoteAutoInput(bucket),
+        initializeNoteAutoEffect(scripts.autoFlickEffectIndex),
+        initializeAutoSlider(),
     ]
 
     const touch = Or(options.isAutoplay, [
-        processTouchHead(),
+        touchProcessHead(),
         And(
             bool(noteInputState),
             NotEqual(noteInputState, InputState.Terminated),
@@ -98,8 +106,8 @@ export function slideFlickNote(): SScript {
                         checkNoteTimeInGoodWindow(),
                         GreaterOr(Subtract(Time, inputOffset), NoteData.time)
                     ),
-                    checkTouchYInHitBox(),
-                    checkTouchXInNoteLane(),
+                    checkTouchYInHitbox(),
+                    checkTouchXInNoteHitbox(),
                     onActivate()
                 ),
                 And(
@@ -115,7 +123,7 @@ export function slideFlickNote(): SScript {
                     ),
                     onComplete()
                 ),
-                processTouchDiscontinue(),
+                touchProcessDiscontinue(),
             ]
         ),
     ])
@@ -146,9 +154,10 @@ export function slideFlickNote(): SScript {
             destroyNoteHoldEffect()
         ),
         And(GreaterOr(Time, NoteData.spawnTime), [
-            updateSlideNoteTailScale(),
-            drawNoteTail(SkinSprite.NoteHeadRed),
-            drawNoteTailArrow(),
+            updateNoteSlideScale(),
+            prepareDrawNote(),
+            drawNote(SkinSprite.NoteHeadRed),
+            drawNoteFlickArrow(),
         ])
     )
 

@@ -156,7 +156,7 @@ export function fromBestdori(
                                 : archetypes.rightDirectionalFlickNoteIndex,
                         data: {
                             index: 1,
-                            values: [time, lane, chartObject.width],
+                            values: [time, lane, chartObject.width - 1],
                         },
                     },
                     time,

@@ -21,6 +21,7 @@ import {
 } from 'sonolus.js'
 
 import { options } from '../../configuration/options'
+import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
@@ -29,35 +30,36 @@ import {
 } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
-    checkTouchXInNoteLane,
-    drawNoteTail,
+    checkTouchXInNoteHitbox,
+    drawNote,
+    initializeNoteAutoEffect,
+    initializeNoteAutoInput,
+    initializeNoteSimLine,
     InputState,
     NoteData,
     noteInputState,
     NoteSharedMemory,
     playNoteLaneEffect,
     playNoteTapEffect,
-    setupAutoInput,
-    setupAutoTapEffect,
-    setupPreprocess,
-    setupSimLine,
-    updateNoteTailScale,
+    prepareDrawNote,
+    preprocessNote,
+    updateNoteScale,
 } from './common/note'
 import { playJudgmentSFX } from './common/sfx'
-import { checkTouchYInHitBox, isTouchOccupied } from './common/touch'
+import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 
 export function tapNote(bucket: number, sprite: SkinSprite): SScript {
-    const preprocess = setupPreprocess()
+    const preprocess = preprocessNote()
 
     const spawnOrder = NoteData.spawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
     const initialize = [
-        setupSimLine(),
+        initializeNoteSimLine(),
 
-        setupAutoInput(bucket),
-        setupAutoTapEffect(),
+        initializeNoteAutoInput(bucket),
+        initializeNoteAutoEffect(scripts.autoTapEffectIndex),
     ]
 
     const touch = Or(
@@ -67,8 +69,8 @@ export function tapNote(bucket: number, sprite: SkinSprite): SScript {
             checkNoteTimeInGoodWindow(),
             TouchStarted,
             Not(isTouchOccupied),
-            checkTouchYInHitBox(),
-            checkTouchXInNoteLane(),
+            checkTouchYInHitbox(),
+            checkTouchXInNoteHitbox(),
             onComplete()
         )
     )
@@ -77,7 +79,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): SScript {
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
         Greater(Subtract(Time, NoteData.time, inputOffset), goodWindow),
-        [updateNoteTailScale(), drawNoteTail(sprite)]
+        [updateNoteScale(), prepareDrawNote(), drawNote(sprite)]
     )
 
     return {

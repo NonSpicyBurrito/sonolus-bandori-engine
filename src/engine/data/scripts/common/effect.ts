@@ -14,18 +14,15 @@ import {
 
 import { options } from '../../../configuration/options'
 import {
-    circularHoldEffectBottom,
-    circularHoldEffectTop,
+    halfCircularHoldEffectHeight,
     halfCircularHoldEffectWidth,
     halfCircularTapEffectHeight,
     halfCircularTapEffectWidth,
-    halfLinearHoldEffectWidth,
-    halfLinearTapEffectWidth,
-    halfSlotEffectWidth,
+    halfLinearHoldEffectSize,
+    halfLinearTapEffectSize,
+    halfSlotEffectSize,
     laneBottom,
     laneTop,
-    linearHoldEffectBottom,
-    linearHoldEffectTop,
 } from './constants'
 import { NoteSharedMemoryPointer } from './note'
 import {
@@ -35,27 +32,19 @@ import {
     getLaneTopLeft,
     getLaneTopRight,
 } from './stage'
+import { rectByEdge, rectBySize } from './utils'
 
 export function playSlotEffect(lane: Code<number>) {
-    const slotEffectLeft = Subtract(
-        getLaneBottomCenter(lane),
-        halfSlotEffectWidth
-    )
-    const slotEffectRight = Add(getLaneBottomCenter(lane), halfSlotEffectWidth)
-    const slotEffectTop = Add(laneBottom, Multiply(halfSlotEffectWidth, 2))
-
     return And(
         options.isSlotEffectEnabled,
         SpawnParticleEffect(
             ParticleEffect.SlotLinear,
-            slotEffectLeft,
-            laneBottom,
-            slotEffectLeft,
-            slotEffectTop,
-            slotEffectRight,
-            slotEffectTop,
-            slotEffectRight,
-            laneBottom,
+            ...rectByEdge(
+                Subtract(getLaneBottomCenter(lane), halfSlotEffectSize),
+                Add(getLaneBottomCenter(lane), halfSlotEffectSize),
+                laneBottom,
+                Add(laneBottom, Multiply(halfSlotEffectSize, 2))
+            ),
             0.6,
             false
         )
@@ -85,56 +74,37 @@ export function playNoteEffect(
     center: Code<number>,
     linear: ParticleEffect,
     circular: ParticleEffect,
-    direction: -1 | 0 | 1
+    direction: 'left' | 'up' | 'right'
 ) {
-    const circularTapEffectLeft = Subtract(center, halfCircularTapEffectWidth)
-    const circularTapEffectRight = Add(center, halfCircularTapEffectWidth)
-    const circularTapEffectBottom = Add(laneBottom, halfCircularTapEffectHeight)
-    const circularTapEffectTop = Subtract(
-        laneBottom,
-        halfCircularTapEffectHeight
-    )
-
     return And(options.isNoteEffectEnabled, [
         {
-            [-1]: playLinearNoteEffectLeft,
-            [0]: playLinearNoteEffectUp,
-            [1]: playLinearNoteEffectRight,
+            left: playLinearNoteEffectLeft,
+            up: playLinearNoteEffectUp,
+            right: playLinearNoteEffectRight,
         }[direction](center, linear),
+
         SpawnParticleEffect(
             circular,
-            circularTapEffectLeft,
-            circularTapEffectBottom,
-            circularTapEffectLeft,
-            circularTapEffectTop,
-            circularTapEffectRight,
-            circularTapEffectTop,
-            circularTapEffectRight,
-            circularTapEffectBottom,
+            ...rectBySize(
+                center,
+                laneBottom,
+                halfCircularTapEffectWidth,
+                halfCircularTapEffectHeight
+            ),
             0.6,
             false
         ),
     ])
 }
 function playLinearNoteEffectUp(center: Code<number>, linear: ParticleEffect) {
-    const linearTapEffectLeft = Subtract(center, halfLinearTapEffectWidth)
-    const linearTapEffectRight = Add(center, halfLinearTapEffectWidth)
-    const linearTapEffectBottom = laneBottom
-    const linearTapEffectTop = Add(
-        laneBottom,
-        Multiply(2, halfLinearTapEffectWidth)
-    )
-
     return SpawnParticleEffect(
         linear,
-        linearTapEffectLeft,
-        linearTapEffectBottom,
-        linearTapEffectLeft,
-        linearTapEffectTop,
-        linearTapEffectRight,
-        linearTapEffectTop,
-        linearTapEffectRight,
-        linearTapEffectBottom,
+        ...rectByEdge(
+            Subtract(center, halfLinearTapEffectSize),
+            Add(center, halfLinearTapEffectSize),
+            laneBottom,
+            Add(laneBottom, Multiply(2, halfLinearTapEffectSize))
+        ),
         0.4,
         false
     )
@@ -143,24 +113,15 @@ function playLinearNoteEffectLeft(
     center: Code<number>,
     linear: ParticleEffect
 ) {
-    const linearTapEffectLeft = Subtract(laneBottom, halfLinearTapEffectWidth)
-    const linearTapEffectRight = Add(laneBottom, halfLinearTapEffectWidth)
-    const linearTapEffectBottom = center
-    const linearTapEffectTop = Subtract(
-        center,
-        Multiply(2, halfLinearTapEffectWidth)
-    )
-
     return SpawnParticleEffect(
         linear,
-        linearTapEffectBottom,
-        linearTapEffectLeft,
-        linearTapEffectTop,
-        linearTapEffectLeft,
-        linearTapEffectTop,
-        linearTapEffectRight,
-        linearTapEffectBottom,
-        linearTapEffectRight,
+        ...rectByEdge(
+            Subtract(center, Multiply(2, halfLinearTapEffectSize)),
+            center,
+            Subtract(laneBottom, halfLinearTapEffectSize),
+            Add(laneBottom, halfLinearTapEffectSize),
+            'left'
+        ),
         0.4,
         false
     )
@@ -169,24 +130,15 @@ function playLinearNoteEffectRight(
     center: Code<number>,
     linear: ParticleEffect
 ) {
-    const linearTapEffectLeft = Add(laneBottom, halfLinearTapEffectWidth)
-    const linearTapEffectRight = Subtract(laneBottom, halfLinearTapEffectWidth)
-    const linearTapEffectBottom = center
-    const linearTapEffectTop = Add(
-        center,
-        Multiply(2, halfLinearTapEffectWidth)
-    )
-
     return SpawnParticleEffect(
         linear,
-        linearTapEffectBottom,
-        linearTapEffectLeft,
-        linearTapEffectTop,
-        linearTapEffectLeft,
-        linearTapEffectTop,
-        linearTapEffectRight,
-        linearTapEffectBottom,
-        linearTapEffectRight,
+        ...rectByEdge(
+            center,
+            Add(center, Multiply(2, halfLinearTapEffectSize)),
+            Subtract(laneBottom, halfLinearTapEffectSize),
+            Add(laneBottom, halfLinearTapEffectSize),
+            'right'
+        ),
         0.4,
         false
     )
@@ -196,24 +148,16 @@ export function spawnHoldEffect(
     noteSharedMemory: NoteSharedMemoryPointer,
     center: Code<number>
 ) {
-    const linearHoldEffectLeft = Subtract(center, halfLinearHoldEffectWidth)
-    const linearHoldEffectRight = Add(center, halfLinearHoldEffectWidth)
-
-    const circularHoldEffectLeft = Subtract(center, halfCircularHoldEffectWidth)
-    const circularHoldEffectRight = Add(center, halfCircularHoldEffectWidth)
-
     return And(options.isNoteEffectEnabled, [
         noteSharedMemory.linearHoldEffectId.set(
             SpawnParticleEffect(
                 ParticleEffect.NoteLinearHoldGreen,
-                linearHoldEffectLeft,
-                linearHoldEffectBottom,
-                linearHoldEffectLeft,
-                linearHoldEffectTop,
-                linearHoldEffectRight,
-                linearHoldEffectTop,
-                linearHoldEffectRight,
-                linearHoldEffectBottom,
+                ...rectByEdge(
+                    Subtract(center, halfLinearHoldEffectSize),
+                    Add(center, halfLinearHoldEffectSize),
+                    laneBottom,
+                    Add(laneBottom, Multiply(2, halfLinearHoldEffectSize))
+                ),
                 1,
                 true
             )
@@ -222,14 +166,12 @@ export function spawnHoldEffect(
         noteSharedMemory.circularHoldEffectId.set(
             SpawnParticleEffect(
                 ParticleEffect.NoteCircularHoldGreen,
-                circularHoldEffectLeft,
-                circularHoldEffectBottom,
-                circularHoldEffectLeft,
-                circularHoldEffectTop,
-                circularHoldEffectRight,
-                circularHoldEffectTop,
-                circularHoldEffectRight,
-                circularHoldEffectBottom,
+                ...rectBySize(
+                    center,
+                    laneBottom,
+                    halfCircularHoldEffectWidth,
+                    halfCircularHoldEffectHeight
+                ),
                 1,
                 true
             )
@@ -241,34 +183,25 @@ export function moveHoldEffect(
     noteSharedMemory: NoteSharedMemoryPointer,
     center: Code<number>
 ) {
-    const linearHoldEffectLeft = Subtract(center, halfLinearHoldEffectWidth)
-    const linearHoldEffectRight = Add(center, halfLinearHoldEffectWidth)
-
-    const circularHoldEffectLeft = Subtract(center, halfCircularHoldEffectWidth)
-    const circularHoldEffectRight = Add(center, halfCircularHoldEffectWidth)
-
     return [
         MoveParticleEffect(
             noteSharedMemory.linearHoldEffectId,
-            linearHoldEffectLeft,
-            linearHoldEffectBottom,
-            linearHoldEffectLeft,
-            linearHoldEffectTop,
-            linearHoldEffectRight,
-            linearHoldEffectTop,
-            linearHoldEffectRight,
-            linearHoldEffectBottom
+            ...rectByEdge(
+                Subtract(center, halfLinearHoldEffectSize),
+                Add(center, halfLinearHoldEffectSize),
+                laneBottom,
+                Add(laneBottom, Multiply(2, halfLinearHoldEffectSize))
+            )
         ),
+
         MoveParticleEffect(
             noteSharedMemory.circularHoldEffectId,
-            circularHoldEffectLeft,
-            circularHoldEffectBottom,
-            circularHoldEffectLeft,
-            circularHoldEffectTop,
-            circularHoldEffectRight,
-            circularHoldEffectTop,
-            circularHoldEffectRight,
-            circularHoldEffectBottom
+            ...rectBySize(
+                center,
+                laneBottom,
+                halfCircularHoldEffectWidth,
+                halfCircularHoldEffectHeight
+            )
         ),
     ]
 }

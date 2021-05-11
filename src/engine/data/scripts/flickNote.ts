@@ -27,6 +27,7 @@ import {
 
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
+import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
@@ -36,24 +37,25 @@ import {
 } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
-    checkTouchXInNoteLane,
-    drawNoteTail,
-    drawNoteTailArrow,
+    checkTouchXInNoteHitbox,
+    drawNote,
+    drawNoteFlickArrow,
+    initializeNoteAutoEffect,
+    initializeNoteAutoInput,
+    initializeNoteSimLine,
     InputState,
     NoteData,
     noteInputState,
     NoteSharedMemory,
     playNoteFlickEffect,
     playNoteLaneEffect,
-    processTouchDiscontinue,
-    setupAutoFlickEffect,
-    setupAutoInput,
-    setupPreprocess,
-    setupSimLine,
-    updateNoteTailScale,
+    prepareDrawNote,
+    preprocessNote,
+    touchProcessDiscontinue,
+    updateNoteScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import { checkTouchYInHitBox, isTouchOccupied } from './common/touch'
+import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function flickNote(): SScript {
@@ -61,17 +63,17 @@ export function flickNote(): SScript {
 
     const flickActivationTime = EntityMemory.to<number>(0)
 
-    const preprocess = setupPreprocess()
+    const preprocess = preprocessNote()
 
     const spawnOrder = NoteData.spawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
     const initialize = [
-        setupSimLine(),
+        initializeNoteSimLine(),
 
-        setupAutoInput(bucket),
-        setupAutoFlickEffect(),
+        initializeNoteAutoInput(bucket),
+        initializeNoteAutoEffect(scripts.autoFlickEffectIndex),
     ]
 
     const touch = Or(options.isAutoplay, [
@@ -80,8 +82,8 @@ export function flickNote(): SScript {
             checkNoteTimeInGoodWindow(),
             TouchStarted,
             Not(isTouchOccupied),
-            checkTouchYInHitBox(),
-            checkTouchXInNoteLane(),
+            checkTouchYInHitbox(),
+            checkTouchXInNoteHitbox(),
             onActivate()
         ),
         And(
@@ -97,7 +99,7 @@ export function flickNote(): SScript {
                     ),
                     onComplete()
                 ),
-                processTouchDiscontinue(),
+                touchProcessDiscontinue(),
             ]
         ),
     ])
@@ -107,9 +109,10 @@ export function flickNote(): SScript {
         Equal(noteInputState, InputState.Terminated),
         Greater(Subtract(Time, NoteData.time, inputOffset), goodWindow),
         [
-            updateNoteTailScale(),
-            drawNoteTail(SkinSprite.NoteHeadRed),
-            drawNoteTailArrow(),
+            updateNoteScale(),
+            prepareDrawNote(),
+            drawNote(SkinSprite.NoteHeadRed),
+            drawNoteFlickArrow(),
         ]
     )
 

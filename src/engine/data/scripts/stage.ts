@@ -30,10 +30,7 @@ import {
     laneBottom,
     laneTop,
     laneWidth,
-    layerCover,
-    layerJudgmentLine,
-    layerSlot,
-    layerStage,
+    Layer,
     screenLeft,
     screenRight,
 } from './common/constants'
@@ -46,7 +43,8 @@ import {
     getLaneTopLeft,
     getLaneTopRight,
 } from './common/stage'
-import { checkTouchYInHitBox, isTouchOccupied } from './common/touch'
+import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
+import { rectByEdge, rectBySize } from './common/utils'
 
 export function stage(): SScript {
     const spawnOrder = -999
@@ -62,7 +60,7 @@ export function stage(): SScript {
         options.isAutoplay,
         And(
             TouchStarted,
-            checkTouchYInHitBox(),
+            checkTouchYInHitbox(),
             Not(isTouchOccupied),
             GreaterOr(TouchX, getLaneBottomLeft(-3)),
             LessOr(TouchX, getLaneBottomRight(3)),
@@ -98,15 +96,8 @@ export function stage(): SScript {
             bool(options.stageCover),
             Draw(
                 SkinSprite.StageCover,
-                screenLeft,
-                stageCoverBottom,
-                screenLeft,
-                1,
-                screenRight,
-                1,
-                screenRight,
-                stageCoverBottom,
-                layerCover,
+                ...rectByEdge(screenLeft, screenRight, stageCoverBottom, 1),
+                Layer.Cover,
                 1
             )
         )
@@ -114,45 +105,35 @@ export function stage(): SScript {
 
     function drawStage() {
         const halfJudgmentLineHeight = Divide(halfBaseNoteHeight, 2)
-        const judgmentLineTop = Subtract(laneBottom, halfJudgmentLineHeight)
-        const judgmentLineBottom = Add(laneBottom, halfJudgmentLineHeight)
 
         const borderWidth = 0.25
-        const borderTopLeft = getLaneTopLeft(-3 - borderWidth)
-        const borderTopRight = getLaneTopRight(3 + borderWidth)
-        const borderBottomLeft = getLaneBottomLeft(-3 - borderWidth)
-        const borderBottomRight = getLaneBottomRight(3 + borderWidth)
 
         const halfSlotSize = Multiply(halfJudgmentLineHeight, 0.85)
-        const slotBottom = Subtract(laneBottom, halfSlotSize)
-        const slotTop = Add(laneBottom, halfSlotSize)
 
-        const code = [
+        return [
             Draw(
                 SkinSprite.JudgmentLine,
-                screenLeft,
-                judgmentLineBottom,
-                screenLeft,
-                judgmentLineTop,
-                screenRight,
-                judgmentLineTop,
-                screenRight,
-                judgmentLineBottom,
-                layerJudgmentLine,
+                ...rectByEdge(
+                    screenLeft,
+                    screenRight,
+                    Subtract(laneBottom, halfJudgmentLineHeight),
+                    Add(laneBottom, halfJudgmentLineHeight)
+                ),
+                Layer.JudgmentLine,
                 1
             ),
 
             Draw(
                 SkinSprite.StageLeftBorder,
-                borderBottomLeft,
+                getLaneBottomLeft(-3 - borderWidth),
                 laneBottom,
-                borderTopLeft,
+                getLaneTopLeft(-3 - borderWidth),
                 laneTop,
                 getLaneTopLeft(-3),
                 laneTop,
                 getLaneBottomLeft(-3),
                 laneBottom,
-                layerStage,
+                Layer.Stage,
                 1
             ),
             Draw(
@@ -161,17 +142,15 @@ export function stage(): SScript {
                 laneBottom,
                 getLaneTopRight(3),
                 laneTop,
-                borderTopRight,
+                getLaneTopRight(3 + borderWidth),
                 laneTop,
-                borderBottomRight,
+                getLaneBottomRight(3 + borderWidth),
                 laneBottom,
-                layerStage,
+                Layer.Stage,
                 1
             ),
-        ]
 
-        for (let i = 0; i < 7; i++) {
-            code.push(
+            [...Array(7).keys()].map((i) => [
                 Draw(
                     SkinSprite.Lane,
                     getLaneBottomLeft(i - 3),
@@ -182,32 +161,22 @@ export function stage(): SScript {
                     laneTop,
                     getLaneBottomRight(i - 3),
                     laneBottom,
-                    layerStage,
+                    Layer.Stage,
                     1
-                )
-            )
-
-            const slotLeft = Subtract(getLaneBottomCenter(i - 3), halfSlotSize)
-            const slotRight = Add(getLaneBottomCenter(i - 3), halfSlotSize)
-
-            code.push(
+                ),
                 Draw(
                     SkinSprite.NoteSlot,
-                    slotLeft,
-                    slotBottom,
-                    slotLeft,
-                    slotTop,
-                    slotRight,
-                    slotTop,
-                    slotRight,
-                    slotBottom,
-                    layerSlot,
+                    ...rectBySize(
+                        getLaneBottomCenter(i - 3),
+                        laneBottom,
+                        halfSlotSize,
+                        halfSlotSize
+                    ),
+                    Layer.Slot,
                     1
-                )
-            )
-        }
-
-        return code
+                ),
+            ]),
+        ]
     }
 
     function onEmptyTap() {

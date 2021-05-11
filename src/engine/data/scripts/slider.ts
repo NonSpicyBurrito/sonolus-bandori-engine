@@ -31,8 +31,7 @@ import {
     laneBottom,
     laneYMultiplier,
     laneYOffset,
-    layerNoteConnector,
-    layerNoteSlide,
+    Layer,
     noteBaseBottom,
     noteBaseTop,
     noteWidth,
@@ -221,7 +220,7 @@ export function slider(sprite: SkinSprite): SScript {
                         Add(laneBottom, halfNoteHeight),
                         Multiply(headRight, noteBaseBottom),
                         Subtract(laneBottom, halfNoteHeight),
-                        layerNoteSlide,
+                        Layer.NoteSlide,
                         1
                     ),
 
@@ -266,7 +265,7 @@ export function slider(sprite: SkinSprite): SScript {
                 slideTop,
                 Multiply(headRight, headScale),
                 slideBottom,
-                layerNoteConnector,
+                Layer.NoteConnector,
                 options.connectorAlpha
             ),
         ]

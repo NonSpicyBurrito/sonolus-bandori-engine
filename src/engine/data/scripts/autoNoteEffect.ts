@@ -13,7 +13,7 @@ import { NoteData } from './common/note'
 export function autoNoteEffect(
     linear: ParticleEffect,
     circular: ParticleEffect,
-    direction: -1 | 0 | 1
+    direction: 'left' | 'up' | 'right'
 ): SScript {
     const noteIndex = EntityMemory.to<number>(0)
     const noteData = NoteData.of(noteIndex)

@@ -20,7 +20,7 @@ import { options } from '../../configuration/options'
 import {
     laneYMultiplier,
     laneYOffset,
-    layerSimLine,
+    Layer,
     noteBaseBottom,
     noteBaseTop,
     noteOnScreenDuration,
@@ -79,7 +79,7 @@ export function simLine(): SScript {
                 top,
                 Multiply(right, scaleBottom),
                 bottom,
-                layerSimLine,
+                Layer.SimLine,
                 1
             ),
         ])

@@ -53,25 +53,25 @@ export const scripts = defineScripts({
         autoNoteEffect(
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
-            0
+            'up'
         ),
     autoFlickEffect: () =>
         autoNoteEffect(
             ParticleEffect.NoteLinearAlternativeRed,
             ParticleEffect.NoteCircularAlternativeRed,
-            0
+            'up'
         ),
     autoLeftDirectionalFlickEffect: () =>
         autoNoteEffect(
             ParticleEffect.NoteLinearAlternativePurple,
             ParticleEffect.NoteCircularAlternativePurple,
-            -1
+            'left'
         ),
     autoRightDirectionalFlickEffect: () =>
         autoNoteEffect(
             ParticleEffect.NoteLinearAlternativeYellow,
             ParticleEffect.NoteCircularAlternativeYellow,
-            1
+            'right'
         ),
     autoSlider,
 })

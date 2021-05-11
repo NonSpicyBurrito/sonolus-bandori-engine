@@ -11,6 +11,7 @@ import {
     InputJudgment,
     Judge,
     Less,
+    LessOr,
     Multiply,
     Not,
     Or,
@@ -29,6 +30,7 @@ import {
 } from 'sonolus.js'
 
 import { options } from '../../configuration/options'
+import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
@@ -38,9 +40,12 @@ import {
 } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
-    checkTouchXInNoteLanes,
-    drawNoteTail,
-    drawNoteTailDirectionalArrow,
+    checkTouchXInNoteHitbox,
+    drawNote,
+    drawNoteDirectionalFlickArrow,
+    initializeNoteAutoEffect,
+    initializeNoteAutoInput,
+    initializeNoteSimLine,
     InputState,
     NoteData,
     noteInputState,
@@ -48,17 +53,14 @@ import {
     playNoteLaneEffect,
     playNoteLeftDirectionalFlickEffect,
     playNoteRightDirectionalFlickEffect,
-    processTouchDiscontinue,
-    setupArrowOffset,
-    setupAutoInput,
-    setupAutoLeftDirectionalFlickEffect,
-    setupAutoRightDirectionalFlickEffect,
-    setupPreprocess,
-    setupSimLine,
-    updateNoteTailScale,
+    prepareDrawNote,
+    preprocessArrowOffset,
+    preprocessNote,
+    touchProcessDiscontinue,
+    updateNoteScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import { checkTouchYInHitBox, isTouchOccupied } from './common/touch'
+import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function directionalFlickNote(
@@ -70,19 +72,21 @@ export function directionalFlickNote(
     const flickActivationTime = EntityMemory.to<number>(0)
     const looper = EntityMemory.to<number>(1)
 
-    const preprocess = [setupPreprocess(), setupArrowOffset(isLeft)]
+    const preprocess = [preprocessNote(isLeft), preprocessArrowOffset(isLeft)]
 
     const spawnOrder = NoteData.spawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
     const initialize = [
-        setupSimLine(),
+        initializeNoteSimLine(),
 
-        setupAutoInput(bucket),
-        isLeft
-            ? setupAutoLeftDirectionalFlickEffect()
-            : setupAutoRightDirectionalFlickEffect(),
+        initializeNoteAutoInput(bucket),
+        initializeNoteAutoEffect(
+            isLeft
+                ? scripts.autoLeftDirectionalFlickEffectIndex
+                : scripts.autoRightDirectionalFlickEffectIndex
+        ),
     ]
 
     const touch = Or(options.isAutoplay, [
@@ -91,8 +95,8 @@ export function directionalFlickNote(
             checkNoteTimeInGoodWindow(),
             TouchStarted,
             Not(isTouchOccupied),
-            checkTouchYInHitBox(),
-            checkTouchXInNoteLanes(isLeft),
+            checkTouchYInHitbox(),
+            checkTouchXInNoteHitbox(),
             onActivate()
         ),
         And(
@@ -106,15 +110,15 @@ export function directionalFlickNote(
                     GreaterOr(
                         getDistanceSquared(TouchSX, TouchSY, TouchX, TouchY),
                         Multiply(
-                            Subtract(Multiply(0.08, NoteData.width), 0.04),
-                            Subtract(Multiply(0.08, NoteData.width), 0.04),
+                            Add(Multiply(0.08, NoteData.extraWidth), 0.04),
+                            Add(Multiply(0.08, NoteData.extraWidth), 0.04),
                             stageWidth,
                             stageWidth
                         )
                     ),
                     onComplete()
                 ),
-                processTouchDiscontinue(),
+                touchProcessDiscontinue(),
             ]
         ),
     ])
@@ -124,19 +128,20 @@ export function directionalFlickNote(
         Equal(noteInputState, InputState.Terminated),
         Greater(Subtract(Time, NoteData.time, inputOffset), goodWindow),
         [
-            updateNoteTailScale(),
+            updateNoteScale(),
+            prepareDrawNote(),
 
             looper.set(0),
-            While(Less(looper, NoteData.width), [
-                drawNoteTail(
+            While(LessOr(looper, NoteData.extraWidth), [
+                drawNote(
                     noteSprite,
-                    isLeft ? Multiply(looper, -1) : looper,
-                    isLeft
+                    isLeft ? 'left' : 'right',
+                    isLeft ? Multiply(looper, -1) : looper
                 ),
                 looper.set(Add(looper, 1)),
             ]),
 
-            drawNoteTailDirectionalArrow(arrowSprite, isLeft),
+            drawNoteDirectionalFlickArrow(arrowSprite, isLeft),
         ]
     )
 

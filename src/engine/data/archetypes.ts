@@ -41,9 +41,6 @@ export const archetypes = defineArchetypes({
         script: scripts.slideFlickNoteIndex,
         input: true,
     },
-    simLine: {
-        script: scripts.simLineIndex,
-    },
     straightSlider: {
         script: scripts.straightSliderIndex,
     },

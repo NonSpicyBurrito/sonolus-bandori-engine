@@ -35,19 +35,12 @@ export function autoSFX(): SScript {
             PlayScheduled(
                 If(
                     Or(
-                        Equal(noteInfo.archetype, archetypes.flickNoteIndex),
-                        Equal(
-                            noteInfo.archetype,
-                            archetypes.leftDirectionalFlickNoteIndex
-                        ),
-                        Equal(
-                            noteInfo.archetype,
-                            archetypes.rightDirectionalFlickNoteIndex
-                        ),
-                        Equal(
-                            noteInfo.archetype,
-                            archetypes.slideFlickNoteIndex
-                        )
+                        ...[
+                            archetypes.flickNoteIndex,
+                            archetypes.leftDirectionalFlickNoteIndex,
+                            archetypes.rightDirectionalFlickNoteIndex,
+                            archetypes.slideFlickNoteIndex,
+                        ].map((index) => Equal(noteInfo.archetype, index))
                     ),
                     EffectClip.Alternative,
                     EffectClip.Perfect

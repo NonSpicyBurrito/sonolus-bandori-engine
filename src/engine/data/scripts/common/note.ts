@@ -49,8 +49,7 @@ import {
     laneWidth,
     laneYMultiplier,
     laneYOffset,
-    layerNoteBody,
-    layerNoteMarker,
+    Layer,
     noteBaseBottom,
     noteBaseTop,
     noteOnScreenDuration,
@@ -64,11 +63,11 @@ import {
 } from './effect'
 import { getLaneBottomCenter } from './stage'
 import {
-    checkTouchXInLane,
-    checkTouchXInLanes,
-    checkTouchYInHitBox,
+    checkTouchXInHitbox,
+    checkTouchYInHitbox,
     isTouchOccupied,
 } from './touch'
+import { Direction, rectByEdge, rectBySize, rotate } from './utils'
 
 export enum InputState {
     Waiting,
@@ -96,7 +95,7 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(2)
     }
 
-    public get width() {
+    public get extraWidth() {
         return this.to<number>(3)
     }
 
@@ -137,7 +136,15 @@ export class NoteDataPointer extends Pointer {
     }
 
     public get arrowOffset() {
-        return this.to<number>(24)
+        return this.to<number>(25)
+    }
+
+    public get hitboxLeft() {
+        return this.to<number>(26)
+    }
+
+    public get hitboxRight() {
+        return this.to<number>(27)
     }
 }
 
@@ -177,8 +184,13 @@ export const NoteSharedMemory = createEntitySharedMemory(
 
 // Memory
 
-export const noteTailScale = EntityMemory.to<number>(32)
+export const noteScale = EntityMemory.to<number>(32)
 export const noteInputState = EntityMemory.to<InputState>(33)
+
+export const noteScaleBottom = EntityMemory.to<number>(48)
+export const noteScaleTop = EntityMemory.to<number>(49)
+export const noteBottom = EntityMemory.to<number>(50)
+export const noteTop = EntityMemory.to<number>(51)
 
 // Effect
 
@@ -191,7 +203,7 @@ export function playNoteTapEffect() {
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearTapCyan,
         ParticleEffect.NoteCircularTapCyan,
-        0
+        'up'
     )
 }
 export function playNoteFlickEffect() {
@@ -199,7 +211,7 @@ export function playNoteFlickEffect() {
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearAlternativeRed,
         ParticleEffect.NoteCircularAlternativeRed,
-        0
+        'up'
     )
 }
 export function playNoteLeftDirectionalFlickEffect() {
@@ -207,7 +219,7 @@ export function playNoteLeftDirectionalFlickEffect() {
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearAlternativePurple,
         ParticleEffect.NoteCircularAlternativePurple,
-        -1
+        'left'
     )
 }
 export function playNoteRightDirectionalFlickEffect() {
@@ -215,7 +227,7 @@ export function playNoteRightDirectionalFlickEffect() {
         NoteData.bottomCenter,
         ParticleEffect.NoteLinearAlternativeYellow,
         ParticleEffect.NoteCircularAlternativeYellow,
-        1
+        'right'
     )
 }
 
@@ -229,25 +241,8 @@ export function destroyNoteHoldEffect() {
 
 // Touch
 
-export function checkTouchXInNoteLane() {
-    return checkTouchXInLane(NoteData.bottomCenter)
-}
-export function checkTouchXInNoteLanes(isLeft: boolean) {
-    return isLeft
-        ? checkTouchXInLanes(
-              Subtract(
-                  NoteData.bottomCenter,
-                  Multiply(laneWidth, Subtract(NoteData.width, 1))
-              ),
-              NoteData.bottomCenter
-          )
-        : checkTouchXInLanes(
-              NoteData.bottomCenter,
-              Add(
-                  NoteData.bottomCenter,
-                  Multiply(laneWidth, Subtract(NoteData.width, 1))
-              )
-          )
+export function checkTouchXInNoteHitbox(noteData: NoteDataPointer = NoteData) {
+    return checkTouchXInHitbox(noteData.hitboxLeft, noteData.hitboxRight)
 }
 
 export function checkNoteTimeInGoodWindow() {
@@ -278,7 +273,7 @@ export function getSpawnTime(
     return Subtract(time, Multiply(noteOnScreenDuration, speedMultiplier))
 }
 
-export function setupPreprocess() {
+export function preprocessNote(isLeft?: boolean) {
     const minLane = LevelMemory.to<number>(0)
     const maxLane = LevelMemory.to<number>(1)
     const slideRange = LevelMemory.to<number>(2)
@@ -359,33 +354,60 @@ export function setupPreprocess() {
         NoteData.bottomLeft.set(Subtract(NoteData.bottomCenter, halfNoteWidth)),
         NoteData.bottomRight.set(Add(NoteData.bottomCenter, halfNoteWidth)),
 
-        NoteData.z.set(Subtract(layerNoteBody, Divide(NoteData.time, 1000))),
-
-        NoteData.isStraightSlide.set(Equal(NoteData.lane, NoteData.head.lane)),
-
-        NoteData.slideSpawnTime.set(
-            Min(NoteData.spawnTime, NoteData.head.spawnTime)
+        NoteData.hitboxLeft.set(
+            Subtract(
+                NoteData.bottomCenter,
+                Multiply(
+                    laneWidth,
+                    isLeft ? Add(1.175, NoteData.extraWidth) : 1.175
+                )
+            )
         ),
+        NoteData.hitboxRight.set(
+            Add(
+                NoteData.bottomCenter,
+                Multiply(
+                    laneWidth,
+                    isLeft ? 1.175 : Add(1.175, NoteData.extraWidth)
+                )
+            )
+        ),
+
+        NoteData.z.set(Subtract(Layer.NoteBody, Divide(NoteData.time, 1000))),
     ]
 }
 
-export function setupArrowOffset(isLeft: boolean) {
+export function preprocessIsStraightSlide() {
+    return NoteData.isStraightSlide.set(
+        Equal(NoteData.lane, NoteData.head.lane)
+    )
+}
+
+export function preprocessSlideSpawnTime() {
+    return NoteData.slideSpawnTime.set(
+        Min(NoteData.spawnTime, NoteData.head.spawnTime)
+    )
+}
+
+export function preprocessArrowOffset(isLeft: boolean) {
     return NoteData.arrowOffset.set(
         Multiply(
             laneWidth,
-            isLeft ? Multiply(-1, NoteData.width) : NoteData.width
+            isLeft
+                ? Multiply(-1, Add(NoteData.extraWidth, 1))
+                : Add(NoteData.extraWidth, 1)
         )
     )
 }
 
-export function setupAutoInput(bucket: number) {
+export function initializeNoteAutoInput(bucket: number) {
     return And(options.isAutoplay, [
         InputJudgment.set(1),
         InputBucket.set(bucket + 1),
     ])
 }
 
-export function setupSimLine() {
+export function initializeNoteSimLine() {
     const leftIndex = Subtract(EntityInfo.index, 1)
     const leftArchetype = EntityInfo.of(leftIndex).archetype
 
@@ -394,42 +416,32 @@ export function setupSimLine() {
         Not(options.isNoteSpeedRandom),
         Equal(NoteData.time, NoteData.of(leftIndex).time),
         Or(
-            Equal(leftArchetype, archetypes.tapNoteIndex),
-            Equal(leftArchetype, archetypes.flickNoteIndex),
-            Equal(leftArchetype, archetypes.leftDirectionalFlickNoteIndex),
-            Equal(leftArchetype, archetypes.rightDirectionalFlickNoteIndex),
-            Equal(leftArchetype, archetypes.slideStartNoteIndex),
-            Equal(leftArchetype, archetypes.slideEndNoteIndex),
-            Equal(leftArchetype, archetypes.slideFlickNoteIndex)
+            ...[
+                archetypes.tapNoteIndex,
+                archetypes.flickNoteIndex,
+                archetypes.leftDirectionalFlickNoteIndex,
+                archetypes.rightDirectionalFlickNoteIndex,
+                archetypes.slideStartNoteIndex,
+                archetypes.slideEndNoteIndex,
+                archetypes.slideFlickNoteIndex,
+            ].map((index) => Equal(leftArchetype, index))
         ),
         Spawn(scripts.simLineIndex, [EntityInfo.index])
     )
 }
 
-export function setupAutoTapEffect() {
-    return setupAutoNoteEffect(scripts.autoTapEffectIndex)
-}
-export function setupAutoFlickEffect() {
-    return setupAutoNoteEffect(scripts.autoFlickEffectIndex)
-}
-export function setupAutoLeftDirectionalFlickEffect() {
-    return setupAutoNoteEffect(scripts.autoLeftDirectionalFlickEffectIndex)
-}
-export function setupAutoRightDirectionalFlickEffect() {
-    return setupAutoNoteEffect(scripts.autoRightDirectionalFlickEffectIndex)
-}
-function setupAutoNoteEffect(index: number) {
+export function initializeNoteAutoEffect(index: number) {
     return And(options.isAutoplay, Spawn(index, [EntityInfo.index]))
 }
 
-export function setupAutoSlider() {
+export function initializeAutoSlider() {
     return And(
         options.isAutoplay,
         Spawn(scripts.autoSliderIndex, [EntityInfo.index])
     )
 }
 
-export function processTouchHead() {
+export function touchProcessHead() {
     const noteHeadInfo = EntityInfo.of(NoteData.headIndex)
 
     return And(
@@ -453,8 +465,8 @@ export function processTouchHead() {
                 Equal(noteHeadInfo.state, State.Despawned),
                 GreaterOr(Subtract(Time, inputOffset), NoteData.head.time),
                 Not(isTouchOccupied),
-                checkTouchYInHitBox(),
-                checkTouchXInLane(NoteData.head.bottomCenter),
+                checkTouchYInHitbox(),
+                checkTouchXInNoteHitbox(NoteData.head),
                 [
                     isTouchOccupied.set(true),
                     noteInputState.set(InputState.Activated),
@@ -469,97 +481,65 @@ export function processTouchHead() {
     )
 }
 
-export function processTouchDiscontinue() {
+export function touchProcessDiscontinue() {
     return And(TouchEnded, noteInputState.set(InputState.Terminated))
 }
 
-export function updateNoteTailScale() {
-    return noteTailScale.set(
-        approachNote(NoteData.time, NoteData.speedMultiplier)
-    )
+export function updateNoteScale() {
+    return noteScale.set(approachNote(NoteData.time, NoteData.speedMultiplier))
 }
-export function updateSlideNoteTailScale() {
+export function updateNoteSlideScale() {
     return If(
         And(NoteSharedMemory.isSliding, GreaterOr(Time, NoteData.time)),
-        noteTailScale.set(1),
-        updateNoteTailScale()
+        noteScale.set(1),
+        updateNoteScale()
     )
 }
 
-export function drawNoteTail(
+export function prepareDrawNote() {
+    return [
+        noteScaleBottom.set(Multiply(noteBaseBottom, noteScale)),
+        noteScaleTop.set(Multiply(noteBaseTop, noteScale)),
+
+        noteBottom.set(
+            Add(laneYOffset, Multiply(laneYMultiplier, noteScaleBottom))
+        ),
+        noteTop.set(Add(laneYOffset, Multiply(laneYMultiplier, noteScaleTop))),
+    ]
+}
+export function drawNote(
     sprite: SkinSprite,
-    offset?: Code<number>,
-    rotateLeft?: boolean
+    direction: Direction = 'up',
+    offset?: Code<number>
 ) {
-    const noteTailScaleBottom = EntityMemory.to<number>(48)
-    const noteTailScaleTop = EntityMemory.to<number>(49)
-
-    const noteTailBottom = EntityMemory.to<number>(50)
-    const noteTailTop = EntityMemory.to<number>(51)
-
-    const noteTailBottomLeft = offset
+    const noteBottomLeft = offset
         ? Add(NoteData.bottomLeft, Multiply(offset, laneWidth))
         : NoteData.bottomLeft
-    const noteTailBottomRight = offset
+    const noteBottomRight = offset
         ? Add(NoteData.bottomRight, Multiply(offset, laneWidth))
         : NoteData.bottomRight
 
-    return [
-        noteTailScaleBottom.set(Multiply(noteBaseBottom, noteTailScale)),
-        noteTailScaleTop.set(Multiply(noteBaseTop, noteTailScale)),
-
-        noteTailBottom.set(
-            Add(laneYOffset, Multiply(laneYMultiplier, noteTailScaleBottom))
+    return Draw(
+        sprite,
+        ...rotate(
+            [
+                Multiply(noteScaleBottom, noteBottomLeft),
+                noteBottom,
+                Multiply(noteScaleTop, noteBottomLeft),
+                noteTop,
+                Multiply(noteScaleTop, noteBottomRight),
+                noteTop,
+                Multiply(noteScaleBottom, noteBottomRight),
+                noteBottom,
+            ],
+            direction
         ),
-        noteTailTop.set(
-            Add(laneYOffset, Multiply(laneYMultiplier, noteTailScaleTop))
-        ),
-
-        !offset
-            ? Draw(
-                  sprite,
-                  Multiply(noteTailScaleBottom, noteTailBottomLeft),
-                  noteTailBottom,
-                  Multiply(noteTailScaleTop, noteTailBottomLeft),
-                  noteTailTop,
-                  Multiply(noteTailScaleTop, noteTailBottomRight),
-                  noteTailTop,
-                  Multiply(noteTailScaleBottom, noteTailBottomRight),
-                  noteTailBottom,
-                  NoteData.z,
-                  1
-              )
-            : rotateLeft
-            ? Draw(
-                  sprite,
-                  Multiply(noteTailScaleBottom, noteTailBottomRight),
-                  noteTailBottom,
-                  Multiply(noteTailScaleBottom, noteTailBottomLeft),
-                  noteTailBottom,
-                  Multiply(noteTailScaleTop, noteTailBottomLeft),
-                  noteTailTop,
-                  Multiply(noteTailScaleTop, noteTailBottomRight),
-                  noteTailTop,
-                  NoteData.z,
-                  1
-              )
-            : Draw(
-                  sprite,
-                  Multiply(noteTailScaleTop, noteTailBottomLeft),
-                  noteTailTop,
-                  Multiply(noteTailScaleTop, noteTailBottomRight),
-                  noteTailTop,
-                  Multiply(noteTailScaleBottom, noteTailBottomRight),
-                  noteTailBottom,
-                  Multiply(noteTailScaleBottom, noteTailBottomLeft),
-                  noteTailBottom,
-                  NoteData.z,
-                  1
-              ),
-    ]
+        NoteData.z,
+        1
+    )
 }
 
-export function drawNoteTailArrow() {
+export function drawNoteFlickArrow() {
     const arrowLeft = EntityMemory.to<number>(48)
     const arrowRight = EntityMemory.to<number>(49)
 
@@ -567,79 +547,50 @@ export function drawNoteTailArrow() {
     const arrowTop = EntityMemory.to<number>(51)
 
     return [
-        arrowLeft.set(Multiply(noteTailScale, NoteData.bottomLeft)),
-        arrowRight.set(Multiply(noteTailScale, NoteData.bottomRight)),
+        arrowLeft.set(Multiply(noteScale, NoteData.bottomLeft)),
+        arrowRight.set(Multiply(noteScale, NoteData.bottomRight)),
 
-        arrowBottom.set(
-            Add(laneYOffset, Multiply(laneYMultiplier, noteTailScale))
-        ),
-        arrowTop.set(Add(arrowBottom, Multiply(noteTailScale, noteWidth))),
+        arrowBottom.set(Add(laneYOffset, Multiply(laneYMultiplier, noteScale))),
+        arrowTop.set(Add(arrowBottom, Multiply(noteScale, noteWidth))),
 
         Draw(
             SkinSprite.DirectionalMarkerRed,
-            arrowLeft,
-            arrowBottom,
-            arrowLeft,
-            arrowTop,
-            arrowRight,
-            arrowTop,
-            arrowRight,
-            arrowBottom,
-            layerNoteMarker,
+            ...rectByEdge(arrowLeft, arrowRight, arrowBottom, arrowTop),
+            Layer.NoteMarker,
             1
         ),
     ]
 }
 
-export function drawNoteTailDirectionalArrow(
+export function drawNoteDirectionalFlickArrow(
     sprite: SkinSprite,
     isLeft: boolean
 ) {
     const arrowX = EntityMemory.to<number>(48)
     const arrowY = EntityMemory.to<number>(49)
-    const arrowRadius = EntityMemory.to<number>(50)
-
-    const arrowLeft = Subtract(arrowX, arrowRadius)
-    const arrowRight = Add(arrowX, arrowRadius)
-    const arrowBottom = Subtract(arrowY, arrowRadius)
-    const arrowTop = Add(arrowY, arrowRadius)
+    const arrowWidth = EntityMemory.to<number>(50)
 
     return [
         arrowX.set(
             Multiply(
-                noteTailScale,
+                noteScale,
                 Add(NoteData.bottomCenter, NoteData.arrowOffset)
             )
         ),
-        arrowY.set(Add(laneYOffset, Multiply(laneYMultiplier, noteTailScale))),
-        arrowRadius.set(Multiply(noteTailScale, halfNoteWidth)),
+        arrowY.set(Add(laneYOffset, Multiply(laneYMultiplier, noteScale))),
+        arrowWidth.set(Multiply(noteScale, halfNoteWidth)),
 
-        isLeft
-            ? Draw(
-                  sprite,
-                  arrowRight,
-                  arrowBottom,
-                  arrowLeft,
-                  arrowBottom,
-                  arrowLeft,
-                  arrowTop,
-                  arrowRight,
-                  arrowTop,
-                  layerNoteMarker,
-                  1
-              )
-            : Draw(
-                  sprite,
-                  arrowLeft,
-                  arrowTop,
-                  arrowRight,
-                  arrowTop,
-                  arrowRight,
-                  arrowBottom,
-                  arrowLeft,
-                  arrowBottom,
-                  layerNoteMarker,
-                  1
-              ),
+        Draw(
+            sprite,
+            ...rectBySize(
+                arrowX,
+                arrowY,
+                arrowWidth,
+                arrowWidth,
+                isLeft ? 'left' : 'right'
+            ),
+            Layer.NoteMarker,
+            1
+        ),
     ]
 }
