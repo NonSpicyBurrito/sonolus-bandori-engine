@@ -29,7 +29,6 @@ import {
 } from 'sonolus.js'
 
 import { options } from '../../configuration/options'
-import { buckets } from '../buckets'
 import {
     goodWindow,
     greatWindow,
@@ -63,12 +62,11 @@ import { checkTouchYInHitBox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function directionalFlickNote(
+    bucket: number,
     noteSprite: SkinSprite,
     arrowSprite: SkinSprite,
     isLeft: boolean
 ): SScript {
-    const bucket = buckets.flickNoteIndex
-
     const flickActivationTime = EntityMemory.to<number>(0)
     const looper = EntityMemory.to<number>(1)
 

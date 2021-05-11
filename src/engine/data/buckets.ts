@@ -33,6 +33,46 @@ export const buckets = defineBuckets({
             },
         ],
     },
+    leftDirectionalFlickNote: {
+        sprites: [
+            {
+                id: SkinSprite.NoteHeadPurple,
+                x: 0,
+                y: 0,
+                w: 2,
+                h: 2,
+                rotation: 0,
+            },
+            {
+                id: SkinSprite.DirectionalMarkerPurple,
+                x: 0,
+                y: 0,
+                w: 2,
+                h: 2,
+                rotation: 0,
+            },
+        ],
+    },
+    rightDirectionalFlickNote: {
+        sprites: [
+            {
+                id: SkinSprite.NoteHeadYellow,
+                x: 0,
+                y: 0,
+                w: 2,
+                h: 2,
+                rotation: 180,
+            },
+            {
+                id: SkinSprite.DirectionalMarkerYellow,
+                x: 0,
+                y: 0,
+                w: 2,
+                h: 2,
+                rotation: 180,
+            },
+        ],
+    },
     slideStartNote: {
         sprites: [
             {

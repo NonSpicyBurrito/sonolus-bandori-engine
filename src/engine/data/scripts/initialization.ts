@@ -173,6 +173,16 @@ export function initialization(): SScript {
         return [
             LevelBucket.of(buckets.tapNoteIndex).setBucket(50, 100, 150),
             LevelBucket.of(buckets.flickNoteIndex).setBucket(50, 100, 150),
+            LevelBucket.of(buckets.leftDirectionalFlickNoteIndex).setBucket(
+                50,
+                100,
+                150
+            ),
+            LevelBucket.of(buckets.rightDirectionalFlickNoteIndex).setBucket(
+                50,
+                100,
+                150
+            ),
             LevelBucket.of(buckets.slideStartNoteIndex).setBucket(50, 100, 150),
             If(
                 options.isStrictJudgment,

@@ -26,12 +26,14 @@ export const scripts = defineScripts({
     flickNote,
     leftDirectionalFlickNote: () =>
         directionalFlickNote(
+            buckets.leftDirectionalFlickNoteIndex,
             SkinSprite.NoteHeadPurple,
             SkinSprite.DirectionalMarkerPurple,
             true
         ),
     rightDirectionalFlickNote: () =>
         directionalFlickNote(
+            buckets.rightDirectionalFlickNoteIndex,
             SkinSprite.NoteHeadYellow,
             SkinSprite.DirectionalMarkerYellow,
             false
