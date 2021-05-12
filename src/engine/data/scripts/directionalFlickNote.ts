@@ -6,6 +6,7 @@ import {
     Equal,
     Greater,
     GreaterOr,
+    If,
     InputBucket,
     InputBucketValue,
     InputJudgment,
@@ -30,6 +31,7 @@ import {
 } from 'sonolus.js'
 
 import { options } from '../../configuration/options'
+import { buckets } from '../buckets'
 import { scripts } from '.'
 import {
     goodWindow,
@@ -63,16 +65,17 @@ import { playFlickSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
-export function directionalFlickNote(
-    bucket: number,
-    noteSprite: SkinSprite,
-    arrowSprite: SkinSprite,
-    isLeft: boolean
-): SScript {
+export function directionalFlickNote(): SScript {
     const flickActivationTime = EntityMemory.to<number>(0)
     const looper = EntityMemory.to<number>(1)
 
-    const preprocess = [preprocessNote(isLeft), preprocessArrowOffset(isLeft)]
+    const bucket = If(
+        NoteData.isLeft,
+        buckets.leftDirectionalFlickNoteIndex,
+        buckets.rightDirectionalFlickNoteIndex
+    )
+
+    const preprocess = [preprocessNote(), preprocessArrowOffset()]
 
     const spawnOrder = NoteData.spawnTime
 
@@ -83,9 +86,11 @@ export function directionalFlickNote(
 
         initializeNoteAutoInput(bucket),
         initializeNoteAutoEffect(
-            isLeft
-                ? scripts.autoLeftDirectionalFlickEffectIndex
-                : scripts.autoRightDirectionalFlickEffectIndex
+            If(
+                NoteData.isLeft,
+                scripts.autoLeftDirectionalFlickEffectIndex,
+                scripts.autoRightDirectionalFlickEffectIndex
+            )
         ),
     ]
 
@@ -106,7 +111,11 @@ export function directionalFlickNote(
                 isTouchOccupied.set(true),
                 And(
                     checkNoteTimeInGoodWindow(),
-                    isLeft ? Less(TouchX, TouchSX) : Greater(TouchX, TouchSX),
+                    If(
+                        NoteData.isLeft,
+                        Less(TouchX, TouchSX),
+                        Greater(TouchX, TouchSX)
+                    ),
                     GreaterOr(
                         getDistanceSquared(TouchSX, TouchSY, TouchX, TouchY),
                         Multiply(
@@ -133,15 +142,29 @@ export function directionalFlickNote(
 
             looper.set(0),
             While(LessOr(looper, NoteData.extraWidth), [
-                drawNote(
-                    noteSprite,
-                    isLeft ? 'left' : 'right',
-                    isLeft ? Multiply(looper, -1) : looper
+                If(
+                    NoteData.isLeft,
+                    drawNote(
+                        SkinSprite.NoteHeadPurple,
+                        'left',
+                        Multiply(looper, -1)
+                    ),
+                    drawNote(SkinSprite.NoteHeadYellow, 'right', looper)
                 ),
                 looper.set(Add(looper, 1)),
             ]),
 
-            drawNoteDirectionalFlickArrow(arrowSprite, isLeft),
+            If(
+                NoteData.isLeft,
+                drawNoteDirectionalFlickArrow(
+                    SkinSprite.DirectionalMarkerPurple,
+                    true
+                ),
+                drawNoteDirectionalFlickArrow(
+                    SkinSprite.DirectionalMarkerYellow,
+                    false
+                )
+            ),
         ]
     )
 
@@ -192,7 +215,7 @@ export function directionalFlickNote(
                     goodWindow
                 )
             ),
-            InputBucket.set(bucket + 1),
+            InputBucket.set(Add(bucket, 1)),
             InputBucketValue.set(
                 Multiply(
                     1000,
@@ -201,9 +224,11 @@ export function directionalFlickNote(
             ),
 
             playNoteLaneEffect(),
-            isLeft
-                ? playNoteLeftDirectionalFlickEffect()
-                : playNoteRightDirectionalFlickEffect(),
+            If(
+                NoteData.isLeft,
+                playNoteLeftDirectionalFlickEffect(),
+                playNoteRightDirectionalFlickEffect()
+            ),
             playFlickSFX(),
         ]
     }

@@ -37,8 +37,7 @@ export function autoSFX(): SScript {
                     Or(
                         ...[
                             archetypes.flickNoteIndex,
-                            archetypes.leftDirectionalFlickNoteIndex,
-                            archetypes.rightDirectionalFlickNoteIndex,
+                            archetypes.directionalFlickNoteIndex,
                             archetypes.slideFlickNoteIndex,
                         ].map((index) => Equal(noteInfo.archetype, index))
                     ),

@@ -60,8 +60,7 @@ export function fromBestdori(
         stageIndex: number
         tapNoteIndex: number
         flickNoteIndex: number
-        leftDirectionalFlickNoteIndex: number
-        rightDirectionalFlickNoteIndex: number
+        directionalFlickNoteIndex: number
         slideStartNoteIndex: number
         slideTickNoteIndex: number
         slideEndNoteIndex: number
@@ -150,13 +149,15 @@ export function fromBestdori(
                 const lane = chartObject.lane - 3
                 wrappedNoteEntities.push({
                     entity: {
-                        archetype:
-                            chartObject.direction === 'Left'
-                                ? archetypes.leftDirectionalFlickNoteIndex
-                                : archetypes.rightDirectionalFlickNoteIndex,
+                        archetype: archetypes.directionalFlickNoteIndex,
                         data: {
                             index: 1,
-                            values: [time, lane, chartObject.width - 1],
+                            values: [
+                                time,
+                                lane,
+                                chartObject.width - 1,
+                                chartObject.direction === 'Left' ? 1 : 0,
+                            ],
                         },
                     },
                     time,

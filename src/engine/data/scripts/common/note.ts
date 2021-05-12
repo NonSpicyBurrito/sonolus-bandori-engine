@@ -99,6 +99,10 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(3)
     }
 
+    public get isLeft() {
+        return this.to<boolean>(4)
+    }
+
     public get speedMultiplier() {
         return this.to<number>(16)
     }
@@ -273,7 +277,7 @@ export function getSpawnTime(
     return Subtract(time, Multiply(noteOnScreenDuration, speedMultiplier))
 }
 
-export function preprocessNote(isLeft?: boolean) {
+export function preprocessNote() {
     const minLane = LevelMemory.to<number>(0)
     const maxLane = LevelMemory.to<number>(1)
     const slideRange = LevelMemory.to<number>(2)
@@ -284,10 +288,10 @@ export function preprocessNote(isLeft?: boolean) {
         NoteData.time.set(
             Divide(Add(NoteData.time, audioOffset), options.speed)
         ),
-        And(
-            options.isMirrorEnabled,
-            NoteData.lane.set(Multiply(NoteData.lane, -1))
-        ),
+        And(options.isMirrorEnabled, [
+            NoteData.lane.set(Multiply(NoteData.lane, -1)),
+            NoteData.isLeft.set(Not(NoteData.isLeft)),
+        ]),
 
         NoteData.speedMultiplier.set(
             If(options.isNoteSpeedRandom, Random(1, 2), 1)
@@ -359,7 +363,7 @@ export function preprocessNote(isLeft?: boolean) {
                 NoteData.bottomCenter,
                 Multiply(
                     laneWidth,
-                    isLeft ? Add(1.175, NoteData.extraWidth) : 1.175
+                    If(NoteData.isLeft, Add(1.175, NoteData.extraWidth), 1.175)
                 )
             )
         ),
@@ -368,7 +372,7 @@ export function preprocessNote(isLeft?: boolean) {
                 NoteData.bottomCenter,
                 Multiply(
                     laneWidth,
-                    isLeft ? 1.175 : Add(1.175, NoteData.extraWidth)
+                    If(NoteData.isLeft, 1.175, Add(1.175, NoteData.extraWidth))
                 )
             )
         ),
@@ -389,16 +393,18 @@ export function preprocessSlideSpawnTime() {
     )
 }
 
-export function preprocessArrowOffset(isLeft: boolean) {
+export function preprocessArrowOffset() {
     const offset = Add(Multiply(laneWidth, NoteData.extraWidth), noteWidth)
 
-    return NoteData.arrowOffset.set(isLeft ? Multiply(-1, offset) : offset)
+    return NoteData.arrowOffset.set(
+        If(NoteData.isLeft, Multiply(-1, offset), offset)
+    )
 }
 
-export function initializeNoteAutoInput(bucket: number) {
+export function initializeNoteAutoInput(bucket: Code<number>) {
     return And(options.isAutoplay, [
         InputJudgment.set(1),
-        InputBucket.set(bucket + 1),
+        InputBucket.set(Add(bucket, 1)),
     ])
 }
 
@@ -414,8 +420,7 @@ export function initializeNoteSimLine() {
             ...[
                 archetypes.tapNoteIndex,
                 archetypes.flickNoteIndex,
-                archetypes.leftDirectionalFlickNoteIndex,
-                archetypes.rightDirectionalFlickNoteIndex,
+                archetypes.directionalFlickNoteIndex,
                 archetypes.slideStartNoteIndex,
                 archetypes.slideEndNoteIndex,
                 archetypes.slideFlickNoteIndex,
@@ -425,7 +430,7 @@ export function initializeNoteSimLine() {
     )
 }
 
-export function initializeNoteAutoEffect(index: number) {
+export function initializeNoteAutoEffect(index: Code<number>) {
     return And(options.isAutoplay, Spawn(index, [EntityInfo.index]))
 }
 

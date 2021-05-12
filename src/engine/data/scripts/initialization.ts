@@ -255,10 +255,7 @@ export function initialization(): SScript {
                 -100
             ),
             ArchetypeLife.of(
-                archetypes.leftDirectionalFlickNoteIndex
-            ).missLifeIncrement.set(-100),
-            ArchetypeLife.of(
-                archetypes.rightDirectionalFlickNoteIndex
+                archetypes.directionalFlickNoteIndex
             ).missLifeIncrement.set(-100),
             ArchetypeLife.of(
                 archetypes.slideStartNoteIndex
