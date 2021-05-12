@@ -27,6 +27,7 @@ import {
 
 import { options } from '../../configuration/options'
 import {
+    audioOffset,
     halfNoteHeight,
     halfNoteWidth,
     laneBottom,
@@ -120,9 +121,14 @@ export function slider(sprite: SkinSprite): SScript {
     const slideTop = EntityMemory.to<number>(6)
 
     const preprocess = [
+        repositionTime(SliderData.headTime),
+        repositionTime(SliderData.tailTime),
+        mirror(SliderData.headLane),
+        mirror(SliderData.tailLane),
+
         And(options.isRandom, [
-            reposition(SliderData.headLane, SliderData.headTime),
-            reposition(SliderData.tailLane, SliderData.tailTime),
+            repositionLane(SliderData.headLane, SliderData.headTime),
+            repositionLane(SliderData.tailLane, SliderData.tailTime),
         ]),
 
         SliderData.headBottomLeft.set(
@@ -290,7 +296,15 @@ export function slider(sprite: SkinSprite): SScript {
         },
     }
 
-    function reposition(lane: Pointer<number>, time: Code<number>) {
+    function repositionTime(time: Pointer<number>) {
+        return time.set(Divide(Add(time, audioOffset), options.speed))
+    }
+
+    function mirror(lane: Pointer<number>) {
+        return And(options.isMirrorEnabled, lane.set(Multiply(lane, -1)))
+    }
+
+    function repositionLane(lane: Pointer<number>, time: Code<number>) {
         return lane.set(
             Max(
                 -3,
