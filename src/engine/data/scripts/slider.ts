@@ -11,6 +11,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    Max,
     Min,
     Multiply,
     Or,
@@ -291,22 +292,28 @@ export function slider(sprite: SkinSprite): SScript {
 
     function reposition(lane: Pointer<number>, time: Code<number>) {
         return lane.set(
-            Add(
-                lane,
-                Subtract(
-                    Remap(
-                        headData.time,
-                        tailData.time,
-                        headData.lane,
-                        tailData.lane,
-                        time
-                    ),
-                    Remap(
-                        headData.time,
-                        tailData.time,
-                        headData.originalLane,
-                        tailData.originalLane,
-                        time
+            Max(
+                -3,
+                Min(
+                    3,
+                    Add(
+                        lane,
+                        Subtract(
+                            Remap(
+                                headData.time,
+                                tailData.time,
+                                headData.lane,
+                                tailData.lane,
+                                time
+                            ),
+                            Remap(
+                                headData.time,
+                                tailData.time,
+                                headData.originalLane,
+                                tailData.originalLane,
+                                time
+                            )
+                        )
                     )
                 )
             )
