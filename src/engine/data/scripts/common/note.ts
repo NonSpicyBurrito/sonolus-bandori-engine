@@ -390,14 +390,9 @@ export function preprocessSlideSpawnTime() {
 }
 
 export function preprocessArrowOffset(isLeft: boolean) {
-    return NoteData.arrowOffset.set(
-        Multiply(
-            laneWidth,
-            isLeft
-                ? Multiply(-1, Add(NoteData.extraWidth, 1))
-                : Add(NoteData.extraWidth, 1)
-        )
-    )
+    const offset = Add(Multiply(laneWidth, NoteData.extraWidth), noteWidth)
+
+    return NoteData.arrowOffset.set(isLeft ? Multiply(-1, offset) : offset)
 }
 
 export function initializeNoteAutoInput(bucket: number) {
