@@ -259,7 +259,7 @@ export function checkNoteTimeInGoodWindow() {
 // Note
 
 export function approach(x: Code<number>) {
-    return Add(0.05, Multiply(0.95, Power(117.39085, x)))
+    return Add(0.05, Multiply(0.95, Power(1.1 ** 50, x)))
 }
 export function approachNote(
     time: Code<number>,

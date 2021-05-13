@@ -1,9 +1,11 @@
 import {
     Add,
+    And,
     DeviceInputOffset,
     Divide,
-    GreaterOr,
+    Greater,
     If,
+    LessOr,
     Multiply,
     ScreenAspectRatio,
     Subtract,
@@ -52,32 +54,42 @@ export const screenRight = ScreenAspectRatio
 
 // Stage
 
-const targetAspectRatio = 16 / 9
+const targetAspectRatio = 1334 / 750
 
-export const stageWidth = If(
-    options.isStageAspectRatioLocked,
+export const stageZoom = If(
+    Greater(ScreenAspectRatio, targetAspectRatio),
+    0.9,
+    1
+)
+
+export const stageWidth = Multiply(
     If(
-        GreaterOr(ScreenAspectRatio, targetAspectRatio),
+        And(
+            options.isStageAspectRatioLocked,
+            Greater(ScreenAspectRatio, targetAspectRatio)
+        ),
         targetAspectRatio * 2,
         Multiply(ScreenAspectRatio, 2)
     ),
-    Multiply(ScreenAspectRatio, 2)
+    stageZoom
 )
-export const stageHeight = If(
-    options.isStageAspectRatioLocked,
+export const stageHeight = Multiply(
     If(
-        GreaterOr(ScreenAspectRatio, targetAspectRatio),
-        2,
-        Divide(ScreenAspectRatio, targetAspectRatio, 0.5)
+        And(
+            options.isStageAspectRatioLocked,
+            LessOr(ScreenAspectRatio, targetAspectRatio)
+        ),
+        Divide(ScreenAspectRatio, targetAspectRatio, 0.5),
+        2
     ),
-    2
+    stageZoom
 )
 
 export const laneWidth = Divide(stageWidth, 2, 4.375)
 export const laneYOffset = Divide(stageHeight, 2)
-export const laneYMultiplier = Divide(stageHeight, -1.225)
+export const laneYMultiplier = Multiply(stageHeight, -0.82)
 export const laneBottom = Add(laneYOffset, laneYMultiplier)
-export const laneTop = Add(laneYOffset, Multiply(laneYMultiplier, 0.05))
+export const laneTop = Add(laneYOffset, Multiply(laneYMultiplier, 0.04))
 
 export const minFlickDistanceSquared = Multiply(
     0.04,
