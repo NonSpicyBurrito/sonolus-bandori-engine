@@ -67,7 +67,7 @@ import {
     checkTouchYInHitbox,
     isTouchOccupied,
 } from './touch'
-import { Direction, rectByEdge, rectBySize, rotate } from './utils'
+import { rectByEdge, rectBySize, rotate } from './utils'
 
 export enum InputState {
     Waiting,
@@ -509,14 +509,18 @@ export function prepareDrawNote() {
 }
 export function drawNote(
     sprite: SkinSprite,
-    direction: Direction = 'up',
-    offset?: Code<number>
+    directional?: { isLeft: boolean; offset: Code<number> }
 ) {
+    const offset = directional
+        ? directional.isLeft
+            ? Multiply(directional.offset, laneWidth, -1)
+            : Multiply(directional.offset, laneWidth)
+        : undefined
     const noteBottomLeft = offset
-        ? Add(NoteData.bottomLeft, Multiply(offset, laneWidth))
+        ? Add(NoteData.bottomLeft, offset)
         : NoteData.bottomLeft
     const noteBottomRight = offset
-        ? Add(NoteData.bottomRight, Multiply(offset, laneWidth))
+        ? Add(NoteData.bottomRight, offset)
         : NoteData.bottomRight
 
     return Draw(
@@ -532,9 +536,11 @@ export function drawNote(
                 Multiply(noteScaleBottom, noteBottomRight),
                 noteBottom,
             ],
-            direction
+            directional ? (directional.isLeft ? 'left' : 'right') : 'up'
         ),
-        NoteData.z,
+        directional
+            ? Add(NoteData.z, Divide(directional.offset, 100000))
+            : NoteData.z,
         1
     )
 }

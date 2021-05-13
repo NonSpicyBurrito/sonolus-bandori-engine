@@ -144,12 +144,14 @@ export function directionalFlickNote(): SScript {
             While(LessOr(looper, NoteData.extraWidth), [
                 If(
                     NoteData.isLeft,
-                    drawNote(
-                        SkinSprite.NoteHeadPurple,
-                        'left',
-                        Multiply(looper, -1)
-                    ),
-                    drawNote(SkinSprite.NoteHeadYellow, 'right', looper)
+                    drawNote(SkinSprite.NoteHeadPurple, {
+                        isLeft: true,
+                        offset: looper,
+                    }),
+                    drawNote(SkinSprite.NoteHeadYellow, {
+                        isLeft: false,
+                        offset: looper,
+                    })
                 ),
                 looper.set(Add(looper, 1)),
             ]),
