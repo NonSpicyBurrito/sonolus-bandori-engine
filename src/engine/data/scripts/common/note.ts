@@ -303,8 +303,18 @@ export function preprocessNote() {
         And(options.isRandom, [
             NoteData.originalLane.set(NoteData.lane),
 
-            minLane.set(Max(-3, Add(NoteData.lane, -2))),
-            maxLane.set(Min(3, Add(NoteData.lane, 2))),
+            minLane.set(
+                Max(
+                    If(NoteData.isLeft, Add(-3, NoteData.extraWidth), -3),
+                    Add(NoteData.lane, -2)
+                )
+            ),
+            maxLane.set(
+                Min(
+                    If(NoteData.isLeft, 3, Subtract(3, NoteData.extraWidth)),
+                    Add(NoteData.lane, 2)
+                )
+            ),
 
             And(
                 Or(
