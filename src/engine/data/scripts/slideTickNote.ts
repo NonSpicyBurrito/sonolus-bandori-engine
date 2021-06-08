@@ -43,7 +43,6 @@ import {
     playNoteLaneEffect,
     playNoteTapEffect,
     prepareDrawNote,
-    preprocessIsStraightSlide,
     preprocessNote,
     preprocessSlideSpawnTime,
     touchProcessDiscontinue,
@@ -60,11 +59,7 @@ import {
 export function slideTickNote(): SScript {
     const bucket = buckets.slideTickNoteIndex
 
-    const preprocess = [
-        preprocessNote(),
-        preprocessSlideSpawnTime(),
-        preprocessIsStraightSlide(),
-    ]
+    const preprocess = [preprocessNote(), preprocessSlideSpawnTime()]
 
     const spawnOrder = NoteData.slideSpawnTime
 

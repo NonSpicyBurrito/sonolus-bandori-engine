@@ -103,6 +103,10 @@ export class NoteDataPointer extends Pointer {
         return this.to<boolean>(4)
     }
 
+    public get isLong() {
+        return this.to<boolean>(5)
+    }
+
     public get speedMultiplier() {
         return this.to<number>(16)
     }
@@ -127,28 +131,24 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(21)
     }
 
-    public get isStraightSlide() {
-        return this.to<boolean>(22)
-    }
-
     public get originalLane() {
-        return this.to<number>(23)
+        return this.to<number>(22)
     }
 
     public get slideSpawnTime() {
-        return this.to<number>(24)
+        return this.to<number>(23)
     }
 
     public get arrowOffset() {
-        return this.to<number>(25)
+        return this.to<number>(24)
     }
 
     public get hitboxLeft() {
-        return this.to<number>(26)
+        return this.to<number>(25)
     }
 
     public get hitboxRight() {
-        return this.to<number>(27)
+        return this.to<number>(26)
     }
 }
 
@@ -389,12 +389,6 @@ export function preprocessNote() {
 
         NoteData.z.set(Subtract(Layer.NoteBody, Divide(NoteData.time, 1000))),
     ]
-}
-
-export function preprocessIsStraightSlide() {
-    return NoteData.isStraightSlide.set(
-        Equal(NoteData.lane, NoteData.head.lane)
-    )
 }
 
 export function preprocessSlideSpawnTime() {

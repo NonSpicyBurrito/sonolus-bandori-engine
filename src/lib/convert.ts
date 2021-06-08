@@ -171,6 +171,17 @@ export function fromBestdori(
                     time: number
                     lane: number
                 }[] = []
+
+                const hasHidden = chartObject.connections.some(
+                    (connection) => connection.hidden
+                )
+                const isLong =
+                    chartObject.connections.length === 2 &&
+                    chartObject.connections[0].lane ===
+                        chartObject.connections[1].lane
+                        ? 1
+                        : 0
+
                 chartObject.connections.forEach((connection, index) => {
                     const time = beatToTime(connection.beat)
                     const lane = connection.lane - 3
@@ -205,7 +216,14 @@ export function fromBestdori(
                                             : archetypes.slideEndNoteIndex,
                                         data: {
                                             index: 0,
-                                            values: [0, time, lane],
+                                            values: [
+                                                0,
+                                                time,
+                                                lane,
+                                                0,
+                                                0,
+                                                isLong,
+                                            ],
                                         },
                                     },
                                     time,
@@ -236,11 +254,6 @@ export function fromBestdori(
                                 wrappedNoteEntities[
                                     wrappedNoteEntities.length - 1
                                 ]
-                            const archetype = chartObject.connections.some(
-                                (connection) => connection.hidden
-                            )
-                                ? archetypes.curvedSliderIndex
-                                : archetypes.straightSliderIndex
                             let prevSegment = {
                                 time: head.time,
                                 lane: head.lane,
@@ -248,7 +261,9 @@ export function fromBestdori(
                             segments.forEach((segment, index) => {
                                 wrappedSliderEntities.push({
                                     entity: {
-                                        archetype,
+                                        archetype: hasHidden
+                                            ? archetypes.curvedSliderIndex
+                                            : archetypes.straightSliderIndex,
                                         data: {
                                             index: 0,
                                             values: [
