@@ -51,7 +51,6 @@ import {
     playNoteFlickEffect,
     playNoteLaneEffect,
     prepareDrawNote,
-    preprocessIsStraightSlide,
     preprocessNote,
     preprocessSlideSpawnTime,
     touchProcessDiscontinue,
@@ -72,11 +71,7 @@ export function slideFlickNote(): SScript {
     const flickActivationX = EntityMemory.to<number>(0)
     const flickActivationY = EntityMemory.to<number>(1)
 
-    const preprocess = [
-        preprocessNote(),
-        preprocessSlideSpawnTime(),
-        preprocessIsStraightSlide(),
-    ]
+    const preprocess = [preprocessNote(), preprocessSlideSpawnTime()]
 
     const spawnOrder = NoteData.slideSpawnTime
 
@@ -102,7 +97,7 @@ export function slideFlickNote(): SScript {
                 And(
                     Equal(noteInputState, InputState.Activated),
                     If(
-                        NoteData.isStraightSlide,
+                        NoteData.isLong,
                         checkNoteTimeInGoodWindow(),
                         GreaterOr(Subtract(Time, inputOffset), NoteData.time)
                     ),
