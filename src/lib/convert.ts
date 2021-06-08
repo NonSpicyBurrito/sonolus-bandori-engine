@@ -93,18 +93,22 @@ export function fromBestdori(
     let timePerBeat = 0
     let beats = 0
     let time = 0
-    chartObjects.forEach((chartObject) => {
-        if (chartObject.type === 'BPM') {
-            time += (chartObject.beat - beats) * timePerBeat
-            beats = chartObject.beat
-            timePerBeat = 60 / chartObject.bpm
+    chartObjects
+        .filter(
+            (chartObject): chartObject is BPMObject =>
+                chartObject.type === 'BPM'
+        )
+        .sort((a, b) => a.beat - b.beat)
+        .forEach((bpmObject) => {
+            time += (bpmObject.beat - beats) * timePerBeat
+            beats = bpmObject.beat
+            timePerBeat = 60 / bpmObject.bpm
             timings.unshift({
                 beat: beats,
                 time,
                 timePerBeat,
             })
-        }
-    })
+        })
 
     const wrappedNoteEntities: WrappedNoteEntity[] = [
         {
