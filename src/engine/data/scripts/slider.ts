@@ -144,23 +144,32 @@ export function slider(sprite: SkinSprite): SScript {
             Add(SliderData.tailBottomLeft, noteWidth)
         ),
 
-        SliderData.headSpeedMultiplier.set(
-            Remap(
-                headData.time,
-                tailData.time,
-                headData.speedMultiplier,
-                tailData.speedMultiplier,
-                SliderData.headTime
-            )
-        ),
-        SliderData.tailSpeedMultiplier.set(
-            Remap(
-                headData.time,
-                tailData.time,
-                headData.speedMultiplier,
-                tailData.speedMultiplier,
-                SliderData.tailTime
-            )
+        If(
+            Equal(headData.time, tailData.time),
+            [
+                SliderData.headSpeedMultiplier.set(headData.speedMultiplier),
+                SliderData.tailSpeedMultiplier.set(tailData.speedMultiplier),
+            ],
+            [
+                SliderData.headSpeedMultiplier.set(
+                    Remap(
+                        headData.time,
+                        tailData.time,
+                        headData.speedMultiplier,
+                        tailData.speedMultiplier,
+                        SliderData.headTime
+                    )
+                ),
+                SliderData.tailSpeedMultiplier.set(
+                    Remap(
+                        headData.time,
+                        tailData.time,
+                        headData.speedMultiplier,
+                        tailData.speedMultiplier,
+                        SliderData.tailTime
+                    )
+                ),
+            ]
         ),
 
         SliderData.spawnTime.set(
