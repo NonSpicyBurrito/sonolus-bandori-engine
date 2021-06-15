@@ -33,6 +33,7 @@ import {
     Layer,
     screenLeft,
     screenRight,
+    screenTop,
 } from './common/constants'
 import { playLaneEffect, playSlotEffect } from './common/effect'
 import { playStageSFX } from './common/sfx'
@@ -96,7 +97,12 @@ export function stage(): SScript {
             bool(options.stageCover),
             Draw(
                 SkinSprite.StageCover,
-                ...rectByEdge(screenLeft, screenRight, stageCoverBottom, 1),
+                ...rectByEdge(
+                    screenLeft,
+                    screenRight,
+                    stageCoverBottom,
+                    screenTop
+                ),
                 Layer.Cover,
                 1
             )

@@ -26,7 +26,7 @@ export function autoSlider(): SScript {
             Or(hasSpawnedHoldEffect, [
                 spawnHoldEffect(
                     NoteSharedMemory.of(noteIndex),
-                    noteData.head.bottomCenter
+                    noteData.head.center
                 ),
                 hasSpawnedHoldEffect.set(true),
             ]),
@@ -34,8 +34,8 @@ export function autoSlider(): SScript {
                 RemapClamped(
                     noteData.head.time,
                     noteData.time,
-                    noteData.head.bottomCenter,
-                    noteData.bottomCenter,
+                    noteData.head.center,
+                    noteData.center,
                     Time
                 )
             ),

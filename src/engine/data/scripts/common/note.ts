@@ -16,6 +16,7 @@ import {
     If,
     InputBucket,
     InputJudgment,
+    Lerp,
     Less,
     LessOr,
     LevelMemory,
@@ -47,13 +48,15 @@ import {
     halfNoteWidth,
     inputOffset,
     laneWidth,
-    laneYMultiplier,
-    laneYOffset,
     Layer,
     noteBaseBottom,
+    noteBaseBottomScale,
     noteBaseTop,
+    noteBaseTopScale,
     noteOnScreenDuration,
     noteWidth,
+    stageBottom,
+    stageTop,
 } from './constants'
 import {
     destroyHoldEffect,
@@ -115,15 +118,15 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(17)
     }
 
-    public get bottomCenter() {
+    public get center() {
         return this.to<number>(18)
     }
 
-    public get bottomLeft() {
+    public get left() {
         return this.to<number>(19)
     }
 
-    public get bottomRight() {
+    public get right() {
         return this.to<number>(20)
     }
 
@@ -191,10 +194,8 @@ export const NoteSharedMemory = createEntitySharedMemory(
 export const noteScale = EntityMemory.to<number>(32)
 export const noteInputState = EntityMemory.to<InputState>(33)
 
-export const noteScaleBottom = EntityMemory.to<number>(48)
-export const noteScaleTop = EntityMemory.to<number>(49)
-export const noteBottom = EntityMemory.to<number>(50)
-export const noteTop = EntityMemory.to<number>(51)
+export const noteBottom = EntityMemory.to<number>(48)
+export const noteTop = EntityMemory.to<number>(49)
 
 // Effect
 
@@ -204,7 +205,7 @@ export function playNoteLaneEffect() {
 
 export function playNoteTapEffect() {
     return playNoteEffect(
-        NoteData.bottomCenter,
+        NoteData.center,
         ParticleEffect.NoteLinearTapCyan,
         ParticleEffect.NoteCircularTapCyan,
         'up'
@@ -212,7 +213,7 @@ export function playNoteTapEffect() {
 }
 export function playNoteFlickEffect() {
     return playNoteEffect(
-        NoteData.bottomCenter,
+        NoteData.center,
         ParticleEffect.NoteLinearAlternativeRed,
         ParticleEffect.NoteCircularAlternativeRed,
         'up'
@@ -220,7 +221,7 @@ export function playNoteFlickEffect() {
 }
 export function playNoteLeftDirectionalFlickEffect() {
     return playNoteEffect(
-        NoteData.bottomCenter,
+        NoteData.center,
         ParticleEffect.NoteLinearAlternativePurple,
         ParticleEffect.NoteCircularAlternativePurple,
         'left'
@@ -228,7 +229,7 @@ export function playNoteLeftDirectionalFlickEffect() {
 }
 export function playNoteRightDirectionalFlickEffect() {
     return playNoteEffect(
-        NoteData.bottomCenter,
+        NoteData.center,
         ParticleEffect.NoteLinearAlternativeYellow,
         ParticleEffect.NoteCircularAlternativeYellow,
         'right'
@@ -236,7 +237,7 @@ export function playNoteRightDirectionalFlickEffect() {
 }
 
 function spawnNoteHoldEffect() {
-    return spawnHoldEffect(NoteSharedMemory, NoteData.head.bottomCenter)
+    return spawnHoldEffect(NoteSharedMemory, NoteData.head.center)
 }
 
 export function destroyNoteHoldEffect() {
@@ -364,13 +365,13 @@ export function preprocessNote() {
             NoteData.lane.set(RandomInteger(minLane, Add(maxLane, 1))),
         ]),
 
-        NoteData.bottomCenter.set(getLaneBottomCenter(NoteData.lane)),
-        NoteData.bottomLeft.set(Subtract(NoteData.bottomCenter, halfNoteWidth)),
-        NoteData.bottomRight.set(Add(NoteData.bottomCenter, halfNoteWidth)),
+        NoteData.center.set(getLaneBottomCenter(NoteData.lane)),
+        NoteData.left.set(Subtract(NoteData.center, halfNoteWidth)),
+        NoteData.right.set(Add(NoteData.center, halfNoteWidth)),
 
         NoteData.hitboxLeft.set(
             Subtract(
-                NoteData.bottomCenter,
+                NoteData.center,
                 Multiply(
                     laneWidth,
                     If(NoteData.isLeft, Add(1.175, NoteData.extraWidth), 1.175)
@@ -379,7 +380,7 @@ export function preprocessNote() {
         ),
         NoteData.hitboxRight.set(
             Add(
-                NoteData.bottomCenter,
+                NoteData.center,
                 Multiply(
                     laneWidth,
                     If(NoteData.isLeft, 1.175, Add(1.175, NoteData.extraWidth))
@@ -502,13 +503,8 @@ export function updateNoteSlideScale() {
 
 export function prepareDrawNote() {
     return [
-        noteScaleBottom.set(Multiply(noteBaseBottom, noteScale)),
-        noteScaleTop.set(Multiply(noteBaseTop, noteScale)),
-
-        noteBottom.set(
-            Add(laneYOffset, Multiply(laneYMultiplier, noteScaleBottom))
-        ),
-        noteTop.set(Add(laneYOffset, Multiply(laneYMultiplier, noteScaleTop))),
+        noteBottom.set(Lerp(stageTop, noteBaseBottom, noteScale)),
+        noteTop.set(Lerp(stageTop, noteBaseTop, noteScale)),
     ]
 }
 export function drawNote(
@@ -520,24 +516,20 @@ export function drawNote(
             ? Multiply(directional.offset, laneWidth, -1)
             : Multiply(directional.offset, laneWidth)
         : undefined
-    const noteBottomLeft = offset
-        ? Add(NoteData.bottomLeft, offset)
-        : NoteData.bottomLeft
-    const noteBottomRight = offset
-        ? Add(NoteData.bottomRight, offset)
-        : NoteData.bottomRight
+    const noteLeft = offset ? Add(NoteData.left, offset) : NoteData.left
+    const noteRight = offset ? Add(NoteData.right, offset) : NoteData.right
 
     return Draw(
         sprite,
         ...rotate(
             [
-                Multiply(noteScaleBottom, noteBottomLeft),
+                Multiply(noteLeft, noteBaseBottomScale, noteScale),
                 noteBottom,
-                Multiply(noteScaleTop, noteBottomLeft),
+                Multiply(noteLeft, noteBaseTopScale, noteScale),
                 noteTop,
-                Multiply(noteScaleTop, noteBottomRight),
+                Multiply(noteRight, noteBaseTopScale, noteScale),
                 noteTop,
-                Multiply(noteScaleBottom, noteBottomRight),
+                Multiply(noteRight, noteBaseBottomScale, noteScale),
                 noteBottom,
             ],
             directional ? (directional.isLeft ? 'left' : 'right') : 'up'
@@ -557,10 +549,10 @@ export function drawNoteFlickArrow() {
     const arrowTop = EntityMemory.to<number>(51)
 
     return [
-        arrowLeft.set(Multiply(noteScale, NoteData.bottomLeft)),
-        arrowRight.set(Multiply(noteScale, NoteData.bottomRight)),
+        arrowLeft.set(Multiply(noteScale, NoteData.left)),
+        arrowRight.set(Multiply(noteScale, NoteData.right)),
 
-        arrowBottom.set(Add(laneYOffset, Multiply(laneYMultiplier, noteScale))),
+        arrowBottom.set(Lerp(stageTop, stageBottom, noteScale)),
         arrowTop.set(Add(arrowBottom, Multiply(noteScale, noteWidth))),
 
         Draw(
@@ -582,12 +574,9 @@ export function drawNoteDirectionalFlickArrow(
 
     return [
         arrowX.set(
-            Multiply(
-                noteScale,
-                Add(NoteData.bottomCenter, NoteData.arrowOffset)
-            )
+            Multiply(noteScale, Add(NoteData.center, NoteData.arrowOffset))
         ),
-        arrowY.set(Add(laneYOffset, Multiply(laneYMultiplier, noteScale))),
+        arrowY.set(Lerp(stageTop, stageBottom, noteScale)),
         arrowWidth.set(Multiply(noteScale, halfNoteWidth)),
 
         Draw(

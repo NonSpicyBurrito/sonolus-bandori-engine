@@ -11,6 +11,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    Lerp,
     Max,
     Min,
     Multiply,
@@ -28,15 +29,16 @@ import {
 import { options } from '../../configuration/options'
 import {
     audioOffset,
-    halfNoteHeight,
     halfNoteWidth,
     laneBottom,
-    laneYMultiplier,
-    laneYOffset,
     Layer,
     noteBaseBottom,
+    noteBaseBottomScale,
     noteBaseTop,
+    noteBaseTopScale,
     noteWidth,
+    stageBottom,
+    stageTop,
 } from './common/constants'
 import { moveHoldEffect } from './common/effect'
 import {
@@ -228,14 +230,14 @@ export function slider(sprite: SkinSprite): SScript {
 
                     Draw(
                         SkinSprite.NoteHeadGreen,
-                        Multiply(headLeft, noteBaseBottom),
-                        Subtract(laneBottom, halfNoteHeight),
-                        Multiply(headLeft, noteBaseTop),
-                        Add(laneBottom, halfNoteHeight),
-                        Multiply(headRight, noteBaseTop),
-                        Add(laneBottom, halfNoteHeight),
-                        Multiply(headRight, noteBaseBottom),
-                        Subtract(laneBottom, halfNoteHeight),
+                        Multiply(headLeft, noteBaseBottomScale),
+                        noteBaseBottom,
+                        Multiply(headLeft, noteBaseTopScale),
+                        noteBaseTop,
+                        Multiply(headRight, noteBaseTopScale),
+                        noteBaseTop,
+                        Multiply(headRight, noteBaseBottomScale),
+                        noteBaseBottom,
                         Layer.NoteSlide,
                         1
                     ),
@@ -255,9 +257,7 @@ export function slider(sprite: SkinSprite): SScript {
                             SliderData.headSpeedMultiplier
                         )
                     ),
-                    slideBottom.set(
-                        Add(laneYOffset, Multiply(laneYMultiplier, headScale))
-                    ),
+                    slideBottom.set(Lerp(stageTop, stageBottom, headScale)),
                 ]
             ),
 
@@ -267,9 +267,7 @@ export function slider(sprite: SkinSprite): SScript {
                     SliderData.tailSpeedMultiplier
                 )
             ),
-            slideTop.set(
-                Add(laneYOffset, Multiply(laneYMultiplier, tailScale))
-            ),
+            slideTop.set(Lerp(stageTop, stageBottom, tailScale)),
 
             Draw(
                 sprite,

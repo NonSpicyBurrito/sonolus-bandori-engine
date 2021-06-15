@@ -20,7 +20,7 @@ export function autoNoteEffect(
 
     const updateParallel = And(GreaterOr(Time, noteData.time), [
         playLaneEffect(noteData.lane),
-        playNoteEffect(noteData.bottomCenter, linear, circular, direction),
+        playNoteEffect(noteData.center, linear, circular, direction),
     ])
 
     return {

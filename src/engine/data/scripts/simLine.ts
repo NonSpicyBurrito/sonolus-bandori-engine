@@ -1,5 +1,4 @@
 import {
-    Add,
     And,
     Divide,
     Draw,
@@ -7,6 +6,7 @@ import {
     EntityMemory,
     Equal,
     GreaterOr,
+    Lerp,
     Multiply,
     Or,
     SkinSprite,
@@ -18,12 +18,13 @@ import {
 
 import { options } from '../../configuration/options'
 import {
-    laneYMultiplier,
-    laneYOffset,
     Layer,
     noteBaseBottom,
+    noteBaseBottomScale,
     noteBaseTop,
+    noteBaseTopScale,
     noteOnScreenDuration,
+    stageTop,
 } from './common/constants'
 import { approach, NoteData } from './common/note'
 
@@ -41,17 +42,15 @@ export function simLine(): SScript {
     const right = EntityMemory.to<number>(4)
 
     const scale = EntityMemory.to<number>(5)
-    const scaleBottom = EntityMemory.to<number>(6)
-    const scaleTop = EntityMemory.to<number>(7)
-    const bottom = EntityMemory.to<number>(8)
-    const top = EntityMemory.to<number>(9)
+    const bottom = EntityMemory.to<number>(6)
+    const top = EntityMemory.to<number>(7)
 
     const initialize = [
         time.set(NoteData.of(rightIndex).time),
         spawnTime.set(Subtract(time, noteOnScreenDuration)),
 
-        left.set(leftData.bottomCenter),
-        right.set(rightData.bottomCenter),
+        left.set(leftData.center),
+        right.set(rightData.center),
     ]
 
     const updateParallel = Or(
@@ -62,22 +61,18 @@ export function simLine(): SScript {
             scale.set(
                 approach(Divide(Subtract(Time, time), noteOnScreenDuration))
             ),
-            scaleBottom.set(Multiply(noteBaseBottom, scale)),
-            scaleTop.set(Multiply(noteBaseTop, scale)),
-            bottom.set(
-                Add(laneYOffset, Multiply(laneYMultiplier, scaleBottom))
-            ),
-            top.set(Add(laneYOffset, Multiply(laneYMultiplier, scaleTop))),
+            bottom.set(Lerp(stageTop, noteBaseBottom, scale)),
+            top.set(Lerp(stageTop, noteBaseTop, scale)),
 
             Draw(
                 SkinSprite.SimultaneousConnectionCyan,
-                Multiply(left, scaleBottom),
+                Multiply(left, noteBaseBottomScale, scale),
                 bottom,
-                Multiply(left, scaleTop),
+                Multiply(left, noteBaseTopScale, scale),
                 top,
-                Multiply(right, scaleTop),
+                Multiply(right, noteBaseTopScale, scale),
                 top,
-                Multiply(right, scaleBottom),
+                Multiply(right, noteBaseBottomScale, scale),
                 bottom,
                 Layer.SimLine,
                 1

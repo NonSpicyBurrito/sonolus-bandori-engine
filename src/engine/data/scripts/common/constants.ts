@@ -1,14 +1,14 @@
 import {
     Add,
-    And,
     DeviceInputOffset,
     Divide,
     Greater,
     If,
-    LessOr,
+    Lerp,
     Multiply,
     ScreenAspectRatio,
     Subtract,
+    Unlerp,
 } from 'sonolus.js'
 
 import { options } from '../../../configuration/options'
@@ -49,47 +49,69 @@ export enum Layer {
 
 // Screen
 
+export const screenHeight = 2
+export const screenWidth = Multiply(ScreenAspectRatio, screenHeight)
+
+export const screenBottom = -1
+export const screenTop = 1
 export const screenLeft = Multiply(-1, ScreenAspectRatio)
 export const screenRight = ScreenAspectRatio
 
 // Stage
 
 const targetAspectRatio = 1334 / 750
+const lowPosition = 0.82
+const highPosition = 0.78125
 
-export const stageZoom = If(
-    Greater(ScreenAspectRatio, targetAspectRatio),
-    0.9,
-    1
+export const stageWidth = If(
+    options.isStageAspectRatioLocked,
+    If(
+        Greater(ScreenAspectRatio, targetAspectRatio),
+        ((screenHeight * highPosition) / lowPosition) * targetAspectRatio,
+        screenWidth
+    ),
+    screenWidth
+)
+export const stageHeight = If(
+    options.isStageAspectRatioLocked,
+    If(
+        Greater(ScreenAspectRatio, targetAspectRatio),
+        screenHeight * highPosition,
+        Multiply(Divide(screenWidth, targetAspectRatio), lowPosition)
+    ),
+    If(
+        Greater(ScreenAspectRatio, targetAspectRatio),
+        screenHeight * highPosition,
+        screenHeight * lowPosition
+    )
 )
 
-export const stageWidth = Multiply(
+export const stageBottom = If(
+    options.isStageAspectRatioLocked,
     If(
-        And(
-            options.isStageAspectRatioLocked,
-            Greater(ScreenAspectRatio, targetAspectRatio)
-        ),
-        targetAspectRatio * 2,
-        Multiply(ScreenAspectRatio, 2)
+        Greater(ScreenAspectRatio, targetAspectRatio),
+        screenTop - screenHeight * highPosition,
+        Multiply(Divide(screenWidth, targetAspectRatio), 0.5 - lowPosition)
     ),
-    stageZoom
+    If(
+        Greater(ScreenAspectRatio, targetAspectRatio),
+        screenTop - screenHeight * highPosition,
+        screenTop - screenHeight * lowPosition
+    )
 )
-export const stageHeight = Multiply(
+export const stageTop = If(
+    options.isStageAspectRatioLocked,
     If(
-        And(
-            options.isStageAspectRatioLocked,
-            LessOr(ScreenAspectRatio, targetAspectRatio)
-        ),
-        Divide(ScreenAspectRatio, targetAspectRatio, 0.5),
-        2
+        Greater(ScreenAspectRatio, targetAspectRatio),
+        screenTop,
+        Multiply(Divide(screenWidth, targetAspectRatio), 0.5)
     ),
-    stageZoom
+    screenTop
 )
 
 export const laneWidth = Divide(stageWidth, 2, 4.375)
-export const laneYOffset = Divide(stageHeight, 2)
-export const laneYMultiplier = Multiply(stageHeight, -0.82)
-export const laneBottom = Add(laneYOffset, laneYMultiplier)
-export const laneTop = Add(laneYOffset, Multiply(laneYMultiplier, 0.04))
+export const laneBottom = stageBottom
+export const laneTop = Lerp(stageTop, stageBottom, 0.04)
 
 export const minFlickDistanceSquared = Multiply(
     0.04,
@@ -101,7 +123,7 @@ export const minFlickDistanceSquared = Multiply(
 // Note
 
 export const baseNoteWidth = laneWidth
-export const baseNoteHeight = Multiply(stageHeight, 0.08571)
+export const baseNoteHeight = Multiply(stageHeight, 0.11625)
 
 export const halfBaseNoteWidth = Multiply(baseNoteWidth, 0.5)
 export const halfBaseNoteHeight = Multiply(baseNoteHeight, 0.5)
@@ -112,11 +134,10 @@ export const noteHeight = Multiply(baseNoteHeight, options.noteSize)
 export const halfNoteWidth = Multiply(noteWidth, 0.5)
 export const halfNoteHeight = Multiply(noteHeight, 0.5)
 
-export const noteBaseBottom = Subtract(
-    1,
-    Divide(halfNoteHeight, laneYMultiplier)
-)
-export const noteBaseTop = Add(1, Divide(halfNoteHeight, laneYMultiplier))
+export const noteBaseBottom = Subtract(laneBottom, halfNoteHeight)
+export const noteBaseTop = Add(laneBottom, halfNoteHeight)
+export const noteBaseBottomScale = Unlerp(stageTop, stageBottom, noteBaseBottom)
+export const noteBaseTopScale = Unlerp(stageTop, stageBottom, noteBaseTop)
 
 export const noteOnScreenDuration = Divide(Subtract(12, options.noteSpeed), 2)
 
