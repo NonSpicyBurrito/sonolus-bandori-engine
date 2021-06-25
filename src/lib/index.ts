@@ -2,13 +2,29 @@ import { readFileSync } from 'fs'
 
 export * from './convert'
 
-export const hashes = require(__dirname + '/info').hashes as {
+type Resource = {
+    hash: string
+    path: string
+    buffer: Buffer
+}
+
+const hashes = require(`${__dirname}/info`).hashes as {
     engineConfiguration: string
     engineData: string
 }
 
-export const engineConfiguration = readFileSync(
-    __dirname + '/EngineConfiguration'
-)
+export const engineConfiguration: Resource = {
+    hash: hashes.engineConfiguration,
+    path: `${__dirname}/EngineConfiguration`,
+    get buffer() {
+        return readFileSync(this.path)
+    },
+}
 
-export const engineData = readFileSync(__dirname + '/EngineData')
+export const engineData: Resource = {
+    hash: hashes.engineData,
+    path: `${__dirname}/EngineData`,
+    get buffer() {
+        return readFileSync(this.path)
+    },
+}

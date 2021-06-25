@@ -67,7 +67,7 @@ export function fromBestdori(
         slideFlickNoteIndex: number
         straightSliderIndex: number
         curvedSliderIndex: number
-    } = require(__dirname + '/info').archetypes
+    } = require(`${__dirname}/info`).archetypes
 ): SLevelData {
     type WrappedNoteEntity = {
         entity: SEntity
