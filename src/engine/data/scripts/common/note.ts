@@ -106,7 +106,7 @@ export class NoteDataPointer extends Pointer {
         return this.to<boolean>(4)
     }
 
-    public get isLong() {
+    public get canBeLong() {
         return this.to<boolean>(5)
     }
 
@@ -152,6 +152,10 @@ export class NoteDataPointer extends Pointer {
 
     public get hitboxRight() {
         return this.to<number>(26)
+    }
+
+    public get isLong() {
+        return this.to<boolean>(27)
     }
 }
 
@@ -389,6 +393,10 @@ export function preprocessNote() {
         ),
 
         NoteData.z.set(Subtract(Layer.NoteBody, Divide(NoteData.time, 1000))),
+
+        NoteData.isLong.set(
+            And(NoteData.canBeLong, Equal(NoteData.lane, NoteData.head.lane))
+        ),
     ]
 }
 
