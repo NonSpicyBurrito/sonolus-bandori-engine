@@ -1,6 +1,5 @@
 import {
     Add,
-    DeviceInputOffset,
     Divide,
     Greater,
     If,
@@ -13,21 +12,12 @@ import {
 
 import { options } from '../../../configuration/options'
 
-// Audio
-
-export const audioOffset = Divide(options.levelAudioOffset, 1000)
-
 // Input
 
 export const perfectWindow = 0.05
 export const greatWindow = 0.1
 export const goodWindow = 0.15
 export const slideWindow = 0.2
-
-export const inputOffset = Add(
-    DeviceInputOffset,
-    Divide(options.levelInputOffset, 1000)
-)
 
 // SFX
 

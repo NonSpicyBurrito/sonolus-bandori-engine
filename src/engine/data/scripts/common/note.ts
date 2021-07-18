@@ -16,6 +16,7 @@ import {
     If,
     InputBucket,
     InputJudgment,
+    InputOffset,
     Lerp,
     Less,
     LessOr,
@@ -43,10 +44,8 @@ import { options } from '../../../configuration/options'
 import { archetypes } from '../../archetypes'
 import { scripts } from '..'
 import {
-    audioOffset,
     goodWindow,
     halfNoteWidth,
-    inputOffset,
     laneWidth,
     Layer,
     noteBaseBottom,
@@ -256,7 +255,7 @@ export function checkTouchXInNoteHitbox(noteData: NoteDataPointer = NoteData) {
 
 export function checkNoteTimeInGoodWindow() {
     return LessOr(
-        Subtract(NoteData.time, Subtract(Time, inputOffset)),
+        Subtract(NoteData.time, Subtract(Time, InputOffset)),
         goodWindow
     )
 }
@@ -290,9 +289,7 @@ export function preprocessNote() {
     const prevNoteData = NoteData.of(Subtract(EntityInfo.index, 1))
 
     return [
-        NoteData.time.set(
-            Divide(Add(NoteData.time, audioOffset), options.speed)
-        ),
+        NoteData.time.set(Divide(NoteData.time, options.speed)),
         And(options.isMirrorEnabled, [
             NoteData.lane.set(Multiply(NoteData.lane, -1)),
             NoteData.isLeft.set(Not(NoteData.isLeft)),
@@ -417,7 +414,7 @@ export function preprocessArrowOffset() {
 export function initializeNoteAutoInput(bucket: Code<number>) {
     return And(options.isAutoplay, [
         InputJudgment.set(1),
-        InputBucket.set(Add(bucket, 1)),
+        InputBucket.set(bucket),
     ])
 }
 
@@ -476,7 +473,7 @@ export function touchProcessHead() {
             ),
             And(
                 Equal(noteHeadInfo.state, State.Despawned),
-                GreaterOr(Subtract(Time, inputOffset), NoteData.head.time),
+                GreaterOr(Subtract(Time, InputOffset), NoteData.head.time),
                 Not(isTouchOccupied),
                 checkTouchYInHitbox(),
                 checkTouchXInNoteHitbox(NoteData.head),

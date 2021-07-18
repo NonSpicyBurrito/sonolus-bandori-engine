@@ -28,7 +28,6 @@ import {
 
 import { options } from '../../configuration/options'
 import {
-    audioOffset,
     halfNoteWidth,
     laneBottom,
     Layer,
@@ -304,7 +303,7 @@ export function slider(sprite: SkinSprite): SScript {
     }
 
     function repositionTime(time: Pointer<number>) {
-        return time.set(Divide(Add(time, audioOffset), options.speed))
+        return time.set(Divide(time, options.speed))
     }
 
     function mirror(lane: Pointer<number>) {

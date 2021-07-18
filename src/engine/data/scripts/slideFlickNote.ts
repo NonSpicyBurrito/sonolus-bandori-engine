@@ -9,6 +9,7 @@ import {
     InputBucket,
     InputBucketValue,
     InputJudgment,
+    InputOffset,
     Judge,
     Multiply,
     Not,
@@ -29,7 +30,6 @@ import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
-    inputOffset,
     minFlickDistanceSquared,
     perfectWindow,
     slideWindow,
@@ -99,7 +99,7 @@ export function slideFlickNote(): SScript {
                     If(
                         NoteData.isLong,
                         checkNoteTimeInGoodWindow(),
-                        GreaterOr(Subtract(Time, inputOffset), NoteData.time)
+                        GreaterOr(Subtract(Time, InputOffset), NoteData.time)
                     ),
                     checkTouchYInHitbox(),
                     checkTouchXInNoteHitbox(),
@@ -133,7 +133,7 @@ export function slideFlickNote(): SScript {
             Not(options.isAutoplay),
             Not(bool(noteInputState)),
             Greater(
-                Subtract(Time, NoteData.head.time, inputOffset),
+                Subtract(Time, NoteData.head.time, InputOffset),
                 If(options.isStrictJudgment, goodWindow, slideWindow)
             )
         ),
@@ -143,7 +143,7 @@ export function slideFlickNote(): SScript {
         ),
         And(
             Greater(
-                Subtract(Time, NoteData.time, inputOffset),
+                Subtract(Time, NoteData.time, InputOffset),
                 If(options.isStrictJudgment, goodWindow, slideWindow)
             ),
             destroyNoteHoldEffect()
@@ -196,14 +196,14 @@ export function slideFlickNote(): SScript {
                 If(
                     options.isStrictJudgment,
                     Judge(
-                        Subtract(Time, inputOffset),
+                        Subtract(Time, InputOffset),
                         NoteData.time,
                         perfectWindow,
                         greatWindow,
                         goodWindow
                     ),
                     Judge(
-                        Subtract(Time, inputOffset),
+                        Subtract(Time, InputOffset),
                         NoteData.time,
                         slideWindow,
                         slideWindow,
@@ -211,9 +211,9 @@ export function slideFlickNote(): SScript {
                     )
                 )
             ),
-            InputBucket.set(bucket + 1),
+            InputBucket.set(bucket),
             InputBucketValue.set(
-                Multiply(1000, Subtract(Time, inputOffset, NoteData.time))
+                Multiply(1000, Subtract(Time, InputOffset, NoteData.time))
             ),
 
             playNoteLaneEffect(),

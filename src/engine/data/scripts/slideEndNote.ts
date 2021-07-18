@@ -8,6 +8,7 @@ import {
     InputBucket,
     InputBucketValue,
     InputJudgment,
+    InputOffset,
     Judge,
     Multiply,
     Not,
@@ -27,7 +28,6 @@ import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
-    inputOffset,
     perfectWindow,
     slideWindow,
 } from './common/constants'
@@ -107,7 +107,7 @@ export function slideEndNote(): SScript {
             Not(options.isAutoplay),
             Not(bool(noteInputState)),
             Greater(
-                Subtract(Time, NoteData.head.time, inputOffset),
+                Subtract(Time, NoteData.head.time, InputOffset),
                 If(options.isStrictJudgment, goodWindow, slideWindow)
             )
         ),
@@ -117,7 +117,7 @@ export function slideEndNote(): SScript {
         ),
         And(
             Greater(
-                Subtract(Time, NoteData.time, inputOffset),
+                Subtract(Time, NoteData.time, InputOffset),
                 If(options.isStrictJudgment, goodWindow, slideWindow)
             ),
             destroyNoteHoldEffect()
@@ -160,14 +160,14 @@ export function slideEndNote(): SScript {
                 If(
                     options.isStrictJudgment,
                     Judge(
-                        Subtract(TouchT, inputOffset),
+                        Subtract(TouchT, InputOffset),
                         NoteData.time,
                         perfectWindow,
                         greatWindow,
                         goodWindow
                     ),
                     Judge(
-                        Subtract(TouchT, inputOffset),
+                        Subtract(TouchT, InputOffset),
                         NoteData.time,
                         -perfectWindow,
                         slideWindow,
@@ -178,9 +178,9 @@ export function slideEndNote(): SScript {
                     )
                 )
             ),
-            InputBucket.set(bucket + 1),
+            InputBucket.set(bucket),
             InputBucketValue.set(
-                Multiply(1000, Subtract(TouchT, inputOffset, NoteData.time))
+                Multiply(1000, Subtract(TouchT, InputOffset, NoteData.time))
             ),
 
             playNoteLaneEffect(),

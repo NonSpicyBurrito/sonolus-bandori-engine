@@ -1,6 +1,7 @@
 import {
     Add,
     And,
+    AudioOffset,
     bool,
     EffectClip,
     EntityInfo,
@@ -31,7 +32,7 @@ export function autoSFX(): SScript {
         Equal(noteInfo.archetype, archetypes.straightSliderIndex),
         Equal(noteInfo.archetype, archetypes.curvedSliderIndex),
         Not(bool(noteInfo.archetype)),
-        And(GreaterOr(Time, Subtract(noteData.time, 1)), [
+        And(GreaterOr(Time, Subtract(noteData.time, AudioOffset, 1)), [
             PlayScheduled(
                 If(
                     Or(

@@ -7,6 +7,7 @@ import {
     InputBucket,
     InputBucketValue,
     InputJudgment,
+    InputOffset,
     Judge,
     Multiply,
     Not,
@@ -22,12 +23,7 @@ import {
 
 import { options } from '../../configuration/options'
 import { scripts } from '.'
-import {
-    goodWindow,
-    greatWindow,
-    inputOffset,
-    perfectWindow,
-} from './common/constants'
+import { goodWindow, greatWindow, perfectWindow } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
     checkTouchXInNoteHitbox,
@@ -78,7 +74,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): SScript {
     const updateParallel = Or(
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
-        Greater(Subtract(Time, NoteData.time, inputOffset), goodWindow),
+        Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
         [updateNoteScale(), prepareDrawNote(), drawNote(sprite)]
     )
 
@@ -113,16 +109,16 @@ export function tapNote(bucket: number, sprite: SkinSprite): SScript {
 
             InputJudgment.set(
                 Judge(
-                    Subtract(TouchST, inputOffset),
+                    Subtract(TouchST, InputOffset),
                     NoteData.time,
                     perfectWindow,
                     greatWindow,
                     goodWindow
                 )
             ),
-            InputBucket.set(bucket + 1),
+            InputBucket.set(bucket),
             InputBucketValue.set(
-                Multiply(1000, Subtract(TouchST, inputOffset, NoteData.time))
+                Multiply(1000, Subtract(TouchST, InputOffset, NoteData.time))
             ),
 
             playNoteLaneEffect(),

@@ -10,6 +10,7 @@ import {
     InputBucket,
     InputBucketValue,
     InputJudgment,
+    InputOffset,
     Judge,
     Less,
     LessOr,
@@ -36,7 +37,6 @@ import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
-    inputOffset,
     perfectWindow,
     stageWidth,
 } from './common/constants'
@@ -135,7 +135,7 @@ export function directionalFlickNote(): SScript {
     const updateParallel = Or(
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
-        Greater(Subtract(Time, NoteData.time, inputOffset), goodWindow),
+        Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
         [
             updateNoteScale(),
             prepareDrawNote(),
@@ -210,18 +210,18 @@ export function directionalFlickNote(): SScript {
 
             InputJudgment.set(
                 Judge(
-                    Subtract(flickActivationTime, inputOffset),
+                    Subtract(flickActivationTime, InputOffset),
                     NoteData.time,
                     perfectWindow,
                     greatWindow,
                     goodWindow
                 )
             ),
-            InputBucket.set(Add(bucket, 1)),
+            InputBucket.set(bucket),
             InputBucketValue.set(
                 Multiply(
                     1000,
-                    Subtract(flickActivationTime, inputOffset, NoteData.time)
+                    Subtract(flickActivationTime, InputOffset, NoteData.time)
                 )
             ),
 

@@ -8,6 +8,7 @@ import {
     InputBucket,
     InputBucketValue,
     InputJudgment,
+    InputOffset,
     Judge,
     Multiply,
     Not,
@@ -31,7 +32,6 @@ import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,
-    inputOffset,
     minFlickDistanceSquared,
     perfectWindow,
 } from './common/constants'
@@ -107,7 +107,7 @@ export function flickNote(): SScript {
     const updateParallel = Or(
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
-        Greater(Subtract(Time, NoteData.time, inputOffset), goodWindow),
+        Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
         [
             updateNoteScale(),
             prepareDrawNote(),
@@ -156,18 +156,18 @@ export function flickNote(): SScript {
 
             InputJudgment.set(
                 Judge(
-                    Subtract(flickActivationTime, inputOffset),
+                    Subtract(flickActivationTime, InputOffset),
                     NoteData.time,
                     perfectWindow,
                     greatWindow,
                     goodWindow
                 )
             ),
-            InputBucket.set(bucket + 1),
+            InputBucket.set(bucket),
             InputBucketValue.set(
                 Multiply(
                     1000,
-                    Subtract(flickActivationTime, inputOffset, NoteData.time)
+                    Subtract(flickActivationTime, InputOffset, NoteData.time)
                 )
             ),
 

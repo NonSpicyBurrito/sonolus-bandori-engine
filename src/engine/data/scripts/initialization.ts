@@ -21,7 +21,6 @@ import {
     UIMenu,
     UIScoreBar,
     UIScoreValue,
-    VerticalAlign,
 } from 'sonolus.js'
 
 import { options } from '../../configuration/options'
@@ -68,7 +67,6 @@ export function initialization(): SScript {
                 0,
                 1,
                 HorizontalAlign.Center,
-                VerticalAlign.Middle,
                 true
             ),
 
@@ -82,7 +80,6 @@ export function initialization(): SScript {
                 0,
                 1,
                 HorizontalAlign.Left,
-                VerticalAlign.Middle,
                 true
             ),
             UIScoreValue.set(
@@ -95,7 +92,6 @@ export function initialization(): SScript {
                 0,
                 1,
                 HorizontalAlign.Right,
-                VerticalAlign.Middle,
                 false
             ),
 
@@ -109,7 +105,6 @@ export function initialization(): SScript {
                 0,
                 1,
                 HorizontalAlign.Left,
-                VerticalAlign.Middle,
                 true
             ),
             UILifeValue.set(
@@ -122,7 +117,6 @@ export function initialization(): SScript {
                 0,
                 1,
                 HorizontalAlign.Right,
-                VerticalAlign.Middle,
                 false
             ),
 
@@ -136,7 +130,6 @@ export function initialization(): SScript {
                 0,
                 options.uiJudgmentAlpha,
                 HorizontalAlign.Center,
-                VerticalAlign.Middle,
                 false
             ),
 
@@ -150,7 +143,6 @@ export function initialization(): SScript {
                 0,
                 options.uiComboAlpha,
                 HorizontalAlign.Center,
-                VerticalAlign.Middle,
                 false
             ),
             UIComboText.set(
@@ -163,7 +155,6 @@ export function initialization(): SScript {
                 0,
                 options.uiComboAlpha,
                 HorizontalAlign.Center,
-                VerticalAlign.Middle,
                 false
             ),
         ]
