@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
+    "target": "ES6",
     "outDir": "./dist",
     "rootDir": "./src/lib",
-    "declaration": true,
-    "esModuleInterop": true
+    "declaration": true
   },
   "include": [
     "./src/lib"
