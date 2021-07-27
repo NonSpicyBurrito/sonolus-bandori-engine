@@ -1,5 +1,4 @@
 import { serve } from 'sonolus.js'
-
 import { buildOutput } from '.'
 
 const sonolus = serve(buildOutput)

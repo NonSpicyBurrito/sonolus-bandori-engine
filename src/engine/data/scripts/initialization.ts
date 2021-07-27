@@ -22,11 +22,10 @@ import {
     UIScoreBar,
     UIScoreValue,
 } from 'sonolus.js'
-
+import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { archetypes } from '../archetypes'
 import { buckets } from '../buckets'
-import { scripts } from '.'
 import { screenLeft, screenRight, stageHeight } from './common/constants'
 
 export function initialization(): SScript {

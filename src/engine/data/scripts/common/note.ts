@@ -39,10 +39,9 @@ import {
     TouchEnded,
     TouchId,
 } from 'sonolus.js'
-
+import { scripts } from '..'
 import { options } from '../../../configuration/options'
 import { archetypes } from '../../archetypes'
-import { scripts } from '..'
 import {
     goodWindow,
     halfNoteWidth,

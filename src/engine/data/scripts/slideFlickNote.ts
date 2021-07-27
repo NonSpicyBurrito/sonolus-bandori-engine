@@ -23,10 +23,9 @@ import {
     TouchX,
     TouchY,
 } from 'sonolus.js'
-
+import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
-import { scripts } from '.'
 import {
     goodWindow,
     greatWindow,

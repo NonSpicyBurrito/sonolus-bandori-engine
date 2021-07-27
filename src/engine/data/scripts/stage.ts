@@ -22,9 +22,8 @@ import {
     TouchStarted,
     TouchX,
 } from 'sonolus.js'
-
-import { options } from '../../configuration/options'
 import { scripts } from '.'
+import { options } from '../../configuration/options'
 import {
     halfBaseNoteHeight,
     laneBottom,

@@ -11,7 +11,6 @@ import {
     SpawnParticleEffect,
     Subtract,
 } from 'sonolus.js'
-
 import { options } from '../../../configuration/options'
 import {
     halfCircularHoldEffectHeight,

@@ -1,5 +1,4 @@
 import { Add, And, Code } from 'sonolus.js'
-
 import { options } from '../../../configuration/options'
 import { tilt } from './levelMemory'
 

@@ -16,7 +16,6 @@ import {
     Subtract,
     Time,
 } from 'sonolus.js'
-
 import { archetypes } from '../archetypes'
 import { minSFXDistance } from './common/constants'
 import { NoteData } from './common/note'

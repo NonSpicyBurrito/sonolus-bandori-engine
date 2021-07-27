@@ -8,7 +8,6 @@ import {
     SScript,
     Time,
 } from 'sonolus.js'
-
 import { options } from '../../configuration/options'
 import { spawnHoldEffect } from './common/effect'
 import { NoteData, NoteSharedMemory } from './common/note'

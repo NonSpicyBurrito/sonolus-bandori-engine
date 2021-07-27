@@ -6,7 +6,6 @@ import {
     SScript,
     Time,
 } from 'sonolus.js'
-
 import { playLaneEffect, playNoteEffect } from './common/effect'
 import { NoteData } from './common/note'
 

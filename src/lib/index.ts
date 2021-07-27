@@ -8,6 +8,7 @@ type Resource = {
     buffer: Buffer
 }
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const hashes = require(`${__dirname}/info`).hashes as {
     engineConfiguration: string
     engineData: string

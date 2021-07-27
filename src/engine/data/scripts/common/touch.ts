@@ -7,7 +7,6 @@ import {
     TouchX,
     TouchY,
 } from 'sonolus.js'
-
 import { updateTilt } from './stageTilt'
 
 export const isTouchOccupied = TemporaryMemory.to<boolean>(0)

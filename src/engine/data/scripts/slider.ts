@@ -25,7 +25,6 @@ import {
     Subtract,
     Time,
 } from 'sonolus.js'
-
 import { options } from '../../configuration/options'
 import {
     halfNoteWidth,

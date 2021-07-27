@@ -1,5 +1,4 @@
 import { emptyDirSync, outputFileSync, outputJsonSync } from 'fs-extra'
-
 import { buildOutput } from '.'
 import { archetypes } from './engine/data/archetypes'
 

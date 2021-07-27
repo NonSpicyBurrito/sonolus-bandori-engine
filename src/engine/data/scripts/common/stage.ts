@@ -1,5 +1,4 @@
 import { Add, Code, Multiply, Subtract } from 'sonolus.js'
-
 import { laneWidth } from './constants'
 
 export function getLaneTopLeft(lane: Code<number>) {

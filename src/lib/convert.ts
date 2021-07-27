@@ -67,6 +67,7 @@ export function fromBestdori(
         slideFlickNoteIndex: number
         straightSliderIndex: number
         curvedSliderIndex: number
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
     } = require(`${__dirname}/info`).archetypes
 ): SLevelData {
     type WrappedNoteEntity = {
@@ -304,15 +305,21 @@ export function fromBestdori(
                 )
                 .map((wrappedNoteEntity) => {
                     if (wrappedNoteEntity.head) {
-                        wrappedNoteEntity.entity.data!.values[0] =
+                        if (!wrappedNoteEntity.entity.data)
+                            throw 'Unexpected missing entity data'
+
+                        wrappedNoteEntity.entity.data.values[0] =
                             wrappedNoteEntities.indexOf(wrappedNoteEntity.head)
                     }
                     return wrappedNoteEntity.entity
                 }),
             ...wrappedSliderEntities.map((wrappedSliderEntity) => {
-                wrappedSliderEntity.entity.data!.values[0] =
+                if (!wrappedSliderEntity.entity.data)
+                    throw 'Unexpected missing entity data'
+
+                wrappedSliderEntity.entity.data.values[0] =
                     wrappedNoteEntities.indexOf(wrappedSliderEntity.head)
-                wrappedSliderEntity.entity.data!.values[1] =
+                wrappedSliderEntity.entity.data.values[1] =
                     wrappedNoteEntities.indexOf(wrappedSliderEntity.tail)
                 return wrappedSliderEntity.entity
             }),
@@ -333,7 +340,7 @@ function repair(chartObjects: ChartObject[]) {
     chartObjects.forEach((chartObject) => {
         switch (chartObject.type) {
             case 'Long':
-            case 'Slide':
+            case 'Slide': {
                 chartObject.connections.sort((a, b) => a.beat - b.beat)
                 const visibleConnections = chartObject.connections.filter(
                     (connection) => !connection.hidden
@@ -342,7 +349,7 @@ function repair(chartObjects: ChartObject[]) {
                     case 0:
                         remove(chartObject)
                         break
-                    case 1:
+                    case 1: {
                         const connection = visibleConnections[0]
                         replace(chartObject, {
                             type: 'Single',
@@ -351,6 +358,7 @@ function repair(chartObjects: ChartObject[]) {
                             flick: connection.flick,
                         })
                         break
+                    }
                     default:
                         while (chartObject.connections[0]?.hidden) {
                             chartObject.connections.shift()
@@ -365,6 +373,7 @@ function repair(chartObjects: ChartObject[]) {
                         break
                 }
                 break
+            }
         }
     })
 

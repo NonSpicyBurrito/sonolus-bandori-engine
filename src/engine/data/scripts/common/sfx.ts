@@ -1,5 +1,4 @@
 import { And, EffectClip, InputJudgment, Play } from 'sonolus.js'
-
 import { options } from '../../../configuration/options'
 import { minSFXDistance } from './constants'
 

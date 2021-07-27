@@ -6,7 +6,6 @@ import {
     ScreenAspectRatio,
     SScript,
 } from 'sonolus.js'
-
 import { tilt } from './common/levelMemory'
 
 export function stageTilt(): SScript {

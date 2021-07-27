@@ -20,9 +20,8 @@ import {
     TouchST,
     TouchStarted,
 } from 'sonolus.js'
-
-import { options } from '../../configuration/options'
 import { scripts } from '.'
+import { options } from '../../configuration/options'
 import { goodWindow, greatWindow, perfectWindow } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
