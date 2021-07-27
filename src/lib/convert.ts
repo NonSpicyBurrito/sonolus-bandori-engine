@@ -304,19 +304,16 @@ export function fromBestdori(
                 )
                 .map((wrappedNoteEntity) => {
                     if (wrappedNoteEntity.head) {
-                        wrappedNoteEntity.entity.data!.values[0] = wrappedNoteEntities.indexOf(
-                            wrappedNoteEntity.head
-                        )
+                        wrappedNoteEntity.entity.data!.values[0] =
+                            wrappedNoteEntities.indexOf(wrappedNoteEntity.head)
                     }
                     return wrappedNoteEntity.entity
                 }),
             ...wrappedSliderEntities.map((wrappedSliderEntity) => {
-                wrappedSliderEntity.entity.data!.values[0] = wrappedNoteEntities.indexOf(
-                    wrappedSliderEntity.head
-                )
-                wrappedSliderEntity.entity.data!.values[1] = wrappedNoteEntities.indexOf(
-                    wrappedSliderEntity.tail
-                )
+                wrappedSliderEntity.entity.data!.values[0] =
+                    wrappedNoteEntities.indexOf(wrappedSliderEntity.head)
+                wrappedSliderEntity.entity.data!.values[1] =
+                    wrappedNoteEntities.indexOf(wrappedSliderEntity.tail)
                 return wrappedSliderEntity.entity
             }),
         ],
