@@ -30,7 +30,7 @@ export const scripts = defineScripts({
     slideEndNote,
     slideFlickNote,
     straightSlider: () => slider(SkinSprite.NoteConnectionGreen),
-    curvedSlider: () => slider(11102),
+    curvedSlider: () => slider(SkinSprite.NoteConnectionGreenSeamless),
 
     simLine,
 

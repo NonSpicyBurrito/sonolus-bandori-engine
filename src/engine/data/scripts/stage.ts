@@ -8,6 +8,8 @@ import {
     EntityMemory,
     Equal,
     GreaterOr,
+    HasSkinSprite,
+    If,
     Lerp,
     LessOr,
     Multiply,
@@ -25,6 +27,13 @@ import {
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import {
+    bandoriJudgmentLineHeight,
+    BandoriJudgmentLineSprite,
+    bandoriJudgmentLineWidth,
+    bandoriStageBottom,
+    BandoriStageSprite,
+    bandoriStageTop,
+    bandoriStageWidth,
     halfBaseNoteHeight,
     laneBottom,
     laneTop,
@@ -116,71 +125,107 @@ export function stage(): SScript {
         const halfSlotSize = Multiply(halfJudgmentLineHeight, 0.85)
 
         return [
-            Draw(
-                SkinSprite.JudgmentLine,
-                ...rectByEdge(
-                    screenLeft,
-                    screenRight,
-                    Subtract(laneBottom, halfJudgmentLineHeight),
-                    Add(laneBottom, halfJudgmentLineHeight)
-                ),
-                Layer.JudgmentLine,
-                1
-            ),
-
-            Draw(
-                SkinSprite.StageLeftBorder,
-                getLaneBottomLeft(-3 - borderWidth),
-                laneBottom,
-                getLaneTopLeft(-3 - borderWidth),
-                laneTop,
-                getLaneTopLeft(-3),
-                laneTop,
-                getLaneBottomLeft(-3),
-                laneBottom,
-                Layer.Stage,
-                1
-            ),
-            Draw(
-                SkinSprite.StageRightBorder,
-                getLaneBottomRight(3),
-                laneBottom,
-                getLaneTopRight(3),
-                laneTop,
-                getLaneTopRight(3 + borderWidth),
-                laneTop,
-                getLaneBottomRight(3 + borderWidth),
-                laneBottom,
-                Layer.Stage,
-                1
-            ),
-
-            [...Array(7).keys()].map((i) => [
+            If(
+                HasSkinSprite(BandoriJudgmentLineSprite),
                 Draw(
-                    SkinSprite.Lane,
-                    getLaneBottomLeft(i - 3),
-                    laneBottom,
-                    getLaneTopLeft(i - 3),
-                    laneTop,
-                    getLaneTopRight(i - 3),
-                    laneTop,
-                    getLaneBottomRight(i - 3),
-                    laneBottom,
+                    BandoriJudgmentLineSprite,
+                    ...rectBySize(
+                        0,
+                        laneBottom,
+                        Multiply(bandoriJudgmentLineWidth, 0.5),
+                        Multiply(bandoriJudgmentLineHeight, 0.5)
+                    ),
+                    Layer.JudgmentLine,
+                    1
+                ),
+                [
+                    Draw(
+                        SkinSprite.JudgmentLine,
+                        ...rectByEdge(
+                            screenLeft,
+                            screenRight,
+                            Subtract(laneBottom, halfJudgmentLineHeight),
+                            Add(laneBottom, halfJudgmentLineHeight)
+                        ),
+                        Layer.JudgmentLine,
+                        1
+                    ),
+                    [...Array(7).keys()].map((i) =>
+                        Draw(
+                            SkinSprite.NoteSlot,
+                            ...rectBySize(
+                                getLaneBottomCenter(i - 3),
+                                laneBottom,
+                                halfSlotSize,
+                                halfSlotSize
+                            ),
+                            Layer.Slot,
+                            0.5
+                        )
+                    ),
+                ]
+            ),
+
+            If(
+                HasSkinSprite(BandoriStageSprite),
+                Draw(
+                    BandoriStageSprite,
+                    ...rectByEdge(
+                        Multiply(bandoriStageWidth, -0.5),
+                        Multiply(bandoriStageWidth, 0.5),
+                        bandoriStageBottom,
+                        bandoriStageTop
+                    ),
                     Layer.Stage,
                     1
                 ),
-                Draw(
-                    SkinSprite.NoteSlot,
-                    ...rectBySize(
-                        getLaneBottomCenter(i - 3),
+                [
+                    Draw(
+                        SkinSprite.StageLeftBorder,
+                        getLaneBottomLeft(-3 - borderWidth),
                         laneBottom,
-                        halfSlotSize,
-                        halfSlotSize
+                        getLaneTopLeft(-3 - borderWidth),
+                        laneTop,
+                        getLaneTopLeft(-3),
+                        laneTop,
+                        getLaneBottomLeft(-3),
+                        laneBottom,
+                        Layer.Stage,
+                        1
                     ),
-                    Layer.Slot,
-                    1
-                ),
-            ]),
+                    Draw(
+                        SkinSprite.StageRightBorder,
+                        getLaneBottomRight(3),
+                        laneBottom,
+                        getLaneTopRight(3),
+                        laneTop,
+                        getLaneTopRight(3 + borderWidth),
+                        laneTop,
+                        getLaneBottomRight(3 + borderWidth),
+                        laneBottom,
+                        Layer.Stage,
+                        1
+                    ),
+
+                    [...Array(7).keys()].map((i) =>
+                        Draw(
+                            i % 2
+                                ? SkinSprite.Lane
+                                : SkinSprite.LaneAlternative,
+                            getLaneBottomLeft(i - 3),
+                            laneBottom,
+                            getLaneTopLeft(i - 3),
+                            laneTop,
+                            getLaneTopRight(i - 3),
+                            laneTop,
+                            getLaneBottomRight(i - 3),
+                            laneBottom,
+                            Layer.Stage,
+                            1
+                        )
+                    ),
+                ]
+            ),
         ]
     }
 

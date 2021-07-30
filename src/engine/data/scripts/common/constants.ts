@@ -1,5 +1,6 @@
 import {
     Add,
+    customSkinSprite,
     Divide,
     Greater,
     If,
@@ -10,6 +11,10 @@ import {
     Unlerp,
 } from 'sonolus.js'
 import { options } from '../../../configuration/options'
+
+// Engine
+
+const engineId = 1
 
 // Input
 
@@ -107,6 +112,21 @@ export const minFlickDistanceSquared = Multiply(
     0.04,
     stageWidth,
     stageWidth
+)
+
+// Stage with Bandori sprites
+
+export const BandoriStageSprite = customSkinSprite(engineId, 1)
+export const BandoriJudgmentLineSprite = customSkinSprite(engineId, 2)
+
+export const bandoriStageWidth = Multiply(stageWidth, 0.865)
+export const bandoriStageBottom = stageBottom
+export const bandoriStageTop = Lerp(stageTop, stageBottom, 0.015)
+
+export const bandoriJudgmentLineWidth = Multiply(stageWidth, 1.335)
+export const bandoriJudgmentLineHeight = Multiply(
+    bandoriJudgmentLineWidth,
+    90 / 1800
 )
 
 // Note

@@ -64,7 +64,7 @@ export function simLine(): SScript {
             top.set(Lerp(stageTop, noteBaseTop, scale)),
 
             Draw(
-                SkinSprite.SimultaneousConnectionCyan,
+                SkinSprite.SimultaneousConnectionNeutral,
                 Multiply(left, noteBaseBottomScale, scale),
                 bottom,
                 Multiply(left, noteBaseTopScale, scale),
