@@ -100,7 +100,7 @@ export const stageTop = If(
 
 export const laneWidth = Divide(stageWidth, 2, 4.375)
 export const laneBottom = stageBottom
-export const laneTop = Lerp(stageTop, stageBottom, 0.04)
+export const laneTop = Lerp(stageTop, stageBottom, 0.05)
 
 export const minFlickDistanceSquared = Multiply(
     0.04,
