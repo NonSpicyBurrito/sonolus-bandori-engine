@@ -1,10 +1,16 @@
-import { emptyDirSync, outputFileSync, outputJsonSync } from 'fs-extra'
+import {
+    copySync,
+    emptyDirSync,
+    outputFileSync,
+    outputJsonSync,
+} from 'fs-extra'
 import { buildOutput } from '.'
 import { archetypes } from './engine/data/archetypes'
 
-const distPath = 'dist'
+const distPath = './dist'
 
 emptyDirSync(distPath)
+copySync('./src/res', distPath)
 
 outputFileSync(
     `${distPath}/EngineConfiguration`,
@@ -13,12 +19,9 @@ outputFileSync(
 
 outputFileSync(`${distPath}/EngineData`, buildOutput.engine.data.buffer)
 
-outputJsonSync(`${distPath}/info.json`, {
-    hashes: {
-        engineConfiguration: buildOutput.engine.configuration.hash,
-        engineData: buildOutput.engine.data.hash,
-    },
-    archetypes: Object.fromEntries(
+outputJsonSync(
+    `${distPath}/archetypes.json`,
+    Object.fromEntries(
         Object.entries(archetypes).filter(([key]) => key.endsWith('Index'))
-    ),
-})
+    )
+)

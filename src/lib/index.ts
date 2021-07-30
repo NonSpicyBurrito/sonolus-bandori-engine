@@ -1,31 +1,46 @@
-import { readFileSync } from 'fs'
-
-export * from './convert'
-
-type Resource = {
-    hash: string
-    path: string
-    buffer: Buffer
-}
+import { SLevelData } from 'sonolus.js'
+import { ChartObject, fromBestdori as _fromBestdori } from './convert'
+import { Resource } from './Resource'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const hashes = require(`${__dirname}/info`).hashes as {
-    engineConfiguration: string
-    engineData: string
-}
+const archetypes = require('./archetypes')
 
-export const engineConfiguration: Resource = {
-    hash: hashes.engineConfiguration,
-    path: `${__dirname}/EngineConfiguration`,
-    get buffer() {
-        return readFileSync(this.path)
+export const version = '0.4.1'
+
+export const engineInfo = {
+    name: 'bandori',
+    version: 2,
+    title: {
+        en: 'BanG Dream!',
+        ja: 'バンドリ！',
+        ko: '뱅드림!',
+        'zh-hans': 'BanG Dream!',
+        'zh-hant': 'BanG Dream!',
+    },
+    subtitle: {
+        en: 'BanG Dream! Girls Band Party!',
+        ja: 'バンドリ！ ガールズバンドパーティ！',
+        ko: '뱅드림! 걸즈 밴드 파티!',
+        'zh-hans': 'BanG Dream! 少女乐团派对!',
+        'zh-hant': 'BanG Dream! 少女樂團派對',
+    },
+    author: {
+        en: 'Burrito',
+    },
+    description: {
+        en: [
+            'A recreation of BanG Dream! Girls Band Party engine in Sonolus.',
+            '',
+            'GitHub Repository',
+            'https://github.com/NonSpicyBurrito/sonolus-bandori-engine',
+        ].join('\n'),
     },
 }
 
-export const engineData: Resource = {
-    hash: hashes.engineData,
-    path: `${__dirname}/EngineData`,
-    get buffer() {
-        return readFileSync(this.path)
-    },
+export const engineConfiguration = new Resource('EngineConfiguration')
+export const engineData = new Resource('EngineData')
+export const engineThumbnail = new Resource('thumbnail.png')
+
+export function fromBestdori(chart: ChartObject[]): SLevelData {
+    return _fromBestdori(chart, archetypes)
 }

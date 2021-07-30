@@ -1,6 +1,6 @@
 import { SEntity, SLevelData } from 'sonolus.js'
 
-type ChartObject =
+export type ChartObject =
     | SingleObject
     | DirectionalObject
     | SlideObject
@@ -54,7 +54,7 @@ type SystemObject = ObjectBase & {
 }
 
 export function fromBestdori(
-    data: ChartObject[],
+    chart: ChartObject[],
     archetypes: {
         initializationIndex: number
         stageIndex: number
@@ -67,8 +67,7 @@ export function fromBestdori(
         slideFlickNoteIndex: number
         straightSliderIndex: number
         curvedSliderIndex: number
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-    } = require(`${__dirname}/info`).archetypes
+    }
 ): SLevelData {
     type WrappedNoteEntity = {
         entity: SEntity
@@ -83,7 +82,7 @@ export function fromBestdori(
         tail: WrappedNoteEntity
     }
 
-    const chartObjects = repair(data)
+    const chartObjects = repair(chart)
 
     const timings: {
         beat: number

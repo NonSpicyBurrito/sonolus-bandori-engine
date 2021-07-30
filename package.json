@@ -8,8 +8,7 @@
   "keywords": [
     "Sonolus"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist",
   "files": [
     "dist"
   ],
