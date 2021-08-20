@@ -7,6 +7,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    InputAccuracy,
     InputBucket,
     InputBucketValue,
     InputJudgment,
@@ -74,7 +75,7 @@ export function directionalFlickNote(): SScript {
         buckets.rightDirectionalFlickNoteIndex
     )
 
-    const preprocess = [preprocessNote(), preprocessArrowOffset()]
+    const preprocess = [preprocessNote(goodWindow), preprocessArrowOffset()]
 
     const spawnOrder = NoteData.spawnTime
 
@@ -216,13 +217,11 @@ export function directionalFlickNote(): SScript {
                     goodWindow
                 )
             ),
-            InputBucket.set(bucket),
-            InputBucketValue.set(
-                Multiply(
-                    1000,
-                    Subtract(flickActivationTime, InputOffset, NoteData.time)
-                )
+            InputAccuracy.set(
+                Subtract(flickActivationTime, InputOffset, NoteData.time)
             ),
+            InputBucket.set(bucket),
+            InputBucketValue.set(Multiply(1000, InputAccuracy)),
 
             playNoteLaneEffect(),
             If(

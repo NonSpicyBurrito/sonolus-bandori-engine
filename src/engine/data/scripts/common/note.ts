@@ -14,6 +14,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    InputAccuracy,
     InputBucket,
     InputJudgment,
     InputOffset,
@@ -280,7 +281,7 @@ export function getSpawnTime(
     return Subtract(time, Multiply(noteOnScreenDuration, speedMultiplier))
 }
 
-export function preprocessNote() {
+export function preprocessNote(missAccuracy: Code<number>) {
     const minLane = LevelMemory.to<number>(0)
     const maxLane = LevelMemory.to<number>(1)
     const slideRange = LevelMemory.to<number>(2)
@@ -393,6 +394,8 @@ export function preprocessNote() {
         NoteData.isLong.set(
             And(NoteData.canBeLong, Equal(NoteData.lane, NoteData.head.lane))
         ),
+
+        Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
     ]
 }
 

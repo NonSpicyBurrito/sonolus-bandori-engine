@@ -6,6 +6,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    InputAccuracy,
     InputBucket,
     InputBucketValue,
     InputJudgment,
@@ -70,7 +71,10 @@ export function slideFlickNote(): SScript {
     const flickActivationX = EntityMemory.to<number>(0)
     const flickActivationY = EntityMemory.to<number>(1)
 
-    const preprocess = [preprocessNote(), preprocessSlideSpawnTime()]
+    const preprocess = [
+        preprocessNote(If(options.isStrictJudgment, goodWindow, slideWindow)),
+        preprocessSlideSpawnTime(),
+    ]
 
     const spawnOrder = NoteData.slideSpawnTime
 
@@ -210,10 +214,9 @@ export function slideFlickNote(): SScript {
                     )
                 )
             ),
+            InputAccuracy.set(Subtract(Time, InputOffset, NoteData.time)),
             InputBucket.set(bucket),
-            InputBucketValue.set(
-                Multiply(1000, Subtract(Time, InputOffset, NoteData.time))
-            ),
+            InputBucketValue.set(Multiply(1000, InputAccuracy)),
 
             playNoteLaneEffect(),
             playNoteFlickEffect(),

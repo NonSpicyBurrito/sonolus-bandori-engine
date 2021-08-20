@@ -5,6 +5,7 @@ import {
     Greater,
     GreaterOr,
     If,
+    InputAccuracy,
     InputBucket,
     InputBucketValue,
     InputJudgment,
@@ -62,7 +63,10 @@ import {
 export function slideEndNote(): SScript {
     const bucket = buckets.slideEndNoteIndex
 
-    const preprocess = [preprocessNote(), preprocessSlideSpawnTime()]
+    const preprocess = [
+        preprocessNote(If(options.isStrictJudgment, goodWindow, slideWindow)),
+        preprocessSlideSpawnTime(),
+    ]
 
     const spawnOrder = NoteData.slideSpawnTime
 
@@ -177,10 +181,9 @@ export function slideEndNote(): SScript {
                     )
                 )
             ),
+            InputAccuracy.set(Subtract(TouchT, InputOffset, NoteData.time)),
             InputBucket.set(bucket),
-            InputBucketValue.set(
-                Multiply(1000, Subtract(TouchT, InputOffset, NoteData.time))
-            ),
+            InputBucketValue.set(Multiply(1000, InputAccuracy)),
 
             playNoteLaneEffect(),
             playNoteTapEffect(),

@@ -4,6 +4,7 @@ import {
     Equal,
     Greater,
     GreaterOr,
+    InputAccuracy,
     InputBucket,
     InputBucketValue,
     InputJudgment,
@@ -44,7 +45,7 @@ import { playJudgmentSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 
 export function tapNote(bucket: number, sprite: SkinSprite): SScript {
-    const preprocess = preprocessNote()
+    const preprocess = preprocessNote(goodWindow)
 
     const spawnOrder = NoteData.spawnTime
 
@@ -115,10 +116,9 @@ export function tapNote(bucket: number, sprite: SkinSprite): SScript {
                     goodWindow
                 )
             ),
+            InputAccuracy.set(Subtract(TouchST, InputOffset, NoteData.time)),
             InputBucket.set(bucket),
-            InputBucketValue.set(
-                Multiply(1000, Subtract(TouchST, InputOffset, NoteData.time))
-            ),
+            InputBucketValue.set(Multiply(1000, InputAccuracy)),
 
             playNoteLaneEffect(),
             playNoteTapEffect(),

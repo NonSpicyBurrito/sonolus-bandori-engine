@@ -5,6 +5,7 @@ import {
     Equal,
     Greater,
     GreaterOr,
+    InputAccuracy,
     InputBucket,
     InputBucketValue,
     InputJudgment,
@@ -62,7 +63,7 @@ export function flickNote(): SScript {
 
     const flickActivationTime = EntityMemory.to<number>(0)
 
-    const preprocess = preprocessNote()
+    const preprocess = preprocessNote(goodWindow)
 
     const spawnOrder = NoteData.spawnTime
 
@@ -162,13 +163,11 @@ export function flickNote(): SScript {
                     goodWindow
                 )
             ),
-            InputBucket.set(bucket),
-            InputBucketValue.set(
-                Multiply(
-                    1000,
-                    Subtract(flickActivationTime, InputOffset, NoteData.time)
-                )
+            InputAccuracy.set(
+                Subtract(flickActivationTime, InputOffset, NoteData.time)
             ),
+            InputBucket.set(bucket),
+            InputBucketValue.set(Multiply(1000, InputAccuracy)),
 
             playNoteLaneEffect(),
             playNoteFlickEffect(),
