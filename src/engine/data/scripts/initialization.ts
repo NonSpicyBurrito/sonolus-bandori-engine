@@ -16,11 +16,11 @@ import {
     UIComboText,
     UIComboValue,
     UIJudgment,
-    UILifeBar,
-    UILifeValue,
     UIMenu,
-    UIScoreBar,
-    UIScoreValue,
+    UIPrimaryMetricBar,
+    UIPrimaryMetricValue,
+    UISecondaryMetricBar,
+    UISecondaryMetricValue,
 } from 'sonolus.js'
 import { scripts } from '.'
 import { options } from '../../configuration/options'
@@ -69,7 +69,7 @@ export function initialization(): SScript {
                 true
             ),
 
-            UIScoreBar.set(
+            UIPrimaryMetricBar.set(
                 Add(screenLeft, 0.05),
                 0.95,
                 0,
@@ -81,7 +81,7 @@ export function initialization(): SScript {
                 HorizontalAlign.Left,
                 true
             ),
-            UIScoreValue.set(
+            UIPrimaryMetricValue.set(
                 Add(screenLeft, 0.2),
                 0.95,
                 0,
@@ -94,7 +94,7 @@ export function initialization(): SScript {
                 false
             ),
 
-            UILifeBar.set(
+            UISecondaryMetricBar.set(
                 Subtract(screenRight, 0.25),
                 0.95,
                 1,
@@ -106,7 +106,7 @@ export function initialization(): SScript {
                 HorizontalAlign.Left,
                 true
             ),
-            UILifeValue.set(
+            UISecondaryMetricValue.set(
                 Subtract(screenRight, 0.25),
                 0.95,
                 1,

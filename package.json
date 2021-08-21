@@ -27,7 +27,7 @@
     "fs-extra": "^10.0.0",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
-    "sonolus.js": "^2.2.0",
+    "sonolus.js": "^3.0.0",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
   }
