@@ -1,8 +1,11 @@
 import {
     Add,
+    And,
+    customEffectClip,
     customSkinSprite,
     Divide,
     Greater,
+    HasEffectClip,
     If,
     Lerp,
     Multiply,
@@ -26,6 +29,18 @@ export const slideWindow = 0.2
 // SFX
 
 export const minSFXDistance = 0.02
+
+// Directional Flick SFX
+
+export const singleDirectionalFlickClip = customEffectClip(engineId, 1)
+export const doubleDirectionalFlickClip = customEffectClip(engineId, 2)
+export const tripleDirectionalFlickClip = customEffectClip(engineId, 3)
+
+export const hasDirectionalFlickClips = And(
+    HasEffectClip(singleDirectionalFlickClip),
+    HasEffectClip(doubleDirectionalFlickClip),
+    HasEffectClip(tripleDirectionalFlickClip)
+)
 
 // Layers
 

@@ -13,14 +13,24 @@ A recreation of BanG Dream! Girls Band Party engine in [Sonolus](https://sonolus
 npm install sonolus-bandori-engine --save
 ```
 
-## Custom Sprites
+## Custom Resources
 
 Engine ID: `1`
 
-|ID|Sprite|Bandori Asset Path|
-|---|---|---|
-|1|Stage|`/ingameskin/fieldskin/{name}/bg_line_rhythm.png`|
-|2|Judgment Line|`/ingameskin/fieldskin/{name}/game_play_line.png`|
+### Skin Sprites
+
+| ID  | Sprite        | Bandori Asset Path                                |
+| --- | ------------- | ------------------------------------------------- |
+| 1   | Stage         | `/ingameskin/fieldskin/{name}/bg_line_rhythm.png` |
+| 2   | Judgment Line | `/ingameskin/fieldskin/{name}/game_play_line.png` |
+
+### Effect Clips
+
+| ID  | Sprite                   | Bandori Asset Path                             |
+| --- | ------------------------ | ---------------------------------------------- |
+| 1   | Directional Flick Single | `/sound/tapseskin/{name}/directional_fl.mp3`   |
+| 2   | Directional Flick Double | `/sound/tapseskin/{name}/directional_fl_2.mp3` |
+| 3   | Directional Flick Triple | `/sound/tapseskin/{name}/directional_fl_3.mp3` |
 
 ## Documentation
 

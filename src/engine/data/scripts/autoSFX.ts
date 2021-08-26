@@ -8,17 +8,18 @@ import {
     EntityMemory,
     Equal,
     GreaterOr,
-    If,
     Not,
     Or,
     PlayScheduled,
     SScript,
     Subtract,
+    Switch,
     Time,
 } from 'sonolus.js'
 import { archetypes } from '../archetypes'
 import { minSFXDistance } from './common/constants'
 import { NoteData } from './common/note'
+import { getDirectionalFlickSFX } from './common/sfx'
 
 export function autoSFX(): SScript {
     const noteIndex = EntityMemory.to<number>(0)
@@ -33,15 +34,22 @@ export function autoSFX(): SScript {
         Not(bool(noteInfo.archetype)),
         And(GreaterOr(Time, Subtract(noteData.time, AudioOffset, 1)), [
             PlayScheduled(
-                If(
-                    Or(
-                        ...[
+                Switch(
+                    noteInfo.archetype,
+                    [
+                        [
                             archetypes.flickNoteIndex,
-                            archetypes.directionalFlickNoteIndex,
+                            EffectClip.PerfectAlternative,
+                        ],
+                        [
                             archetypes.slideFlickNoteIndex,
-                        ].map((index) => Equal(noteInfo.archetype, index))
-                    ),
-                    EffectClip.PerfectAlternative,
+                            EffectClip.PerfectAlternative,
+                        ],
+                        [
+                            archetypes.directionalFlickNoteIndex,
+                            getDirectionalFlickSFX(noteData.extraWidth),
+                        ],
+                    ],
                     EffectClip.Perfect
                 ),
                 noteData.time,

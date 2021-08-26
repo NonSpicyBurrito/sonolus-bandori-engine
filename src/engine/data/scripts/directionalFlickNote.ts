@@ -61,7 +61,7 @@ import {
     touchProcessDiscontinue,
     updateNoteScale,
 } from './common/note'
-import { playFlickSFX } from './common/sfx'
+import { playDirectionalFlickSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
@@ -229,7 +229,7 @@ export function directionalFlickNote(): SScript {
                 playNoteLeftDirectionalFlickEffect(),
                 playNoteRightDirectionalFlickEffect()
             ),
-            playFlickSFX(),
+            playDirectionalFlickSFX(),
         ]
     }
 }
