@@ -41,7 +41,7 @@ export function autoSFX(): SScript {
                             archetypes.slideFlickNoteIndex,
                         ].map((index) => Equal(noteInfo.archetype, index))
                     ),
-                    EffectClip.Alternative,
+                    EffectClip.PerfectAlternative,
                     EffectClip.Perfect
                 ),
                 noteData.time,

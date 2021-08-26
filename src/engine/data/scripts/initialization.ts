@@ -7,26 +7,39 @@ import {
     GreatMultiplier,
     HorizontalAlign,
     If,
+    Lerp,
     LevelBucket,
     Multiply,
     PerfectMultiplier,
     Spawn,
     SScript,
     Subtract,
+    UIComboConfiguration,
     UIComboText,
     UIComboValue,
     UIJudgment,
+    UIJudgmentConfiguration,
     UIMenu,
+    UIMenuConfiguration,
     UIPrimaryMetricBar,
+    UIPrimaryMetricConfiguration,
     UIPrimaryMetricValue,
     UISecondaryMetricBar,
+    UISecondaryMetricConfiguration,
     UISecondaryMetricValue,
 } from 'sonolus.js'
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { archetypes } from '../archetypes'
 import { buckets } from '../buckets'
-import { screenLeft, screenRight, stageHeight } from './common/constants'
+import {
+    screenLeft,
+    screenRight,
+    stageBottom,
+    stageHeight,
+    stageTop,
+    stageWidth,
+} from './common/constants'
 
 export function initialization(): SScript {
     const preprocess = [setupUI(), setupBuckets(), setupScore(), setupLife()]
@@ -61,10 +74,10 @@ export function initialization(): SScript {
                 0.95,
                 1,
                 1,
-                0.15,
-                0.15,
+                Multiply(0.15, UIMenuConfiguration.scale),
+                Multiply(0.15, UIMenuConfiguration.scale),
                 0,
-                1,
+                UIMenuConfiguration.alpha,
                 HorizontalAlign.Center,
                 true
             ),
@@ -74,85 +87,93 @@ export function initialization(): SScript {
                 0.95,
                 0,
                 1,
-                0.75,
-                0.15,
+                Multiply(0.75, UIPrimaryMetricConfiguration.scale),
+                Multiply(0.15, UIPrimaryMetricConfiguration.scale),
                 0,
-                1,
+                UIPrimaryMetricConfiguration.alpha,
                 HorizontalAlign.Left,
                 true
             ),
             UIPrimaryMetricValue.set(
-                Add(screenLeft, 0.2),
+                Add(screenLeft, 0.05),
                 0.95,
                 0,
                 1,
-                0.6,
-                0.15,
+                Multiply(0.75, UIPrimaryMetricConfiguration.scale),
+                Multiply(0.15, UIPrimaryMetricConfiguration.scale),
                 0,
-                1,
+                UIPrimaryMetricConfiguration.alpha,
                 HorizontalAlign.Right,
                 false
             ),
 
             UISecondaryMetricBar.set(
-                Subtract(screenRight, 0.25),
+                Subtract(
+                    screenRight,
+                    0.1,
+                    Multiply(0.15, UIMenuConfiguration.scale)
+                ),
                 0.95,
                 1,
                 1,
-                0.55,
-                0.15,
+                Multiply(0.55, UISecondaryMetricConfiguration.scale),
+                Multiply(0.15, UISecondaryMetricConfiguration.scale),
                 0,
-                1,
+                UISecondaryMetricConfiguration.alpha,
                 HorizontalAlign.Left,
                 true
             ),
             UISecondaryMetricValue.set(
-                Subtract(screenRight, 0.25),
+                Subtract(
+                    screenRight,
+                    0.1,
+                    Multiply(0.15, UIMenuConfiguration.scale)
+                ),
                 0.95,
                 1,
                 1,
-                0.4,
-                0.15,
+                Multiply(0.55, UISecondaryMetricConfiguration.scale),
+                Multiply(0.15, UISecondaryMetricConfiguration.scale),
                 0,
-                1,
+                UISecondaryMetricConfiguration.alpha,
                 HorizontalAlign.Right,
                 false
             ),
 
             UIJudgment.set(
                 0,
-                Multiply(stageHeight, -0.25),
+                Lerp(stageTop, stageBottom, 0.87),
+                0.5,
                 0.5,
                 0,
-                Multiply(0.8, options.uiJudgmentSize),
-                Multiply(0.2, options.uiJudgmentSize),
+                Multiply(stageHeight, 0.1, UIJudgmentConfiguration.scale),
                 0,
-                options.uiJudgmentAlpha,
+                UIJudgmentConfiguration.alpha,
                 HorizontalAlign.Center,
                 false
             ),
 
             UIComboValue.set(
-                Multiply(screenRight, 0.7),
-                0,
+                Multiply(stageWidth, 0.35),
+                Lerp(stageTop, stageBottom, 0.5),
+                0.5,
                 0.5,
                 0,
-                Multiply(0.5, options.uiComboSize),
-                Multiply(0.25, options.uiComboSize),
+                Multiply(stageHeight, 0.15, UIComboConfiguration.scale),
                 0,
-                options.uiComboAlpha,
+                UIComboConfiguration.alpha,
                 HorizontalAlign.Center,
                 false
             ),
             UIComboText.set(
-                Multiply(screenRight, 0.7),
-                0,
+                Multiply(stageWidth, 0.35),
+                Lerp(stageTop, stageBottom, 0.5),
                 0.5,
-                1,
-                Multiply(0.5, options.uiComboSize),
-                Multiply(0.15, options.uiComboSize),
+                2,
                 0,
-                options.uiComboAlpha,
+                Multiply(stageHeight, 0.15, 0.5, UIComboConfiguration.scale),
+                0,
+                UIComboConfiguration.alpha,
                 HorizontalAlign.Center,
                 false
             ),
