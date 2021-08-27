@@ -5,11 +5,11 @@ import { Resource } from './Resource'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const archetypes = require('./archetypes')
 
-export const version = '0.6.3'
+export const version = '0.6.4'
 
 export const engineInfo = {
     name: 'bandori',
-    version: 3,
+    version: 4,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
