@@ -31,11 +31,14 @@ export const engineInfo = {
         en: [
             'A recreation of BanG Dream! Girls Band Party engine in Sonolus.',
             '',
-            'GitHub Repository',
+            'Version:',
+            version,
+            '',
+            'GitHub Repository:',
             'https://github.com/NonSpicyBurrito/sonolus-bandori-engine',
         ].join('\n'),
     },
-}
+} as const
 
 export const engineConfiguration = new Resource('EngineConfiguration')
 export const engineData = new Resource('EngineData')
