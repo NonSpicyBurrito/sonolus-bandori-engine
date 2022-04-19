@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
@@ -19,8 +20,7 @@ import {
     Pointer,
     Remap,
     RemapClamped,
-    SkinSprite,
-    SScript,
+    Script,
     State,
     Subtract,
     Time,
@@ -107,7 +107,7 @@ class SliderDataPointer extends Pointer {
 
 const SliderData = createEntityData(SliderDataPointer)
 
-export function slider(sprite: SkinSprite): SScript {
+export function slider(sprite: SkinSprite): Script {
     const headData = NoteData.of(SliderData.headIndex)
     const tailData = NoteData.of(SliderData.tailIndex)
 

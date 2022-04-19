@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -16,8 +17,7 @@ import {
     Not,
     NotEqual,
     Or,
-    SkinSprite,
-    SScript,
+    Script,
     Subtract,
     Time,
     TouchId,
@@ -65,7 +65,7 @@ import {
 } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
-export function slideFlickNote(): SScript {
+export function slideFlickNote(): Script {
     const bucket = buckets.slideFlickNoteIndex
 
     const flickActivationX = EntityMemory.to<number>(0)

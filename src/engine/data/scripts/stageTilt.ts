@@ -4,11 +4,11 @@ import {
     LevelTransform,
     Multiply,
     ScreenAspectRatio,
-    SScript,
+    Script,
 } from 'sonolus.js'
 import { tilt } from './common/levelMemory'
 
-export function stageTilt(): SScript {
+export function stageTilt(): Script {
     const transformTilt = LevelTransform.to<number>(4)
 
     const updateSequential = [

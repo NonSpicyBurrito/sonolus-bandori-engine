@@ -1,4 +1,4 @@
-import { SEntity, SLevelData } from 'sonolus.js'
+import { LevelData, LevelDataEntity } from 'sonolus-core'
 
 export type ChartObject =
     | SingleObject
@@ -68,16 +68,16 @@ export function fromBestdori(
         straightSliderIndex: number
         curvedSliderIndex: number
     }
-): SLevelData {
+): LevelData {
     type WrappedNoteEntity = {
-        entity: SEntity
+        entity: LevelDataEntity
         time: number
         lane: number
         head?: WrappedNoteEntity
     }
 
     type WrappedSliderEntity = {
-        entity: SEntity
+        entity: LevelDataEntity
         head: WrappedNoteEntity
         tail: WrappedNoteEntity
     }

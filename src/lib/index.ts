@@ -1,4 +1,4 @@
-import { SLevelData } from 'sonolus.js'
+import { LevelData } from 'sonolus-core'
 import { ChartObject, fromBestdori as _fromBestdori } from './convert'
 import { Resource } from './Resource'
 
@@ -44,6 +44,6 @@ export const engineConfiguration = new Resource('EngineConfiguration')
 export const engineData = new Resource('EngineData')
 export const engineThumbnail = new Resource('thumbnail.png')
 
-export function fromBestdori(chart: ChartObject[]): SLevelData {
+export function fromBestdori(chart: ChartObject[]): LevelData {
     return _fromBestdori(chart, archetypes)
 }

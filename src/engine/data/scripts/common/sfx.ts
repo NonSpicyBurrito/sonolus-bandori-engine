@@ -1,13 +1,5 @@
-import {
-    Add,
-    And,
-    Code,
-    EffectClip,
-    If,
-    InputJudgment,
-    Play,
-    Switch,
-} from 'sonolus.js'
+import { EffectClip } from 'sonolus-core'
+import { Add, And, Code, If, InputJudgment, Play, Switch } from 'sonolus.js'
 import { options } from '../../../configuration/options'
 import {
     doubleDirectionalFlickClip,

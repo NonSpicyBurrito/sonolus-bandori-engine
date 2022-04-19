@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -14,8 +15,7 @@ import {
     Multiply,
     Not,
     Or,
-    SkinSprite,
-    SScript,
+    Script,
     Subtract,
     Time,
     TouchId,
@@ -58,7 +58,7 @@ import { playFlickSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
-export function flickNote(): SScript {
+export function flickNote(): Script {
     const bucket = buckets.flickNoteIndex
 
     const flickActivationTime = EntityMemory.to<number>(0)

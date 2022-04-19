@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
@@ -18,8 +19,7 @@ import {
     Multiply,
     Not,
     Or,
-    SkinSprite,
-    SScript,
+    Script,
     Subtract,
     Time,
     TouchId,
@@ -65,7 +65,7 @@ import { playDirectionalFlickSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
-export function directionalFlickNote(): SScript {
+export function directionalFlickNote(): Script {
     const flickActivationTime = EntityMemory.to<number>(0)
     const looper = EntityMemory.to<number>(1)
 

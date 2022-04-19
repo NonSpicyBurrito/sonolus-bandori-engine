@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -13,8 +14,7 @@ import {
     Multiply,
     Not,
     Or,
-    SkinSprite,
-    SScript,
+    Script,
     Subtract,
     Time,
     TouchId,
@@ -44,7 +44,7 @@ import {
 import { playJudgmentSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 
-export function tapNote(bucket: number, sprite: SkinSprite): SScript {
+export function tapNote(bucket: number, sprite: SkinSprite): Script {
     const preprocess = preprocessNote(goodWindow)
 
     const spawnOrder = NoteData.spawnTime

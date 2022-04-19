@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -14,8 +15,7 @@ import {
     Multiply,
     Not,
     Or,
-    SkinSprite,
-    SScript,
+    Script,
     Subtract,
     Time,
     TouchEnded,
@@ -60,7 +60,7 @@ import {
     updateTouchTilt,
 } from './common/touch'
 
-export function slideEndNote(): SScript {
+export function slideEndNote(): Script {
     const bucket = buckets.slideEndNoteIndex
 
     const preprocess = [

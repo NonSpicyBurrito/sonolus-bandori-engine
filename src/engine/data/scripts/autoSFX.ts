@@ -1,9 +1,9 @@
+import { EffectClip } from 'sonolus-core'
 import {
     Add,
     And,
     AudioOffset,
     bool,
-    EffectClip,
     EntityInfo,
     EntityMemory,
     Equal,
@@ -11,7 +11,7 @@ import {
     Not,
     Or,
     PlayScheduled,
-    SScript,
+    Script,
     Subtract,
     Switch,
     Time,
@@ -21,7 +21,7 @@ import { minSFXDistance } from './common/constants'
 import { NoteData } from './common/note'
 import { getDirectionalFlickSFX } from './common/sfx'
 
-export function autoSFX(): SScript {
+export function autoSFX(): Script {
     const noteIndex = EntityMemory.to<number>(0)
     const noteInfo = EntityInfo.of(noteIndex)
     const noteData = NoteData.of(noteIndex)

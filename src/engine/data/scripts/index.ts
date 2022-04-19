@@ -1,4 +1,5 @@
-import { defineScripts, ParticleEffect, SkinSprite } from 'sonolus.js'
+import { ParticleEffect, SkinSprite } from 'sonolus-core'
+import { defineScripts } from 'sonolus.js'
 import { buckets } from '../buckets'
 import { autoNoteEffect } from './autoNoteEffect'
 import { autoSFX } from './autoSFX'

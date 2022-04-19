@@ -5,7 +5,7 @@ import {
     Not,
     Or,
     RemapClamped,
-    SScript,
+    Script,
     Time,
 } from 'sonolus.js'
 import { options } from '../../configuration/options'
@@ -13,7 +13,7 @@ import { spawnHoldEffect } from './common/effect'
 import { NoteData, NoteSharedMemory } from './common/note'
 import { updateTilt } from './common/stageTilt'
 
-export function autoSlider(): SScript {
+export function autoSlider(): Script {
     const noteIndex = EntityMemory.to<number>(0)
     const noteData = NoteData.of(noteIndex)
 

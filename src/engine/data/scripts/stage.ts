@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
@@ -16,9 +17,8 @@ import {
     Not,
     Or,
     Round,
-    SkinSprite,
+    Script,
     Spawn,
-    SScript,
     State,
     Subtract,
     TouchStarted,
@@ -55,7 +55,7 @@ import {
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { rectByEdge, rectBySize } from './common/utils'
 
-export function stage(): SScript {
+export function stage(): Script {
     const spawnOrder = -999
 
     const shouldSpawn = Equal(EntityInfo.of(0).state, State.Despawned)

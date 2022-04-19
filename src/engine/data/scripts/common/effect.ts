@@ -1,3 +1,4 @@
+import { ParticleEffect } from 'sonolus-core'
 import {
     Add,
     And,
@@ -7,7 +8,6 @@ import {
     Multiply,
     Not,
     Or,
-    ParticleEffect,
     SpawnParticleEffect,
     Subtract,
 } from 'sonolus.js'

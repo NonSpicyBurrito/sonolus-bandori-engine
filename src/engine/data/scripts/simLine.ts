@@ -1,3 +1,4 @@
+import { SkinSprite } from 'sonolus-core'
 import {
     And,
     Divide,
@@ -9,8 +10,7 @@ import {
     Lerp,
     Multiply,
     Or,
-    SkinSprite,
-    SScript,
+    Script,
     State,
     Subtract,
     Time,
@@ -27,7 +27,7 @@ import {
 } from './common/constants'
 import { approach, NoteData } from './common/note'
 
-export function simLine(): SScript {
+export function simLine(): Script {
     const rightIndex = EntityMemory.to<number>(0)
     const leftIndex = Subtract(rightIndex, 1)
 
