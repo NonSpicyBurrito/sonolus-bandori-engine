@@ -65,8 +65,7 @@ export function stage(): Script {
         Spawn(scripts.stageTiltIndex, [])
     )
 
-    const touch = Or(
-        options.isAutoplay,
+    const touch = Or(options.isAutoplay, [
         And(
             TouchStarted,
             checkTouchYInHitbox(),
@@ -74,8 +73,9 @@ export function stage(): Script {
             GreaterOr(TouchX, getLaneBottomLeft(-3)),
             LessOr(TouchX, getLaneBottomRight(3)),
             onEmptyTap()
-        )
-    )
+        ),
+        isTouchOccupied.set(false),
+    ])
 
     const updateParallel = [drawStageCover(), drawStage()]
 

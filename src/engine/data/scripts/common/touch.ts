@@ -3,13 +3,13 @@ import {
     Code,
     GreaterOr,
     LessOr,
-    TemporaryMemory,
+    LevelMemory,
     TouchX,
     TouchY,
 } from 'sonolus.js'
 import { updateTilt } from './stageTilt'
 
-export const isTouchOccupied = TemporaryMemory.to<boolean>(0)
+export const isTouchOccupied = LevelMemory.to<boolean>(1)
 
 export function checkTouchXInHitbox(left: Code<number>, right: Code<number>) {
     return And(GreaterOr(TouchX, left), LessOr(TouchX, right))
