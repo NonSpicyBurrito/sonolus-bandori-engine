@@ -17,8 +17,6 @@ export function autoNoteEffect(
     ])
 
     return {
-        updateParallel: {
-            code: updateParallel,
-        },
+        updateParallel,
     }
 }

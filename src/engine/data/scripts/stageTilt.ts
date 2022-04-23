@@ -22,8 +22,6 @@ export function stageTilt(): Script {
     ]
 
     return {
-        updateSequential: {
-            code: updateSequential,
-        },
+        updateSequential,
     }
 }

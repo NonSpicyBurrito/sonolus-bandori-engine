@@ -160,24 +160,12 @@ export function slideFlickNote(): Script {
     )
 
     return {
-        preprocess: {
-            code: preprocess,
-        },
-        spawnOrder: {
-            code: spawnOrder,
-        },
-        shouldSpawn: {
-            code: shouldSpawn,
-        },
-        initialize: {
-            code: initialize,
-        },
-        touch: {
-            code: touch,
-        },
-        updateParallel: {
-            code: updateParallel,
-        },
+        preprocess,
+        spawnOrder,
+        shouldSpawn,
+        initialize,
+        touch,
+        updateParallel,
     }
 
     function onActivate() {

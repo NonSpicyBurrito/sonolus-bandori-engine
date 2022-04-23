@@ -80,22 +80,14 @@ export function stage(): Script {
     const updateParallel = [drawStageCover(), drawStage()]
 
     return {
-        spawnOrder: {
-            code: spawnOrder,
-        },
-        shouldSpawn: {
-            code: shouldSpawn,
-        },
-        initialize: {
-            code: initialize,
-        },
+        spawnOrder,
+        shouldSpawn,
+        initialize,
         touch: {
             code: touch,
             order: 1,
         },
-        updateParallel: {
-            code: updateParallel,
-        },
+        updateParallel,
     }
 
     function drawStageCover() {

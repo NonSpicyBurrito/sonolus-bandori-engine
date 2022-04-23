@@ -284,21 +284,11 @@ export function slider(sprite: SkinSprite): Script {
     )
 
     return {
-        preprocess: {
-            code: preprocess,
-        },
-        spawnOrder: {
-            code: spawnOrder,
-        },
-        shouldSpawn: {
-            code: shouldSpawn,
-        },
-        initialize: {
-            code: initialize,
-        },
-        updateParallel: {
-            code: updateParallel,
-        },
+        preprocess,
+        spawnOrder,
+        shouldSpawn,
+        initialize,
+        updateParallel,
     }
 
     function repositionTime(time: Pointer<number>) {

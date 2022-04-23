@@ -43,8 +43,6 @@ export function autoSlider(): Script {
     )
 
     return {
-        updateSequential: {
-            code: updateSequential,
-        },
+        updateSequential,
     }
 }
