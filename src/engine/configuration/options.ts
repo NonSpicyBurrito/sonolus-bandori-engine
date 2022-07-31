@@ -124,12 +124,6 @@ export const options = defineOptions({
         type: 'toggle',
         def: 1,
     },
-    isStageTiltEnabled: {
-        name: '#STAGE_TILT',
-        scope: 'Bandori',
-        type: 'toggle',
-        def: 1,
-    },
     isStageAspectRatioLocked: {
         name: '#STAGE_ASPECTRATIO_LOCK',
         scope: 'Bandori',

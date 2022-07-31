@@ -58,11 +58,7 @@ import {
     updateNoteSlideScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import {
-    checkTouchYInHitbox,
-    isTouchOccupied,
-    updateTouchTilt,
-} from './common/touch'
+import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function slideFlickNote(): Script {
@@ -96,7 +92,6 @@ export function slideFlickNote(): Script {
             Equal(TouchId, NoteSharedMemory.inputTouchId),
             [
                 isTouchOccupied.set(true),
-                updateTouchTilt(),
                 And(
                     Equal(noteInputState, InputState.Activated),
                     If(

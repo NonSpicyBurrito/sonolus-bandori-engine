@@ -54,11 +54,7 @@ import {
     updateNoteSlideScale,
 } from './common/note'
 import { playJudgmentSFX } from './common/sfx'
-import {
-    checkTouchYInHitbox,
-    isTouchOccupied,
-    updateTouchTilt,
-} from './common/touch'
+import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 
 export function slideEndNote(): Script {
     const bucket = buckets.slideEndNoteIndex
@@ -87,7 +83,6 @@ export function slideEndNote(): Script {
             Equal(TouchId, NoteSharedMemory.inputTouchId),
             [
                 isTouchOccupied.set(true),
-                updateTouchTilt(),
                 And(
                     checkNoteTimeInGoodWindow(),
                     TouchEnded,

@@ -7,7 +7,6 @@ import {
     TouchX,
     TouchY,
 } from 'sonolus.js'
-import { updateTilt } from './stageTilt'
 
 export const isTouchOccupied = LevelMemory.to<boolean>(1)
 
@@ -17,8 +16,4 @@ export function checkTouchXInHitbox(left: Code<number>, right: Code<number>) {
 
 export function checkTouchYInHitbox() {
     return LessOr(TouchY, 0)
-}
-
-export function updateTouchTilt() {
-    return updateTilt(TouchX)
 }

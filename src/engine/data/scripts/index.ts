@@ -13,14 +13,12 @@ import { slideFlickNote } from './slideFlickNote'
 import { slider } from './slider'
 import { slideTickNote } from './slideTickNote'
 import { stage } from './stage'
-import { stageTilt } from './stageTilt'
 import { tapNote } from './tapNote'
 
 export const scripts = defineScripts({
     initialization,
 
     stage,
-    stageTilt,
 
     tapNote: () => tapNote(buckets.tapNoteIndex, SkinSprite.NoteHeadCyan),
     flickNote,

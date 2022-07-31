@@ -18,13 +18,11 @@ import {
     Or,
     Round,
     Script,
-    Spawn,
     State,
     Subtract,
     TouchStarted,
     TouchX,
 } from 'sonolus.js'
-import { scripts } from '.'
 import { options } from '../../configuration/options'
 import {
     bandoriJudgmentLineHeight,
@@ -60,11 +58,6 @@ export function stage(): Script {
 
     const shouldSpawn = Equal(EntityInfo.of(0).state, State.Despawned)
 
-    const initialize = And(
-        options.isStageTiltEnabled,
-        Spawn(scripts.stageTiltIndex, [])
-    )
-
     const touch = Or(options.isAutoplay, [
         And(
             TouchStarted,
@@ -82,7 +75,6 @@ export function stage(): Script {
     return {
         spawnOrder,
         shouldSpawn,
-        initialize,
         touch: {
             code: touch,
             order: 1,
