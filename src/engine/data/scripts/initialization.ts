@@ -89,12 +89,19 @@ export function initialization(): Script {
                 true
             ),
             UIPrimaryMetricValue.set(
-                Add(screenLeft, 0.05),
-                0.95,
+                Add(
+                    screenLeft,
+                    0.05,
+                    Multiply(0.15, UIPrimaryMetricConfiguration.scale)
+                ),
+                Subtract(
+                    0.95,
+                    Multiply(0.025, UIPrimaryMetricConfiguration.scale)
+                ),
                 0,
                 1,
-                Multiply(0.75, UIPrimaryMetricConfiguration.scale),
-                Multiply(0.15, UIPrimaryMetricConfiguration.scale),
+                Multiply(0.575, UIPrimaryMetricConfiguration.scale),
+                Multiply(0.1, UIPrimaryMetricConfiguration.scale),
                 0,
                 UIPrimaryMetricConfiguration.alpha,
                 HorizontalAlign.Right,
@@ -121,13 +128,17 @@ export function initialization(): Script {
                 Subtract(
                     screenRight,
                     0.1,
-                    Multiply(0.15, UIMenuConfiguration.scale)
+                    Multiply(0.15, UIMenuConfiguration.scale),
+                    Multiply(0.025, UISecondaryMetricConfiguration.scale)
                 ),
-                0.95,
+                Subtract(
+                    0.95,
+                    Multiply(0.025, UISecondaryMetricConfiguration.scale)
+                ),
                 1,
                 1,
-                Multiply(0.55, UISecondaryMetricConfiguration.scale),
-                Multiply(0.15, UISecondaryMetricConfiguration.scale),
+                Multiply(0.375, UISecondaryMetricConfiguration.scale),
+                Multiply(0.1, UISecondaryMetricConfiguration.scale),
                 0,
                 UISecondaryMetricConfiguration.alpha,
                 HorizontalAlign.Right,
@@ -140,7 +151,7 @@ export function initialization(): Script {
                 0.5,
                 0.5,
                 0,
-                Multiply(stageHeight, 0.1, UIJudgmentConfiguration.scale),
+                Multiply(stageHeight, 0.075, UIJudgmentConfiguration.scale),
                 0,
                 UIJudgmentConfiguration.alpha,
                 HorizontalAlign.Center,
@@ -153,7 +164,7 @@ export function initialization(): Script {
                 0.5,
                 0.5,
                 0,
-                Multiply(stageHeight, 0.15, UIComboConfiguration.scale),
+                Multiply(stageHeight, 0.12, UIComboConfiguration.scale),
                 0,
                 UIComboConfiguration.alpha,
                 HorizontalAlign.Center,
@@ -163,9 +174,9 @@ export function initialization(): Script {
                 Multiply(stageWidth, 0.35),
                 Lerp(stageTop, stageBottom, 0.5),
                 0.5,
-                2,
+                2.75,
                 0,
-                Multiply(stageHeight, 0.15, 0.5, UIComboConfiguration.scale),
+                Multiply(stageHeight, 0.05, UIComboConfiguration.scale),
                 0,
                 UIComboConfiguration.alpha,
                 HorizontalAlign.Center,
