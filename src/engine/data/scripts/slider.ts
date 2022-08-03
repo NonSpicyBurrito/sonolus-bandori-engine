@@ -2,7 +2,6 @@ import { SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
-    Code,
     createEntityData,
     Divide,
     Draw,
@@ -13,7 +12,6 @@ import {
     GreaterOr,
     If,
     Lerp,
-    Max,
     Min,
     Multiply,
     Or,
@@ -125,11 +123,6 @@ export function slider(sprite: SkinSprite): Script {
         repositionTime(SliderData.tailTime),
         mirror(SliderData.headLane),
         mirror(SliderData.tailLane),
-
-        And(options.isRandom, [
-            repositionLane(SliderData.headLane, SliderData.headTime),
-            repositionLane(SliderData.tailLane, SliderData.tailTime),
-        ]),
 
         SliderData.headBottomLeft.set(
             Subtract(getLaneBottomCenter(SliderData.headLane), halfNoteWidth)
@@ -297,35 +290,5 @@ export function slider(sprite: SkinSprite): Script {
 
     function mirror(lane: Pointer<number>) {
         return And(options.isMirrorEnabled, lane.set(Multiply(lane, -1)))
-    }
-
-    function repositionLane(lane: Pointer<number>, time: Code<number>) {
-        return lane.set(
-            Max(
-                -3,
-                Min(
-                    3,
-                    Add(
-                        lane,
-                        Subtract(
-                            Remap(
-                                headData.time,
-                                tailData.time,
-                                headData.lane,
-                                tailData.lane,
-                                time
-                            ),
-                            Remap(
-                                headData.time,
-                                tailData.time,
-                                headData.originalLane,
-                                tailData.originalLane,
-                                time
-                            )
-                        )
-                    )
-                )
-            )
-        )
     }
 }

@@ -8,13 +8,6 @@ export const options = defineOptions({
         type: 'toggle',
         def: 0,
     },
-    isRandom: {
-        name: '#RANDOM',
-        scope: 'Bandori',
-        standard: true,
-        type: 'toggle',
-        def: 0,
-    },
     isNoteSpeedRandom: {
         name: '#NOTE_SPEED_RANDOM',
         scope: 'Bandori',

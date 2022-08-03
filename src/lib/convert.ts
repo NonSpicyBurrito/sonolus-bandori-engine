@@ -179,7 +179,7 @@ export function fromBestdori(
                 const hasHidden = chartObject.connections.some(
                     (connection) => connection.hidden
                 )
-                const canBeLong =
+                const isLong =
                     chartObject.connections.length === 2 &&
                     chartObject.connections[0].lane ===
                         chartObject.connections[1].lane
@@ -226,7 +226,7 @@ export function fromBestdori(
                                                 lane,
                                                 0,
                                                 0,
-                                                canBeLong,
+                                                isLong,
                                             ],
                                         },
                                     },

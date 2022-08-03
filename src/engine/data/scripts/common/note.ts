@@ -1,6 +1,5 @@
 import { ParticleEffect, SkinSprite } from 'sonolus-core'
 import {
-    Abs,
     Add,
     And,
     bool,
@@ -12,7 +11,6 @@ import {
     EntityInfo,
     EntityMemory,
     Equal,
-    Greater,
     GreaterOr,
     If,
     InputAccuracy,
@@ -20,10 +18,7 @@ import {
     InputJudgment,
     InputOffset,
     Lerp,
-    Less,
     LessOr,
-    LevelMemory,
-    Max,
     Min,
     Multiply,
     Not,
@@ -31,7 +26,6 @@ import {
     Pointer,
     Power,
     Random,
-    RandomInteger,
     Spawn,
     State,
     Subtract,
@@ -104,7 +98,7 @@ export class NoteDataPointer extends Pointer {
         return this.to<boolean>(4)
     }
 
-    public get canBeLong() {
+    public get isLong() {
         return this.to<boolean>(5)
     }
 
@@ -132,28 +126,20 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(21)
     }
 
-    public get originalLane() {
+    public get slideSpawnTime() {
         return this.to<number>(22)
     }
 
-    public get slideSpawnTime() {
+    public get arrowOffset() {
         return this.to<number>(23)
     }
 
-    public get arrowOffset() {
+    public get hitboxLeft() {
         return this.to<number>(24)
     }
 
-    public get hitboxLeft() {
-        return this.to<number>(25)
-    }
-
     public get hitboxRight() {
-        return this.to<number>(26)
-    }
-
-    public get isLong() {
-        return this.to<boolean>(27)
+        return this.to<number>(25)
     }
 }
 
@@ -281,12 +267,6 @@ export function getSpawnTime(
 }
 
 export function preprocessNote(missAccuracy: Code<number>) {
-    const minLane = LevelMemory.to<number>(0)
-    const maxLane = LevelMemory.to<number>(1)
-    const slideRange = LevelMemory.to<number>(2)
-
-    const prevNoteData = NoteData.of(Subtract(EntityInfo.index, 1))
-
     return [
         NoteData.time.set(Divide(NoteData.time, options.speed)),
         And(options.isMirrorEnabled, [
@@ -300,70 +280,6 @@ export function preprocessNote(missAccuracy: Code<number>) {
         NoteData.spawnTime.set(
             getSpawnTime(NoteData.time, NoteData.speedMultiplier)
         ),
-
-        And(options.isRandom, [
-            NoteData.originalLane.set(NoteData.lane),
-
-            minLane.set(
-                Max(
-                    If(NoteData.isLeft, Add(-3, NoteData.extraWidth), -3),
-                    Add(NoteData.lane, -2)
-                )
-            ),
-            maxLane.set(
-                Min(
-                    If(NoteData.isLeft, 3, Subtract(3, NoteData.extraWidth)),
-                    Add(NoteData.lane, 2)
-                )
-            ),
-
-            And(
-                Or(
-                    Equal(EntityInfo.archetype, archetypes.slideTickNoteIndex),
-                    Equal(EntityInfo.archetype, archetypes.slideEndNoteIndex),
-                    Equal(EntityInfo.archetype, archetypes.slideFlickNoteIndex)
-                ),
-                [
-                    slideRange.set(
-                        Add(
-                            1,
-                            Abs(
-                                Subtract(
-                                    NoteData.originalLane,
-                                    NoteData.head.originalLane
-                                )
-                            )
-                        )
-                    ),
-
-                    minLane.set(
-                        Max(minLane, Subtract(NoteData.head.lane, slideRange))
-                    ),
-                    maxLane.set(
-                        Min(maxLane, Add(NoteData.head.lane, slideRange))
-                    ),
-                ]
-            ),
-
-            And(
-                Equal(NoteData.time, prevNoteData.time),
-                If(
-                    Greater(prevNoteData.originalLane, NoteData.originalLane),
-                    If(
-                        Greater(prevNoteData.lane, minLane),
-                        maxLane.set(Max(minLane, Add(prevNoteData.lane, -2))),
-                        minLane.set(Min(maxLane, Add(prevNoteData.lane, 2)))
-                    ),
-                    If(
-                        Less(prevNoteData.lane, maxLane),
-                        minLane.set(Min(maxLane, Add(prevNoteData.lane, 2))),
-                        maxLane.set(Max(minLane, Add(prevNoteData.lane, -2)))
-                    )
-                )
-            ),
-
-            NoteData.lane.set(RandomInteger(minLane, Add(maxLane, 1))),
-        ]),
 
         NoteData.center.set(getLaneBottomCenter(NoteData.lane)),
         NoteData.left.set(Subtract(NoteData.center, halfNoteWidth)),
@@ -389,10 +305,6 @@ export function preprocessNote(missAccuracy: Code<number>) {
         ),
 
         NoteData.z.set(Subtract(Layer.NoteBody, Divide(NoteData.time, 1000))),
-
-        NoteData.isLong.set(
-            And(NoteData.canBeLong, Equal(NoteData.lane, NoteData.head.lane))
-        ),
 
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
     ]
