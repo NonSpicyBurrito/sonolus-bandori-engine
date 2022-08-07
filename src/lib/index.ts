@@ -9,20 +9,20 @@ export const version = '0.6.6'
 
 export const engineInfo = {
     name: 'bandori',
-    version: 5,
+    version: 6,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
         ko: '뱅드림!',
-        'zh-hans': 'BanG Dream!',
-        'zh-hant': 'BanG Dream!',
+        zhs: 'BanG Dream!',
+        zht: 'BanG Dream!',
     },
     subtitle: {
         en: 'BanG Dream! Girls Band Party!',
         ja: 'バンドリ！ ガールズバンドパーティ！',
         ko: '뱅드림! 걸즈 밴드 파티!',
-        'zh-hans': 'BanG Dream! 少女乐团派对!',
-        'zh-hant': 'BanG Dream! 少女樂團派對',
+        zhs: 'BanG Dream! 少女乐团派对!',
+        zht: 'BanG Dream! 少女樂團派對',
     },
     author: {
         en: 'Burrito',
