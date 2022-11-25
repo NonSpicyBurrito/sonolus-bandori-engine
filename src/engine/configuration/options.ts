@@ -1,29 +1,30 @@
+import { OptionName } from 'sonolus-core'
 import { defineOptions } from 'sonolus.js'
 
 export const options = defineOptions({
     isAutoplay: {
-        name: '#AUTO',
+        name: OptionName.AutoPlay,
         scope: 'Bandori',
         standard: true,
         type: 'toggle',
         def: 0,
     },
     isNoteSpeedRandom: {
-        name: '#NOTE_SPEED_RANDOM',
+        name: OptionName.RandomNoteSpeed,
         scope: 'Bandori',
         standard: true,
         type: 'toggle',
         def: 0,
     },
     isStrictJudgment: {
-        name: '#JUDGMENT_STRICT',
+        name: OptionName.StrictJudgment,
         scope: 'Bandori',
         standard: true,
         type: 'toggle',
         def: 0,
     },
     speed: {
-        name: '#SPEED',
+        name: OptionName.LevelSpeed,
         standard: true,
         type: 'slider',
         def: 1,
@@ -33,7 +34,7 @@ export const options = defineOptions({
         display: 'percentage',
     },
     noteSpeed: {
-        name: '#NOTE_SPEED',
+        name: OptionName.NoteSpeed,
         scope: 'Bandori',
         type: 'slider',
         def: 5,
@@ -43,7 +44,7 @@ export const options = defineOptions({
         display: 'number',
     },
     noteSize: {
-        name: '#NOTE_SIZE',
+        name: OptionName.NoteSize,
         scope: 'Bandori',
         type: 'slider',
         def: 1,
@@ -53,7 +54,7 @@ export const options = defineOptions({
         display: 'percentage',
     },
     noteEffectSize: {
-        name: '#NOTE_EFFECT_SIZE',
+        name: OptionName.NoteEffectSize,
         scope: 'Bandori',
         type: 'slider',
         def: 1,
@@ -63,7 +64,7 @@ export const options = defineOptions({
         display: 'percentage',
     },
     connectorAlpha: {
-        name: '#CONNECTOR_ALPHA',
+        name: OptionName.ConnectorTransparency,
         scope: 'Bandori',
         type: 'slider',
         def: 0.8,
@@ -73,7 +74,7 @@ export const options = defineOptions({
         display: 'percentage',
     },
     stageCover: {
-        name: '#STAGE_COVER_VERTICAL',
+        name: OptionName.VerticalStageCover,
         scope: 'Bandori',
         type: 'slider',
         def: 0,
@@ -83,42 +84,42 @@ export const options = defineOptions({
         display: 'percentage',
     },
     isMirrorEnabled: {
-        name: '#MIRROR',
+        name: OptionName.MirrorLevel,
         type: 'toggle',
         def: 0,
     },
     isSimLineEnabled: {
-        name: '#SIMLINE',
+        name: OptionName.SimultaneousLineVisibility,
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     isSFXEnabled: {
-        name: '#EFFECT',
+        name: OptionName.SFX,
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     isNoteEffectEnabled: {
-        name: '#NOTE_EFFECT',
+        name: OptionName.NoteEffect,
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     isLaneEffectEnabled: {
-        name: '#LANE_EFFECT',
+        name: OptionName.LaneEffect,
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     isSlotEffectEnabled: {
-        name: '#SLOT_EFFECT',
+        name: OptionName.SlotEffect,
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     isStageAspectRatioLocked: {
-        name: '#STAGE_ASPECTRATIO_LOCK',
+        name: OptionName.LockStageAspectRatio,
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
