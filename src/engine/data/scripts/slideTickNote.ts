@@ -12,6 +12,7 @@ import {
     InputJudgment,
     InputOffset,
     Judge,
+    Max,
     Multiply,
     Not,
     Or,
@@ -19,6 +20,7 @@ import {
     Subtract,
     Time,
     TouchId,
+    TouchT,
 } from 'sonolus.js'
 import { scripts } from '.'
 import { options } from '../../configuration/options'
@@ -139,14 +141,14 @@ export function slideTickNote(): Script {
                 If(
                     options.isStrictJudgment,
                     Judge(
-                        Subtract(Time, InputOffset),
+                        Max(Subtract(TouchT, InputOffset), NoteData.time),
                         NoteData.time,
                         perfectWindow,
                         greatWindow,
                         goodWindow
                     ),
                     Judge(
-                        Subtract(Time, InputOffset),
+                        Max(Subtract(TouchT, InputOffset), NoteData.time),
                         NoteData.time,
                         slideWindow,
                         slideWindow,
@@ -154,7 +156,9 @@ export function slideTickNote(): Script {
                     )
                 )
             ),
-            InputAccuracy.set(Subtract(Time, InputOffset, NoteData.time)),
+            InputAccuracy.set(
+                Max(Subtract(TouchT, InputOffset, NoteData.time), 0)
+            ),
             InputBucket.set(bucket),
             InputBucketValue.set(Multiply(1000, InputAccuracy)),
 
