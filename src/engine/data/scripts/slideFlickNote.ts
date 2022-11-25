@@ -30,7 +30,6 @@ import { buckets } from '../buckets'
 import {
     goodWindow,
     greatWindow,
-    minFlickDistanceSquared,
     perfectWindow,
     slideWindow,
 } from './common/constants'
@@ -58,7 +57,11 @@ import {
     updateNoteSlideScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
+import {
+    checkTouchYInHitbox,
+    getMinFlickDistanceSquared,
+    isTouchOccupied,
+} from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function slideFlickNote(): Script {
@@ -112,7 +115,7 @@ export function slideFlickNote(): Script {
                             TouchX,
                             TouchY
                         ),
-                        minFlickDistanceSquared
+                        getMinFlickDistanceSquared(0.04)
                     ),
                     onComplete()
                 ),

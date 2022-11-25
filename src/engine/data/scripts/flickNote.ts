@@ -29,12 +29,7 @@ import {
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
-import {
-    goodWindow,
-    greatWindow,
-    minFlickDistanceSquared,
-    perfectWindow,
-} from './common/constants'
+import { goodWindow, greatWindow, perfectWindow } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
     checkTouchXInNoteHitbox,
@@ -55,7 +50,11 @@ import {
     updateNoteScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
+import {
+    checkTouchYInHitbox,
+    getMinFlickDistanceSquared,
+    isTouchOccupied,
+} from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function flickNote(): Script {
@@ -95,7 +94,7 @@ export function flickNote(): Script {
                     checkNoteTimeInGoodWindow(),
                     GreaterOr(
                         getDistanceSquared(TouchSX, TouchSY, TouchX, TouchY),
-                        minFlickDistanceSquared
+                        getMinFlickDistanceSquared(0.04)
                     ),
                     onComplete()
                 ),

@@ -34,12 +34,7 @@ import {
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
-import {
-    goodWindow,
-    greatWindow,
-    perfectWindow,
-    stageWidth,
-} from './common/constants'
+import { goodWindow, greatWindow, perfectWindow } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
     checkTouchXInNoteHitbox,
@@ -62,7 +57,11 @@ import {
     updateNoteScale,
 } from './common/note'
 import { playDirectionalFlickSFX } from './common/sfx'
-import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
+import {
+    checkTouchYInHitbox,
+    getMinFlickDistanceSquared,
+    isTouchOccupied,
+} from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function directionalFlickNote(): Script {
@@ -118,11 +117,8 @@ export function directionalFlickNote(): Script {
                     ),
                     GreaterOr(
                         getDistanceSquared(TouchSX, TouchSY, TouchX, TouchY),
-                        Multiply(
-                            Add(Multiply(0.08, NoteData.extraWidth), 0.04),
-                            Add(Multiply(0.08, NoteData.extraWidth), 0.04),
-                            stageWidth,
-                            stageWidth
+                        getMinFlickDistanceSquared(
+                            Add(Multiply(0.01, NoteData.extraWidth), 0.01)
                         )
                     ),
                     onComplete()
