@@ -25,7 +25,7 @@ import {
     noteOnScreenDuration,
     stageTop,
 } from './common/constants'
-import { approach, NoteData } from './common/note'
+import { approach, getZ, NoteData } from './common/note'
 
 export function simLine(): Script {
     const rightIndex = EntityMemory.to<number>(0)
@@ -44,12 +44,16 @@ export function simLine(): Script {
     const bottom = EntityMemory.to<number>(6)
     const top = EntityMemory.to<number>(7)
 
+    const z = EntityMemory.to<number>(8)
+
     const initialize = [
         time.set(NoteData.of(rightIndex).time),
         spawnTime.set(Subtract(time, noteOnScreenDuration)),
 
         left.set(leftData.center),
         right.set(rightData.center),
+
+        z.set(getZ(Layer.SimLine, time, rightIndex)),
     ]
 
     const updateParallel = Or(
@@ -73,7 +77,7 @@ export function simLine(): Script {
                 top,
                 Multiply(right, noteBaseBottomScale, scale),
                 bottom,
-                Layer.SimLine,
+                z,
                 1
             ),
         ])

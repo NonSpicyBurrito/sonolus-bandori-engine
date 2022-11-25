@@ -40,6 +40,7 @@ import { moveHoldEffect } from './common/effect'
 import {
     approachNote,
     getSpawnTime,
+    getZ,
     NoteData,
     NoteSharedMemory,
 } from './common/note'
@@ -118,6 +119,9 @@ export function slider(sprite: SkinSprite): Script {
     const tailScale = EntityMemory.to<number>(5)
     const slideTop = EntityMemory.to<number>(6)
 
+    const connectorZ = EntityMemory.to<number>(7)
+    const slideZ = EntityMemory.to<number>(8)
+
     const preprocess = [
         repositionTime(SliderData.headTime),
         repositionTime(SliderData.tailTime),
@@ -177,6 +181,13 @@ export function slider(sprite: SkinSprite): Script {
                 )
             )
         ),
+
+        connectorZ.set(
+            getZ(Layer.NoteConnector, SliderData.headTime, SliderData.headIndex)
+        ),
+        slideZ.set(
+            getZ(Layer.NoteSlide, SliderData.headTime, SliderData.headIndex)
+        ),
     ]
 
     const spawnOrder = SliderData.spawnTime
@@ -229,7 +240,7 @@ export function slider(sprite: SkinSprite): Script {
                         noteBaseTop,
                         Multiply(headRight, noteBaseBottomScale),
                         noteBaseBottom,
-                        Layer.NoteSlide,
+                        slideZ,
                         1
                     ),
 
@@ -270,7 +281,7 @@ export function slider(sprite: SkinSprite): Script {
                 slideTop,
                 Multiply(headRight, headScale),
                 slideBottom,
-                Layer.NoteConnector,
+                connectorZ,
                 options.connectorAlpha
             ),
         ]

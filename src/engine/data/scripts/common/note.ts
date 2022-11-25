@@ -20,6 +20,7 @@ import {
     Lerp,
     LessOr,
     Min,
+    Mod,
     Multiply,
     Not,
     Or,
@@ -126,20 +127,24 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(21)
     }
 
-    public get slideSpawnTime() {
+    public get markerZ() {
         return this.to<number>(22)
     }
 
-    public get arrowOffset() {
+    public get slideSpawnTime() {
         return this.to<number>(23)
     }
 
-    public get hitboxLeft() {
+    public get arrowOffset() {
         return this.to<number>(24)
     }
 
-    public get hitboxRight() {
+    public get hitboxLeft() {
         return this.to<number>(25)
+    }
+
+    public get hitboxRight() {
+        return this.to<number>(26)
     }
 }
 
@@ -266,6 +271,18 @@ export function getSpawnTime(
     return Subtract(time, Multiply(noteOnScreenDuration, speedMultiplier))
 }
 
+export function getZ(
+    layer: number,
+    time: Code<number> = NoteData.time,
+    index: Code<number> = EntityInfo.index
+) {
+    return Subtract(
+        layer,
+        Divide(Mod(time, 10), 10),
+        Divide(Mod(index, 100), 100000)
+    )
+}
+
 export function preprocessNote(missAccuracy: Code<number>) {
     return [
         NoteData.time.set(Divide(NoteData.time, options.speed)),
@@ -304,7 +321,8 @@ export function preprocessNote(missAccuracy: Code<number>) {
             )
         ),
 
-        NoteData.z.set(Subtract(Layer.NoteBody, Divide(NoteData.time, 1000))),
+        NoteData.z.set(getZ(Layer.NoteBody)),
+        NoteData.markerZ.set(getZ(Layer.NoteMarker)),
 
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
     ]
@@ -476,7 +494,7 @@ export function drawNoteFlickArrow() {
         Draw(
             SkinSprite.DirectionalMarkerRed,
             ...rectByEdge(arrowLeft, arrowRight, arrowBottom, arrowTop),
-            Layer.NoteMarker,
+            NoteData.markerZ,
             1
         ),
     ]
@@ -506,7 +524,7 @@ export function drawNoteDirectionalFlickArrow(
                 arrowWidth,
                 isLeft ? 'left' : 'right'
             ),
-            Layer.NoteMarker,
+            NoteData.markerZ,
             1
         ),
     ]
