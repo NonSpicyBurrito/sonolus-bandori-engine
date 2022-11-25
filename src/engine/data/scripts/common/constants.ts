@@ -8,6 +8,7 @@ import {
     HasEffectClip,
     If,
     Lerp,
+    LessOr,
     Multiply,
     ScreenAspectRatio,
     Subtract,
@@ -156,7 +157,11 @@ export const noteBaseTop = Add(laneBottom, halfNoteHeight)
 export const noteBaseBottomScale = Unlerp(stageTop, stageBottom, noteBaseBottom)
 export const noteBaseTopScale = Unlerp(stageTop, stageBottom, noteBaseTop)
 
-export const noteOnScreenDuration = Divide(Subtract(12, options.noteSpeed), 2)
+export const noteOnScreenDuration = If(
+    LessOr(options.noteSpeed, 11),
+    Divide(Subtract(12, options.noteSpeed), 2),
+    Divide(Subtract(16, options.noteSpeed), 10)
+)
 
 // Slot Effect
 

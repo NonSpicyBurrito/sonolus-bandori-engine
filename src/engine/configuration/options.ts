@@ -38,7 +38,7 @@ export const options = defineOptions({
         type: 'slider',
         def: 5,
         min: 1,
-        max: 11.9,
+        max: 15.9,
         step: 0.1,
         display: 'number',
     },
