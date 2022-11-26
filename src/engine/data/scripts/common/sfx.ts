@@ -1,5 +1,14 @@
 import { EffectClip } from 'sonolus-core'
-import { Add, And, Code, If, InputJudgment, Play, Switch } from 'sonolus.js'
+import {
+    Add,
+    And,
+    Code,
+    If,
+    InputJudgment,
+    Not,
+    Play,
+    Switch,
+} from 'sonolus.js'
 import { options } from '../../../configuration/options'
 import {
     doubleDirectionalFlickClip,
@@ -24,7 +33,8 @@ export const getDirectionalFlickSFX = (
         Add(EffectClip.MissAlternative, judgment)
     )
 
-export const playStageSFX = () => playSFX(EffectClip.Stage)
+export const playStageSFX = () =>
+    And(options.isSFXEnabled, Play(EffectClip.Stage, minSFXDistance))
 
 export const playJudgmentSFX = () =>
     playSFX(Add(EffectClip.Miss, InputJudgment))
@@ -36,4 +46,4 @@ export const playDirectionalFlickSFX = () =>
     playSFX(getDirectionalFlickSFX(NoteData.extraWidth, InputJudgment))
 
 const playSFX = (id: Code<number>) =>
-    And(options.isSFXEnabled, Play(id, minSFXDistance))
+    And(options.isSFXEnabled, Not(options.isAutoSFX), Play(id, minSFXDistance))

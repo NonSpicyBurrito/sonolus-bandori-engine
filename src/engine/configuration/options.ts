@@ -100,6 +100,12 @@ export const options = defineOptions({
         type: 'toggle',
         def: 1,
     },
+    isAutoSFX: {
+        name: OptionName.AutoSFX,
+        scope: 'Bandori',
+        type: 'toggle',
+        def: 0,
+    },
     isNoteEffectEnabled: {
         name: OptionName.NoteEffect,
         scope: 'Bandori',

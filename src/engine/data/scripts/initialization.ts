@@ -10,6 +10,7 @@ import {
     Lerp,
     LevelBucket,
     Multiply,
+    Or,
     PerfectMultiplier,
     Script,
     Spawn,
@@ -48,8 +49,8 @@ export function initialization(): Script {
 
     const updateSequential = [
         And(
-            options.isAutoplay,
             options.isSFXEnabled,
+            Or(options.isAutoplay, options.isAutoSFX),
             Spawn(scripts.autoSFXIndex, [])
         ),
         true,
