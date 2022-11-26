@@ -10,39 +10,11 @@ import {
 } from './constants'
 import { NoteData } from './note'
 
-export function playStageSFX() {
-    return And(options.isSFXEnabled, Play(EffectClip.Stage, minSFXDistance))
-}
-
-export function playJudgmentSFX() {
-    return And(
-        options.isSFXEnabled,
-        Play(Add(EffectClip.Miss, InputJudgment), minSFXDistance)
-    )
-}
-
-export function playFlickSFX() {
-    return And(
-        options.isSFXEnabled,
-        Play(Add(EffectClip.MissAlternative, InputJudgment), minSFXDistance)
-    )
-}
-
-export function playDirectionalFlickSFX() {
-    return And(
-        options.isSFXEnabled,
-        Play(
-            getDirectionalFlickSFX(NoteData.extraWidth, InputJudgment),
-            minSFXDistance
-        )
-    )
-}
-
-export function getDirectionalFlickSFX(
+export const getDirectionalFlickSFX = (
     extraWidth: Code<number>,
     judgment: Code<number> = 0
-) {
-    return If(
+) =>
+    If(
         hasDirectionalFlickClips,
         Switch(extraWidth, [
             [0, singleDirectionalFlickClip],
@@ -51,4 +23,17 @@ export function getDirectionalFlickSFX(
         ]),
         Add(EffectClip.MissAlternative, judgment)
     )
-}
+
+export const playStageSFX = () => playSFX(EffectClip.Stage)
+
+export const playJudgmentSFX = () =>
+    playSFX(Add(EffectClip.Miss, InputJudgment))
+
+export const playFlickSFX = () =>
+    playSFX(Add(EffectClip.MissAlternative, InputJudgment))
+
+export const playDirectionalFlickSFX = () =>
+    playSFX(getDirectionalFlickSFX(NoteData.extraWidth, InputJudgment))
+
+const playSFX = (id: Code<number>) =>
+    And(options.isSFXEnabled, Play(id, minSFXDistance))
