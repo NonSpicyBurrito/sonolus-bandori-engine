@@ -296,6 +296,7 @@ export function fromBestdori(
     })
 
     return {
+        bgmOffset: 0,
         entities: [
             ...wrappedNoteEntities
                 .sort(
