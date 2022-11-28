@@ -127,11 +127,7 @@ export function slideFlickNote(): Script {
     ])
 
     const updateParallel = Or(
-        And(
-            options.isAutoplay,
-            GreaterOr(Time, NoteData.time),
-            destroyNoteHoldEffect()
-        ),
+        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         And(
             Not(options.isAutoplay),
             Not(bool(noteInputState)),
@@ -140,16 +136,10 @@ export function slideFlickNote(): Script {
                 If(options.isStrictJudgment, goodWindow, slideWindow)
             )
         ),
-        And(
-            Equal(noteInputState, InputState.Terminated),
-            destroyNoteHoldEffect()
-        ),
-        And(
-            Greater(
-                Subtract(Time, NoteData.time, InputOffset),
-                If(options.isStrictJudgment, goodWindow, slideWindow)
-            ),
-            destroyNoteHoldEffect()
+        Equal(noteInputState, InputState.Terminated),
+        Greater(
+            Subtract(Time, NoteData.time, InputOffset),
+            If(options.isStrictJudgment, goodWindow, slideWindow)
         ),
         And(GreaterOr(Time, NoteData.spawnTime), [
             updateNoteSlideScale(),
@@ -159,6 +149,11 @@ export function slideFlickNote(): Script {
         ])
     )
 
+    const terminate = And(
+        Or(options.isAutoplay, bool(noteInputState)),
+        destroyNoteHoldEffect()
+    )
+
     return {
         preprocess,
         spawnOrder,
@@ -166,6 +161,7 @@ export function slideFlickNote(): Script {
         initialize,
         touch,
         updateParallel,
+        terminate,
     }
 
     function onActivate() {

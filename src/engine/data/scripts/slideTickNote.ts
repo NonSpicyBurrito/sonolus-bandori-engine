@@ -91,11 +91,7 @@ export function slideTickNote(): Script {
     ])
 
     const updateParallel = Or(
-        And(
-            options.isAutoplay,
-            GreaterOr(Time, NoteData.time),
-            destroyNoteHoldEffect()
-        ),
+        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         And(
             Not(options.isAutoplay),
             Not(bool(noteInputState)),
@@ -104,22 +100,21 @@ export function slideTickNote(): Script {
                 If(options.isStrictJudgment, goodWindow, slideWindow)
             )
         ),
-        And(
-            Equal(noteInputState, InputState.Terminated),
-            destroyNoteHoldEffect()
-        ),
-        And(
-            Greater(
-                Subtract(Time, NoteData.time, InputOffset),
-                If(options.isStrictJudgment, goodWindow, slideWindow)
-            ),
-            destroyNoteHoldEffect()
+        Equal(noteInputState, InputState.Terminated),
+        Greater(
+            Subtract(Time, NoteData.time, InputOffset),
+            If(options.isStrictJudgment, goodWindow, slideWindow)
         ),
         And(GreaterOr(Time, NoteData.spawnTime), [
             updateNoteSlideScale(),
             prepareDrawNote(),
             drawNote(SkinSprite.NoteTickGreen),
         ])
+    )
+
+    const terminate = And(
+        Or(options.isAutoplay, bool(noteInputState)),
+        destroyNoteHoldEffect()
     )
 
     return {
@@ -129,6 +124,7 @@ export function slideTickNote(): Script {
         initialize,
         touch,
         updateParallel,
+        terminate,
     }
 
     function onComplete() {

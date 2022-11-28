@@ -6,8 +6,6 @@ import {
     DestroyParticleEffect,
     MoveParticleEffect,
     Multiply,
-    Not,
-    Or,
     SpawnParticleEffect,
     Subtract,
 } from 'sonolus.js'
@@ -206,9 +204,8 @@ export function moveHoldEffect(
 }
 
 export function destroyHoldEffect(noteSharedMemory: NoteSharedMemoryPointer) {
-    return Or(Not(options.isNoteEffectEnabled), [
+    return And(options.isNoteEffectEnabled, [
         DestroyParticleEffect(noteSharedMemory.linearHoldEffectId),
         DestroyParticleEffect(noteSharedMemory.circularHoldEffectId),
-        true,
     ])
 }
