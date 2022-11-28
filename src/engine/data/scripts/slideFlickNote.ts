@@ -53,7 +53,6 @@ import {
     playNoteLaneEffect,
     prepareDrawNote,
     preprocessNote,
-    preprocessSlideSpawnTime,
     stopNoteHoldSFX,
     touchProcessDiscontinue,
     touchProcessHead,
@@ -73,14 +72,14 @@ export function slideFlickNote(): Script {
     const flickActivationX = EntityMemory.to<number>(0)
     const flickActivationY = EntityMemory.to<number>(1)
 
-    const preprocess = [
-        preprocessNote(If(options.isStrictJudgment, goodWindow, slideWindow)),
-        preprocessSlideSpawnTime(),
-    ]
+    const preprocess = preprocessNote(
+        true,
+        If(options.isStrictJudgment, goodWindow, slideWindow)
+    )
 
-    const spawnOrder = NoteData.slideSpawnTime
+    const spawnOrder = NoteData.spawnTime
 
-    const shouldSpawn = GreaterOr(Time, NoteData.slideSpawnTime)
+    const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
     const initialize = [
         initializeNoteSimLine(),
@@ -142,7 +141,7 @@ export function slideFlickNote(): Script {
             Subtract(Time, NoteData.time, InputOffset),
             If(options.isStrictJudgment, goodWindow, slideWindow)
         ),
-        And(GreaterOr(Time, NoteData.spawnTime), [
+        And(GreaterOr(Time, NoteData.visibleTime), [
             updateNoteSlideScale(),
             prepareDrawNote(),
             drawNote(SkinSprite.NoteHeadRed),

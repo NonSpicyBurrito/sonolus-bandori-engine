@@ -62,7 +62,7 @@ export function flickNote(): Script {
 
     const flickActivationTime = EntityMemory.to<number>(0)
 
-    const preprocess = preprocessNote(goodWindow)
+    const preprocess = preprocessNote(false, goodWindow)
 
     const spawnOrder = NoteData.spawnTime
 

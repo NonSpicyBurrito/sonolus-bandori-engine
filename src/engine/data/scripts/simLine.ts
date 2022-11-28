@@ -35,7 +35,7 @@ export function simLine(): Script {
     const rightData = NoteData.of(rightIndex)
 
     const time = EntityMemory.to<number>(1)
-    const spawnTime = EntityMemory.to<number>(2)
+    const visibleTime = EntityMemory.to<number>(2)
 
     const left = EntityMemory.to<number>(3)
     const right = EntityMemory.to<number>(4)
@@ -48,7 +48,7 @@ export function simLine(): Script {
 
     const initialize = [
         time.set(NoteData.of(rightIndex).time),
-        spawnTime.set(Subtract(time, noteOnScreenDuration)),
+        visibleTime.set(Subtract(time, noteOnScreenDuration)),
 
         left.set(leftData.center),
         right.set(rightData.center),
@@ -60,7 +60,7 @@ export function simLine(): Script {
         And(options.isAutoplay, GreaterOr(Time, time)),
         Equal(EntityInfo.of(leftIndex).state, State.Despawned),
         Equal(EntityInfo.of(rightIndex).state, State.Despawned),
-        And(GreaterOr(Time, spawnTime), [
+        And(GreaterOr(Time, visibleTime), [
             scale.set(
                 approach(Divide(Subtract(Time, time), noteOnScreenDuration))
             ),

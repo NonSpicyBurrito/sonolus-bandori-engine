@@ -108,7 +108,7 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(16)
     }
 
-    public get spawnTime() {
+    public get visibleTime() {
         return this.to<number>(17)
     }
 
@@ -132,7 +132,7 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(22)
     }
 
-    public get slideSpawnTime() {
+    public get spawnTime() {
         return this.to<number>(23)
     }
 
@@ -282,7 +282,7 @@ export function approachNote(
     )
 }
 
-export function getSpawnTime(
+export function getVisibleTime(
     time: Code<number>,
     speedMultiplier: Code<number>
 ) {
@@ -301,7 +301,7 @@ export function getZ(
     )
 }
 
-export function preprocessNote(missAccuracy: Code<number>) {
+export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
     return [
         NoteData.time.set(Divide(NoteData.time, options.speed)),
         And(options.isMirrorEnabled, [
@@ -312,8 +312,8 @@ export function preprocessNote(missAccuracy: Code<number>) {
         NoteData.speedMultiplier.set(
             If(options.isNoteSpeedRandom, Random(1, 2), 1)
         ),
-        NoteData.spawnTime.set(
-            getSpawnTime(NoteData.time, NoteData.speedMultiplier)
+        NoteData.visibleTime.set(
+            getVisibleTime(NoteData.time, NoteData.speedMultiplier)
         ),
 
         NoteData.center.set(getLaneBottomCenter(NoteData.lane)),
@@ -342,14 +342,14 @@ export function preprocessNote(missAccuracy: Code<number>) {
         NoteData.z.set(getZ(Layer.NoteBody)),
         NoteData.markerZ.set(getZ(Layer.NoteMarker)),
 
+        NoteData.spawnTime.set(
+            isSlide
+                ? Min(NoteData.visibleTime, NoteData.head.visibleTime)
+                : NoteData.visibleTime
+        ),
+
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
     ]
-}
-
-export function preprocessSlideSpawnTime() {
-    return NoteData.slideSpawnTime.set(
-        Min(NoteData.spawnTime, NoteData.head.spawnTime)
-    )
 }
 
 export function preprocessArrowOffset() {

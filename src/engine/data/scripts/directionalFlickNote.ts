@@ -74,7 +74,10 @@ export function directionalFlickNote(): Script {
         buckets.rightDirectionalFlickNoteIndex
     )
 
-    const preprocess = [preprocessNote(goodWindow), preprocessArrowOffset()]
+    const preprocess = [
+        preprocessNote(false, goodWindow),
+        preprocessArrowOffset(),
+    ]
 
     const spawnOrder = NoteData.spawnTime
 

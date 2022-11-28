@@ -39,7 +39,7 @@ import {
 import { moveHoldEffect } from './common/effect'
 import {
     approachNote,
-    getSpawnTime,
+    getVisibleTime,
     getZ,
     NoteData,
     NoteSharedMemory,
@@ -171,11 +171,11 @@ export function slider(sprite: SkinSprite): Script {
 
         SliderData.spawnTime.set(
             Min(
-                getSpawnTime(
+                getVisibleTime(
                     SliderData.headTime,
                     SliderData.headSpeedMultiplier
                 ),
-                getSpawnTime(
+                getVisibleTime(
                     SliderData.tailTime,
                     SliderData.tailSpeedMultiplier
                 )

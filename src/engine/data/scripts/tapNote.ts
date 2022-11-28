@@ -45,7 +45,7 @@ import { playJudgmentSFX } from './common/sfx'
 import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 
 export function tapNote(bucket: number, sprite: SkinSprite): Script {
-    const preprocess = preprocessNote(goodWindow)
+    const preprocess = preprocessNote(false, goodWindow)
 
     const spawnOrder = NoteData.spawnTime
 

@@ -46,7 +46,6 @@ import {
     playNoteTapEffect,
     prepareDrawNote,
     preprocessNote,
-    preprocessSlideSpawnTime,
     stopNoteHoldSFX,
     touchProcessDiscontinue,
     touchProcessHead,
@@ -58,14 +57,14 @@ import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 export function slideTickNote(): Script {
     const bucket = buckets.slideTickNoteIndex
 
-    const preprocess = [
-        preprocessNote(If(options.isStrictJudgment, goodWindow, slideWindow)),
-        preprocessSlideSpawnTime(),
-    ]
+    const preprocess = preprocessNote(
+        true,
+        If(options.isStrictJudgment, goodWindow, slideWindow)
+    )
 
-    const spawnOrder = NoteData.slideSpawnTime
+    const spawnOrder = NoteData.spawnTime
 
-    const shouldSpawn = GreaterOr(Time, NoteData.slideSpawnTime)
+    const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
     const initialize = [
         initializeNoteAutoInput(bucket),
@@ -106,7 +105,7 @@ export function slideTickNote(): Script {
             Subtract(Time, NoteData.time, InputOffset),
             If(options.isStrictJudgment, goodWindow, slideWindow)
         ),
-        And(GreaterOr(Time, NoteData.spawnTime), [
+        And(GreaterOr(Time, NoteData.visibleTime), [
             updateNoteSlideScale(),
             prepareDrawNote(),
             drawNote(SkinSprite.NoteTickGreen),
