@@ -32,7 +32,8 @@ export function autoNote(
 
     const needSlide = EntityMemory.to<boolean>(3)
 
-    const needEffect = EntityMemory.to<boolean>(4)
+    const needLaneEffect = EntityMemory.to<boolean>(4)
+    const needNoteEffect = EntityMemory.to<boolean>(5)
 
     const initialize = [
         And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
@@ -40,13 +41,18 @@ export function autoNote(
             needSFX.set(true),
         ]),
 
-        And(isSlide, options.isAutoplay, needSlide.set(true)),
+        And(options.isAutoplay, isSlide, needSlide.set(true)),
 
         And(
-            options.isLaneEffectEnabled,
-            options.isNoteEffectEnabled,
             options.isAutoplay,
-            needEffect.set(true)
+            options.isLaneEffectEnabled,
+            needLaneEffect.set(true)
+        ),
+
+        And(
+            options.isAutoplay,
+            options.isNoteEffectEnabled,
+            needNoteEffect.set(true)
         ),
     ]
 
@@ -65,14 +71,19 @@ export function autoNote(
             needSFX.set(false),
         ]),
 
-        And(needEffect, GreaterOr(Time, noteData.time), [
+        And(needLaneEffect, GreaterOr(Time, noteData.time), [
             playLaneEffect(noteData.lane),
-            playNoteEffect(noteData.center, linear, circular, direction),
 
-            needEffect.set(false),
+            needLaneEffect.set(false),
         ]),
 
-        Not(Or(needSFX, needSlide, needEffect)),
+        And(needNoteEffect, GreaterOr(Time, noteData.time), [
+            playNoteEffect(noteData.center, linear, circular, direction),
+
+            needNoteEffect.set(false),
+        ]),
+
+        Not(Or(needSFX, needSlide, needLaneEffect, needNoteEffect)),
     ]
 
     return {

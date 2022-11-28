@@ -88,6 +88,7 @@ export function directionalFlickNote(): Script {
             scripts.autoLeftDirectionalFlickNoteIndex,
             scripts.autoRightDirectionalFlickNoteIndex
         ),
+        false,
         true
     )
 

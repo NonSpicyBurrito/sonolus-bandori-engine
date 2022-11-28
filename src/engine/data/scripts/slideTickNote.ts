@@ -67,6 +67,7 @@ export function slideTickNote(): Script {
     const initialize = initializeNote(
         bucket,
         scripts.autoSlideTickNoteIndex,
+        true,
         false
     )
 

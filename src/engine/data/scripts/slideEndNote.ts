@@ -68,6 +68,7 @@ export function slideEndNote(): Script {
     const initialize = initializeNote(
         bucket,
         scripts.autoSlideEndNoteIndex,
+        true,
         true
     )
 
