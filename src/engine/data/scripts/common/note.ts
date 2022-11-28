@@ -380,9 +380,15 @@ export function initializeNote(
         And(options.isAutoplay, [
             InputJudgment.set(1),
             InputBucket.set(bucket),
-
-            Spawn(autoNoteIndex, [EntityInfo.index]),
         ]),
+
+        And(
+            Or(
+                options.isAutoplay,
+                And(options.isSFXEnabled, options.isAutoSFX)
+            ),
+            Spawn(autoNoteIndex, [EntityInfo.index])
+        ),
 
         And(
             canHaveSimLine,

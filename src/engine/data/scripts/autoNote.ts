@@ -1,9 +1,24 @@
 import { ParticleEffect } from 'sonolus-core'
-import { And, EntityMemory, GreaterOr, Not, Script, Time } from 'sonolus.js'
+import {
+    And,
+    AudioOffset,
+    Code,
+    EntityMemory,
+    GreaterOr,
+    Not,
+    Or,
+    PlayScheduled,
+    Script,
+    Subtract,
+    Time,
+} from 'sonolus.js'
+import { options } from '../../configuration/options'
+import { minSFXDistance } from './common/constants'
 import { playLaneEffect, playNoteEffect } from './common/effect'
-import { NoteData, spawnNoteHoldEffect } from './common/note'
+import { NoteData, NoteDataPointer, spawnNoteHoldEffect } from './common/note'
 
 export function autoNote(
+    getClip: (noteData: NoteDataPointer) => Code<number>,
     linear: ParticleEffect,
     circular: ParticleEffect,
     direction: 'left' | 'up' | 'right',
@@ -12,24 +27,56 @@ export function autoNote(
     const noteIndex = EntityMemory.to<number>(0)
     const noteData = NoteData.of(noteIndex)
 
-    const hasSlideSpawned = EntityMemory.to<boolean>(1)
+    const sfxTime = EntityMemory.to<number>(1)
+    const needSFX = EntityMemory.to<boolean>(2)
+
+    const needSlide = EntityMemory.to<boolean>(3)
+
+    const needEffect = EntityMemory.to<boolean>(4)
+
+    const initialize = [
+        And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
+            sfxTime.set(Subtract(noteData.time, AudioOffset, 0.5)),
+            needSFX.set(true),
+        ]),
+
+        And(isSlide, options.isAutoplay, needSlide.set(true)),
+
+        And(
+            options.isLaneEffectEnabled,
+            options.isNoteEffectEnabled,
+            options.isAutoplay,
+            needEffect.set(true)
+        ),
+    ]
 
     const updateSequential = isSlide
-        ? And(GreaterOr(Time, noteData.head.time), Not(hasSlideSpawned), [
+        ? And(needSlide, GreaterOr(Time, noteData.head.time), [
               spawnNoteHoldEffect(noteIndex),
 
-              hasSlideSpawned.set(true),
+              needSlide.set(false),
           ])
         : undefined
 
-    const updateParallel = And(GreaterOr(Time, noteData.time), [
-        playLaneEffect(noteData.lane),
-        playNoteEffect(noteData.center, linear, circular, direction),
+    const updateParallel = [
+        And(needSFX, GreaterOr(Time, sfxTime), [
+            PlayScheduled(getClip(noteData), noteData.time, minSFXDistance),
 
-        true,
-    ])
+            needSFX.set(false),
+        ]),
+
+        And(needEffect, GreaterOr(Time, noteData.time), [
+            playLaneEffect(noteData.lane),
+            playNoteEffect(noteData.center, linear, circular, direction),
+
+            needEffect.set(false),
+        ]),
+
+        Not(Or(needSFX, needSlide, needEffect)),
+    ]
 
     return {
+        initialize,
         updateSequential,
         updateParallel,
     }

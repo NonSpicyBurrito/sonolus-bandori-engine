@@ -1,8 +1,8 @@
-import { ParticleEffect, SkinSprite } from 'sonolus-core'
+import { EffectClip, ParticleEffect, SkinSprite } from 'sonolus-core'
 import { defineScripts } from 'sonolus.js'
 import { buckets } from '../buckets'
 import { autoNote } from './autoNote'
-import { autoSFX } from './autoSFX'
+import { getDirectionalFlickSFX } from './common/sfx'
 import { directionalFlickNote } from './directionalFlickNote'
 import { flickNote } from './flickNote'
 import { initialization } from './initialization'
@@ -32,9 +32,9 @@ export const scripts = defineScripts({
 
     simLine,
 
-    autoSFX,
     autoTapNote: () =>
         autoNote(
+            () => EffectClip.Perfect,
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
             'up',
@@ -42,6 +42,7 @@ export const scripts = defineScripts({
         ),
     autoFlickNote: () =>
         autoNote(
+            () => EffectClip.PerfectAlternative,
             ParticleEffect.NoteLinearAlternativeRed,
             ParticleEffect.NoteCircularAlternativeRed,
             'up',
@@ -49,6 +50,7 @@ export const scripts = defineScripts({
         ),
     autoLeftDirectionalFlickNote: () =>
         autoNote(
+            (noteData) => getDirectionalFlickSFX(noteData.extraWidth),
             ParticleEffect.NoteLinearAlternativePurple,
             ParticleEffect.NoteCircularAlternativePurple,
             'left',
@@ -56,6 +58,7 @@ export const scripts = defineScripts({
         ),
     autoRightDirectionalFlickNote: () =>
         autoNote(
+            (noteData) => getDirectionalFlickSFX(noteData.extraWidth),
             ParticleEffect.NoteLinearAlternativeYellow,
             ParticleEffect.NoteCircularAlternativeYellow,
             'right',
@@ -63,6 +66,7 @@ export const scripts = defineScripts({
         ),
     autoSlideStartNote: () =>
         autoNote(
+            () => EffectClip.Perfect,
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
             'up',
@@ -70,6 +74,7 @@ export const scripts = defineScripts({
         ),
     autoSlideTickNote: () =>
         autoNote(
+            () => EffectClip.Perfect,
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
             'up',
@@ -77,6 +82,7 @@ export const scripts = defineScripts({
         ),
     autoSlideEndNote: () =>
         autoNote(
+            () => EffectClip.Perfect,
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
             'up',
@@ -84,6 +90,7 @@ export const scripts = defineScripts({
         ),
     autoSlideFlickNote: () =>
         autoNote(
+            () => EffectClip.PerfectAlternative,
             ParticleEffect.NoteLinearAlternativeRed,
             ParticleEffect.NoteCircularAlternativeRed,
             'up',
