@@ -38,7 +38,7 @@ import {
 } from './common/constants'
 import { moveHoldEffect } from './common/effect'
 import {
-    approachNote,
+    approach,
     getVisibleTime,
     getZ,
     NoteData,
@@ -254,7 +254,7 @@ export function slider(sprite: SkinSprite): Script {
                 ],
                 [
                     headScale.set(
-                        approachNote(
+                        approach(
                             SliderData.headTime,
                             SliderData.headSpeedMultiplier
                         )
@@ -264,10 +264,7 @@ export function slider(sprite: SkinSprite): Script {
             ),
 
             tailScale.set(
-                approachNote(
-                    SliderData.tailTime,
-                    SliderData.tailSpeedMultiplier
-                )
+                approach(SliderData.tailTime, SliderData.tailSpeedMultiplier)
             ),
             slideTop.set(Lerp(stageTop, stageBottom, tailScale)),
 

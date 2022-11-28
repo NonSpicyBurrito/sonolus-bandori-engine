@@ -1,7 +1,6 @@
 import { SkinSprite } from 'sonolus-core'
 import {
     And,
-    Divide,
     Draw,
     EntityInfo,
     EntityMemory,
@@ -22,10 +21,9 @@ import {
     noteBaseBottomScale,
     noteBaseTop,
     noteBaseTopScale,
-    noteOnScreenDuration,
     stageTop,
 } from './common/constants'
-import { approach, getZ, NoteData } from './common/note'
+import { approach, getVisibleTime, getZ, NoteData } from './common/note'
 
 export function simLine(): Script {
     const rightIndex = EntityMemory.to<number>(0)
@@ -48,7 +46,7 @@ export function simLine(): Script {
 
     const initialize = [
         time.set(NoteData.of(rightIndex).time),
-        visibleTime.set(Subtract(time, noteOnScreenDuration)),
+        visibleTime.set(getVisibleTime(time, 1)),
 
         left.set(leftData.center),
         right.set(rightData.center),
@@ -61,9 +59,7 @@ export function simLine(): Script {
         Equal(EntityInfo.of(leftIndex).state, State.Despawned),
         Equal(EntityInfo.of(rightIndex).state, State.Despawned),
         And(GreaterOr(Time, visibleTime), [
-            scale.set(
-                approach(Divide(Subtract(Time, time), noteOnScreenDuration))
-            ),
+            scale.set(approach(time, 1)),
             bottom.set(Lerp(stageTop, noteBaseBottom, scale)),
             top.set(Lerp(stageTop, noteBaseTop, scale)),
 

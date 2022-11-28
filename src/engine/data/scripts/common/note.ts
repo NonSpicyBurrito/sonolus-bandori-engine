@@ -270,15 +270,20 @@ export function checkNoteTimeInGoodWindow() {
 
 // Note
 
-export function approach(x: Code<number>) {
-    return Add(0.05, Multiply(0.95, Power(1.1 ** 50, x)))
-}
-export function approachNote(
-    time: Code<number>,
-    speedMultiplier: Code<number>
-) {
-    return approach(
-        Divide(Subtract(Time, time), noteOnScreenDuration, speedMultiplier)
+export function approach(time: Code<number>, speedMultiplier: Code<number>) {
+    return Add(
+        0.05,
+        Multiply(
+            0.95,
+            Power(
+                1.1 ** 50,
+                Divide(
+                    Subtract(Time, time),
+                    noteOnScreenDuration,
+                    speedMultiplier
+                )
+            )
+        )
     )
 }
 
@@ -447,7 +452,7 @@ export function touchProcessDiscontinue() {
 }
 
 export function updateNoteScale() {
-    return noteScale.set(approachNote(NoteData.time, NoteData.speedMultiplier))
+    return noteScale.set(approach(NoteData.time, NoteData.speedMultiplier))
 }
 export function updateNoteSlideScale() {
     return If(
