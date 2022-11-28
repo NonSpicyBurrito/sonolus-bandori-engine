@@ -85,8 +85,8 @@ export function directionalFlickNote(): Script {
         bucket,
         If(
             NoteData.isLeft,
-            scripts.autoLeftDirectionalFlickEffectIndex,
-            scripts.autoRightDirectionalFlickEffectIndex
+            scripts.autoLeftDirectionalFlickNoteIndex,
+            scripts.autoRightDirectionalFlickNoteIndex
         ),
         false,
         true

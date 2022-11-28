@@ -67,7 +67,7 @@ export function slideEndNote(): Script {
 
     const initialize = initializeNote(
         bucket,
-        scripts.autoTapEffectIndex,
+        scripts.autoTapNoteIndex,
         true,
         true
     )

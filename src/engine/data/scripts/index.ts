@@ -1,7 +1,7 @@
 import { ParticleEffect, SkinSprite } from 'sonolus-core'
 import { defineScripts } from 'sonolus.js'
 import { buckets } from '../buckets'
-import { autoNoteEffect } from './autoNoteEffect'
+import { autoNote } from './autoNote'
 import { autoSFX } from './autoSFX'
 import { autoSlider } from './autoSlider'
 import { directionalFlickNote } from './directionalFlickNote'
@@ -34,26 +34,26 @@ export const scripts = defineScripts({
     simLine,
 
     autoSFX,
-    autoTapEffect: () =>
-        autoNoteEffect(
+    autoTapNote: () =>
+        autoNote(
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
             'up'
         ),
-    autoFlickEffect: () =>
-        autoNoteEffect(
+    autoFlickNote: () =>
+        autoNote(
             ParticleEffect.NoteLinearAlternativeRed,
             ParticleEffect.NoteCircularAlternativeRed,
             'up'
         ),
-    autoLeftDirectionalFlickEffect: () =>
-        autoNoteEffect(
+    autoLeftDirectionalFlickNote: () =>
+        autoNote(
             ParticleEffect.NoteLinearAlternativePurple,
             ParticleEffect.NoteCircularAlternativePurple,
             'left'
         ),
-    autoRightDirectionalFlickEffect: () =>
-        autoNoteEffect(
+    autoRightDirectionalFlickNote: () =>
+        autoNote(
             ParticleEffect.NoteLinearAlternativeYellow,
             ParticleEffect.NoteCircularAlternativeYellow,
             'right'

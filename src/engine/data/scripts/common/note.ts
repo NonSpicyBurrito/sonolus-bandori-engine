@@ -370,7 +370,7 @@ export function preprocessArrowOffset() {
 
 export function initializeNote(
     bucket: Code<number>,
-    autoNoteEffectIndex: Code<number>,
+    autoNoteIndex: Code<number>,
     isSlide: boolean,
     canHaveSimLine: boolean
 ) {
@@ -382,7 +382,7 @@ export function initializeNote(
             InputJudgment.set(1),
             InputBucket.set(bucket),
 
-            Spawn(autoNoteEffectIndex, [EntityInfo.index]),
+            Spawn(autoNoteIndex, [EntityInfo.index]),
 
             And(isSlide, Spawn(scripts.autoSliderIndex, [EntityInfo.index])),
         ]),

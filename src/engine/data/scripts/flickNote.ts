@@ -68,7 +68,7 @@ export function flickNote(): Script {
 
     const initialize = initializeNote(
         bucket,
-        scripts.autoFlickEffectIndex,
+        scripts.autoFlickNoteIndex,
         false,
         true
     )

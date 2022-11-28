@@ -3,7 +3,7 @@ import { And, EntityMemory, GreaterOr, Script, Time } from 'sonolus.js'
 import { playLaneEffect, playNoteEffect } from './common/effect'
 import { NoteData } from './common/note'
 
-export function autoNoteEffect(
+export function autoNote(
     linear: ParticleEffect,
     circular: ParticleEffect,
     direction: 'left' | 'up' | 'right'

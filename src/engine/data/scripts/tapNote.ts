@@ -51,7 +51,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
 
     const initialize = initializeNote(
         bucket,
-        scripts.autoTapEffectIndex,
+        scripts.autoTapNoteIndex,
         false,
         true
     )
