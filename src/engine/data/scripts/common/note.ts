@@ -348,9 +348,12 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
         NoteData.markerZ.set(getZ(Layer.NoteMarker)),
 
         NoteData.spawnTime.set(
-            isSlide
-                ? Min(NoteData.visibleTime, NoteData.head.visibleTime)
-                : NoteData.visibleTime
+            Min(
+                Subtract(NoteData.time, 0.5),
+                isSlide
+                    ? Min(NoteData.visibleTime, NoteData.head.visibleTime)
+                    : NoteData.visibleTime
+            )
         ),
 
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),

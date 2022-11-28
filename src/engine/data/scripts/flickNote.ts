@@ -107,12 +107,12 @@ export function flickNote(): Script {
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
         Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
-        [
+        And(GreaterOr(Time, NoteData.visibleTime), [
             updateNoteScale(),
             prepareDrawNote(),
             drawNote(SkinSprite.NoteHeadRed),
             drawNoteFlickArrow(),
-        ]
+        ])
     )
 
     return {
