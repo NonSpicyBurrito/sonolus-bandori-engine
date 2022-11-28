@@ -7,6 +7,8 @@ import {
     InputJudgment,
     Not,
     Play,
+    PlayLooped,
+    StopLooped,
     Switch,
 } from 'sonolus.js'
 import { options } from '../../../configuration/options'
@@ -17,7 +19,7 @@ import {
     singleDirectionalFlickClip,
     tripleDirectionalFlickClip,
 } from './constants'
-import { NoteData } from './note'
+import { NoteData, NoteSharedMemoryPointer } from './note'
 
 export const getDirectionalFlickSFX = (
     extraWidth: Code<number>,
@@ -44,6 +46,20 @@ export const playFlickSFX = () =>
 
 export const playDirectionalFlickSFX = () =>
     playSFX(getDirectionalFlickSFX(NoteData.extraWidth, InputJudgment))
+
+export const playHoldSFX = (noteSharedMemory: NoteSharedMemoryPointer) =>
+    And(
+        options.isSFXEnabled,
+        Not(options.isAutoSFX),
+        noteSharedMemory.holdSFXClipId.set(PlayLooped(EffectClip.Hold))
+    )
+
+export const stopHoldSFX = (noteSharedMemory: NoteSharedMemoryPointer) =>
+    And(
+        options.isSFXEnabled,
+        Not(options.isAutoSFX),
+        StopLooped(noteSharedMemory.holdSFXClipId)
+    )
 
 const playSFX = (id: Code<number>) =>
     And(options.isSFXEnabled, Not(options.isAutoSFX), Play(id, minSFXDistance))

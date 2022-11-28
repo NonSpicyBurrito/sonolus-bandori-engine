@@ -57,6 +57,7 @@ import {
     playNoteEffect,
     spawnHoldEffect,
 } from './effect'
+import { playHoldSFX, stopHoldSFX } from './sfx'
 import { getLaneBottomCenter } from './stage'
 import {
     checkTouchXInHitbox,
@@ -176,6 +177,10 @@ export class NoteSharedMemoryPointer extends Pointer {
     public get circularHoldEffectId() {
         return this.to<number>(4)
     }
+
+    public get holdSFXClipId() {
+        return this.to<number>(5)
+    }
 }
 
 export const NoteSharedMemory = createEntitySharedMemory(
@@ -189,6 +194,16 @@ export const noteInputState = EntityMemory.to<InputState>(33)
 
 export const noteBottom = EntityMemory.to<number>(48)
 export const noteTop = EntityMemory.to<number>(49)
+
+// SFX
+
+export function playNoteHoldSFX() {
+    return playHoldSFX(NoteSharedMemory)
+}
+
+export function stopNoteHoldSFX() {
+    return stopHoldSFX(NoteSharedMemory)
+}
 
 // Effect
 
@@ -403,6 +418,7 @@ export function touchProcessHead() {
                     NoteSharedMemory.isSliding.set(true),
 
                     spawnNoteHoldEffect(),
+                    playNoteHoldSFX(),
                 ]
             ),
             And(
@@ -419,6 +435,7 @@ export function touchProcessHead() {
                     NoteSharedMemory.isSliding.set(true),
 
                     spawnNoteHoldEffect(),
+                    playNoteHoldSFX(),
                 ]
             )
         )

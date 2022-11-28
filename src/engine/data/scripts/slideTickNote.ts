@@ -47,6 +47,7 @@ import {
     prepareDrawNote,
     preprocessNote,
     preprocessSlideSpawnTime,
+    stopNoteHoldSFX,
     touchProcessDiscontinue,
     touchProcessHead,
     updateNoteSlideScale,
@@ -112,10 +113,13 @@ export function slideTickNote(): Script {
         ])
     )
 
-    const terminate = And(
-        Or(options.isAutoplay, bool(noteInputState)),
-        destroyNoteHoldEffect()
-    )
+    const terminate = [
+        And(
+            Or(options.isAutoplay, bool(noteInputState)),
+            destroyNoteHoldEffect()
+        ),
+        Or(options.isAutoplay, stopNoteHoldSFX()),
+    ]
 
     return {
         preprocess,
