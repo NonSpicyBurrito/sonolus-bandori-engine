@@ -229,8 +229,11 @@ export function playNoteRightDirectionalFlickEffect() {
     )
 }
 
-function spawnNoteHoldEffect() {
-    return spawnHoldEffect(NoteSharedMemory, NoteData.head.center)
+export function spawnNoteHoldEffect(index?: Code<number>) {
+    return spawnHoldEffect(
+        index ? NoteSharedMemory.of(index) : NoteSharedMemory,
+        (index ? NoteData.of(index) : NoteData).head.center
+    )
 }
 
 export function destroyNoteHoldEffect() {
