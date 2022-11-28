@@ -14,6 +14,8 @@ export function autoNote(
     const updateParallel = And(GreaterOr(Time, noteData.time), [
         playLaneEffect(noteData.lane),
         playNoteEffect(noteData.center, linear, circular, direction),
+
+        true,
     ])
 
     return {
