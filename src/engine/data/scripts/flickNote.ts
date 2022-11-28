@@ -35,9 +35,7 @@ import {
     checkTouchXInNoteHitbox,
     drawNote,
     drawNoteFlickArrow,
-    initializeNoteAutoEffect,
-    initializeNoteAutoInput,
-    initializeNoteSimLine,
+    initializeNote,
     InputState,
     NoteData,
     noteInputState,
@@ -68,12 +66,12 @@ export function flickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = [
-        initializeNoteSimLine(),
-
-        initializeNoteAutoInput(bucket),
-        initializeNoteAutoEffect(scripts.autoFlickEffectIndex),
-    ]
+    const initialize = initializeNote(
+        bucket,
+        scripts.autoFlickEffectIndex,
+        false,
+        true
+    )
 
     const touch = Or(options.isAutoplay, [
         And(

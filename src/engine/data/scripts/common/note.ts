@@ -368,44 +368,43 @@ export function preprocessArrowOffset() {
     )
 }
 
-export function initializeNoteAutoInput(bucket: Code<number>) {
-    return And(options.isAutoplay, [
-        InputJudgment.set(1),
-        InputBucket.set(bucket),
-    ])
-}
-
-export function initializeNoteSimLine() {
+export function initializeNote(
+    bucket: Code<number>,
+    autoNoteEffectIndex: Code<number>,
+    isSlide: boolean,
+    canHaveSimLine: boolean
+) {
     const leftIndex = Subtract(EntityInfo.index, 1)
     const leftArchetype = EntityInfo.of(leftIndex).archetype
 
-    return And(
-        options.isSimLineEnabled,
-        Not(options.isNoteSpeedRandom),
-        Equal(NoteData.time, NoteData.of(leftIndex).time),
-        Or(
-            ...[
-                archetypes.tapNoteIndex,
-                archetypes.flickNoteIndex,
-                archetypes.directionalFlickNoteIndex,
-                archetypes.slideStartNoteIndex,
-                archetypes.slideEndNoteIndex,
-                archetypes.slideFlickNoteIndex,
-            ].map((index) => Equal(leftArchetype, index))
+    return [
+        And(options.isAutoplay, [
+            InputJudgment.set(1),
+            InputBucket.set(bucket),
+
+            Spawn(autoNoteEffectIndex, [EntityInfo.index]),
+
+            And(isSlide, Spawn(scripts.autoSliderIndex, [EntityInfo.index])),
+        ]),
+
+        And(
+            canHaveSimLine,
+            options.isSimLineEnabled,
+            Not(options.isNoteSpeedRandom),
+            Equal(NoteData.time, NoteData.of(leftIndex).time),
+            Or(
+                ...[
+                    archetypes.tapNoteIndex,
+                    archetypes.flickNoteIndex,
+                    archetypes.directionalFlickNoteIndex,
+                    archetypes.slideStartNoteIndex,
+                    archetypes.slideEndNoteIndex,
+                    archetypes.slideFlickNoteIndex,
+                ].map((index) => Equal(leftArchetype, index))
+            ),
+            Spawn(scripts.simLineIndex, [EntityInfo.index])
         ),
-        Spawn(scripts.simLineIndex, [EntityInfo.index])
-    )
-}
-
-export function initializeNoteAutoEffect(index: Code<number>) {
-    return And(options.isAutoplay, Spawn(index, [EntityInfo.index]))
-}
-
-export function initializeAutoSlider() {
-    return And(
-        options.isAutoplay,
-        Spawn(scripts.autoSliderIndex, [EntityInfo.index])
-    )
+    ]
 }
 
 export function touchProcessHead() {

@@ -40,9 +40,7 @@ import {
     checkTouchXInNoteHitbox,
     drawNote,
     drawNoteDirectionalFlickArrow,
-    initializeNoteAutoEffect,
-    initializeNoteAutoInput,
-    initializeNoteSimLine,
+    initializeNote,
     InputState,
     NoteData,
     noteInputState,
@@ -83,18 +81,16 @@ export function directionalFlickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = [
-        initializeNoteSimLine(),
-
-        initializeNoteAutoInput(bucket),
-        initializeNoteAutoEffect(
-            If(
-                NoteData.isLeft,
-                scripts.autoLeftDirectionalFlickEffectIndex,
-                scripts.autoRightDirectionalFlickEffectIndex
-            )
+    const initialize = initializeNote(
+        bucket,
+        If(
+            NoteData.isLeft,
+            scripts.autoLeftDirectionalFlickEffectIndex,
+            scripts.autoRightDirectionalFlickEffectIndex
         ),
-    ]
+        false,
+        true
+    )
 
     const touch = Or(options.isAutoplay, [
         And(

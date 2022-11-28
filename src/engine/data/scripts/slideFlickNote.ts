@@ -41,10 +41,7 @@ import {
     destroyNoteHoldEffect,
     drawNote,
     drawNoteFlickArrow,
-    initializeAutoSlider,
-    initializeNoteAutoEffect,
-    initializeNoteAutoInput,
-    initializeNoteSimLine,
+    initializeNote,
     InputState,
     NoteData,
     noteInputState,
@@ -81,13 +78,12 @@ export function slideFlickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = [
-        initializeNoteSimLine(),
-
-        initializeNoteAutoInput(bucket),
-        initializeNoteAutoEffect(scripts.autoFlickEffectIndex),
-        initializeAutoSlider(),
-    ]
+    const initialize = initializeNote(
+        bucket,
+        scripts.autoFlickEffectIndex,
+        true,
+        true
+    )
 
     const touch = Or(options.isAutoplay, [
         touchProcessHead(),

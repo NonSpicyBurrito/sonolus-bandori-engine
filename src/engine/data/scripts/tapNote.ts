@@ -28,9 +28,7 @@ import {
     checkNoteTimeInGoodWindow,
     checkTouchXInNoteHitbox,
     drawNote,
-    initializeNoteAutoEffect,
-    initializeNoteAutoInput,
-    initializeNoteSimLine,
+    initializeNote,
     InputState,
     NoteData,
     noteInputState,
@@ -51,12 +49,12 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = [
-        initializeNoteSimLine(),
-
-        initializeNoteAutoInput(bucket),
-        initializeNoteAutoEffect(scripts.autoTapEffectIndex),
-    ]
+    const initialize = initializeNote(
+        bucket,
+        scripts.autoTapEffectIndex,
+        false,
+        true
+    )
 
     const touch = Or(
         options.isAutoplay,

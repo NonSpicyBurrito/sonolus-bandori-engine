@@ -36,10 +36,7 @@ import {
     checkTouchXInNoteHitbox,
     destroyNoteHoldEffect,
     drawNote,
-    initializeAutoSlider,
-    initializeNoteAutoEffect,
-    initializeNoteAutoInput,
-    initializeNoteSimLine,
+    initializeNote,
     InputState,
     NoteData,
     noteInputState,
@@ -68,13 +65,12 @@ export function slideEndNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = [
-        initializeNoteSimLine(),
-
-        initializeNoteAutoInput(bucket),
-        initializeNoteAutoEffect(scripts.autoTapEffectIndex),
-        initializeAutoSlider(),
-    ]
+    const initialize = initializeNote(
+        bucket,
+        scripts.autoTapEffectIndex,
+        true,
+        true
+    )
 
     const touch = Or(options.isAutoplay, [
         touchProcessHead(),

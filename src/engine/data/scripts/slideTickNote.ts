@@ -35,9 +35,7 @@ import {
     checkTouchXInNoteHitbox,
     destroyNoteHoldEffect,
     drawNote,
-    initializeAutoSlider,
-    initializeNoteAutoEffect,
-    initializeNoteAutoInput,
+    initializeNote,
     InputState,
     NoteData,
     noteInputState,
@@ -66,11 +64,12 @@ export function slideTickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = [
-        initializeNoteAutoInput(bucket),
-        initializeNoteAutoEffect(scripts.autoTapEffectIndex),
-        initializeAutoSlider(),
-    ]
+    const initialize = initializeNote(
+        bucket,
+        scripts.autoTapEffectIndex,
+        true,
+        false
+    )
 
     const touch = Or(options.isAutoplay, [
         touchProcessHead(),
