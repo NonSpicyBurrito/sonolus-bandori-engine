@@ -46,7 +46,7 @@ export function simLine(): Script {
 
     const initialize = [
         time.set(NoteData.of(rightIndex).time),
-        visibleTime.set(getVisibleTime(time, 1)),
+        visibleTime.set(getVisibleTime(time)),
 
         left.set(leftData.center),
         right.set(rightData.center),
@@ -59,7 +59,7 @@ export function simLine(): Script {
         Equal(EntityInfo.of(leftIndex).state, State.Despawned),
         Equal(EntityInfo.of(rightIndex).state, State.Despawned),
         And(GreaterOr(Time, visibleTime), [
-            scale.set(approach(time, 1)),
+            scale.set(approach(time)),
             bottom.set(Lerp(stageTop, noteBaseBottom, scale)),
             top.set(Lerp(stageTop, noteBaseTop, scale)),
 

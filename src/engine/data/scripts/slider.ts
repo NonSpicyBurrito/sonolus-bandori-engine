@@ -12,11 +12,9 @@ import {
     GreaterOr,
     If,
     Lerp,
-    Min,
     Multiply,
     Or,
     Pointer,
-    Remap,
     RemapClamped,
     Script,
     State,
@@ -37,13 +35,7 @@ import {
     stageTop,
 } from './common/constants'
 import { moveHoldEffect } from './common/effect'
-import {
-    approach,
-    getVisibleTime,
-    getZ,
-    NoteData,
-    NoteSharedMemory,
-} from './common/note'
+import { approach, getVisibleTime, getZ, NoteSharedMemory } from './common/note'
 import { getLaneBottomCenter } from './common/stage'
 
 class SliderDataPointer extends Pointer {
@@ -94,22 +86,11 @@ class SliderDataPointer extends Pointer {
     public get tailBottomRight() {
         return this.to<number>(20)
     }
-
-    public get headSpeedMultiplier() {
-        return this.to<number>(21)
-    }
-
-    public get tailSpeedMultiplier() {
-        return this.to<number>(22)
-    }
 }
 
 const SliderData = createEntityData(SliderDataPointer)
 
 export function slider(sprite: SkinSprite): Script {
-    const headData = NoteData.of(SliderData.headIndex)
-    const tailData = NoteData.of(SliderData.tailIndex)
-
     const headScale = EntityMemory.to<number>(0)
     const slideBottom = EntityMemory.to<number>(1)
     const headCenter = EntityMemory.to<number>(2)
@@ -141,46 +122,7 @@ export function slider(sprite: SkinSprite): Script {
             Add(SliderData.tailBottomLeft, noteWidth)
         ),
 
-        If(
-            Equal(headData.time, tailData.time),
-            [
-                SliderData.headSpeedMultiplier.set(headData.speedMultiplier),
-                SliderData.tailSpeedMultiplier.set(tailData.speedMultiplier),
-            ],
-            [
-                SliderData.headSpeedMultiplier.set(
-                    Remap(
-                        headData.time,
-                        tailData.time,
-                        headData.speedMultiplier,
-                        tailData.speedMultiplier,
-                        SliderData.headTime
-                    )
-                ),
-                SliderData.tailSpeedMultiplier.set(
-                    Remap(
-                        headData.time,
-                        tailData.time,
-                        headData.speedMultiplier,
-                        tailData.speedMultiplier,
-                        SliderData.tailTime
-                    )
-                ),
-            ]
-        ),
-
-        SliderData.spawnTime.set(
-            Min(
-                getVisibleTime(
-                    SliderData.headTime,
-                    SliderData.headSpeedMultiplier
-                ),
-                getVisibleTime(
-                    SliderData.tailTime,
-                    SliderData.tailSpeedMultiplier
-                )
-            )
-        ),
+        SliderData.spawnTime.set(getVisibleTime(SliderData.headTime)),
 
         connectorZ.set(
             getZ(Layer.NoteConnector, SliderData.headTime, SliderData.headIndex)
@@ -253,19 +195,12 @@ export function slider(sprite: SkinSprite): Script {
                     ]),
                 ],
                 [
-                    headScale.set(
-                        approach(
-                            SliderData.headTime,
-                            SliderData.headSpeedMultiplier
-                        )
-                    ),
+                    headScale.set(approach(SliderData.headTime)),
                     slideBottom.set(Lerp(stageTop, stageBottom, headScale)),
                 ]
             ),
 
-            tailScale.set(
-                approach(SliderData.tailTime, SliderData.tailSpeedMultiplier)
-            ),
+            tailScale.set(approach(SliderData.tailTime)),
             slideTop.set(Lerp(stageTop, stageBottom, tailScale)),
 
             Draw(

@@ -26,7 +26,6 @@ import {
     Or,
     Pointer,
     Power,
-    Random,
     Spawn,
     State,
     Subtract,
@@ -104,11 +103,11 @@ export class NoteDataPointer extends Pointer {
         return this.to<boolean>(5)
     }
 
-    public get speedMultiplier() {
+    public get visibleTime() {
         return this.to<number>(16)
     }
 
-    public get visibleTime() {
+    public get spawnTime() {
         return this.to<number>(17)
     }
 
@@ -132,20 +131,16 @@ export class NoteDataPointer extends Pointer {
         return this.to<number>(22)
     }
 
-    public get spawnTime() {
+    public get arrowOffset() {
         return this.to<number>(23)
     }
 
-    public get arrowOffset() {
+    public get hitboxLeft() {
         return this.to<number>(24)
     }
 
-    public get hitboxLeft() {
-        return this.to<number>(25)
-    }
-
     public get hitboxRight() {
-        return this.to<number>(26)
+        return this.to<number>(25)
     }
 }
 
@@ -270,28 +265,18 @@ export function checkNoteTimeInGoodWindow() {
 
 // Note
 
-export function approach(time: Code<number>, speedMultiplier: Code<number>) {
+export function approach(time: Code<number>) {
     return Add(
         0.05,
         Multiply(
             0.95,
-            Power(
-                1.1 ** 50,
-                Divide(
-                    Subtract(Time, time),
-                    noteOnScreenDuration,
-                    speedMultiplier
-                )
-            )
+            Power(1.1 ** 50, Divide(Subtract(Time, time), noteOnScreenDuration))
         )
     )
 }
 
-export function getVisibleTime(
-    time: Code<number>,
-    speedMultiplier: Code<number>
-) {
-    return Subtract(time, Multiply(noteOnScreenDuration, speedMultiplier))
+export function getVisibleTime(time: Code<number>) {
+    return Subtract(time, noteOnScreenDuration)
 }
 
 export function getZ(
@@ -314,11 +299,14 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
             NoteData.isLeft.set(Not(NoteData.isLeft)),
         ]),
 
-        NoteData.speedMultiplier.set(
-            If(options.isNoteSpeedRandom, Random(1, 2), 1)
-        ),
-        NoteData.visibleTime.set(
-            getVisibleTime(NoteData.time, NoteData.speedMultiplier)
+        NoteData.visibleTime.set(getVisibleTime(NoteData.time)),
+        NoteData.spawnTime.set(
+            Min(
+                Subtract(NoteData.time, 0.5),
+                isSlide
+                    ? Min(NoteData.visibleTime, NoteData.head.visibleTime)
+                    : NoteData.visibleTime
+            )
         ),
 
         NoteData.center.set(getLaneBottomCenter(NoteData.lane)),
@@ -346,15 +334,6 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
 
         NoteData.z.set(getZ(Layer.NoteBody)),
         NoteData.markerZ.set(getZ(Layer.NoteMarker)),
-
-        NoteData.spawnTime.set(
-            Min(
-                Subtract(NoteData.time, 0.5),
-                isSlide
-                    ? Min(NoteData.visibleTime, NoteData.head.visibleTime)
-                    : NoteData.visibleTime
-            )
-        ),
 
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
     ]
@@ -399,7 +378,6 @@ export function initializeNote(
         And(
             canHaveSimLine,
             options.isSimLineEnabled,
-            Not(options.isNoteSpeedRandom),
             Equal(NoteData.time, NoteData.of(leftIndex).time),
             Or(
                 ...[
@@ -463,7 +441,7 @@ export function touchProcessDiscontinue() {
 }
 
 export function updateNoteScale() {
-    return noteScale.set(approach(NoteData.time, NoteData.speedMultiplier))
+    return noteScale.set(approach(NoteData.time))
 }
 export function updateNoteSlideScale() {
     return If(

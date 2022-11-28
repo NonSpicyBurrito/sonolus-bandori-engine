@@ -9,13 +9,6 @@ export const options = defineOptions({
         type: 'toggle',
         def: 0,
     },
-    isNoteSpeedRandom: {
-        name: NameText.RandomNoteSpeed,
-        scope: 'Bandori',
-        standard: true,
-        type: 'toggle',
-        def: 0,
-    },
     isStrictJudgment: {
         name: NameText.StrictJudgment,
         scope: 'Bandori',
