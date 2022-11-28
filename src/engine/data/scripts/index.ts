@@ -3,7 +3,6 @@ import { defineScripts } from 'sonolus.js'
 import { buckets } from '../buckets'
 import { autoNote } from './autoNote'
 import { autoSFX } from './autoSFX'
-import { autoSlider } from './autoSlider'
 import { directionalFlickNote } from './directionalFlickNote'
 import { flickNote } from './flickNote'
 import { initialization } from './initialization'
@@ -38,25 +37,56 @@ export const scripts = defineScripts({
         autoNote(
             ParticleEffect.NoteLinearTapCyan,
             ParticleEffect.NoteCircularTapCyan,
-            'up'
+            'up',
+            false
         ),
     autoFlickNote: () =>
         autoNote(
             ParticleEffect.NoteLinearAlternativeRed,
             ParticleEffect.NoteCircularAlternativeRed,
-            'up'
+            'up',
+            false
         ),
     autoLeftDirectionalFlickNote: () =>
         autoNote(
             ParticleEffect.NoteLinearAlternativePurple,
             ParticleEffect.NoteCircularAlternativePurple,
-            'left'
+            'left',
+            false
         ),
     autoRightDirectionalFlickNote: () =>
         autoNote(
             ParticleEffect.NoteLinearAlternativeYellow,
             ParticleEffect.NoteCircularAlternativeYellow,
-            'right'
+            'right',
+            false
         ),
-    autoSlider,
+    autoSlideStartNote: () =>
+        autoNote(
+            ParticleEffect.NoteLinearTapCyan,
+            ParticleEffect.NoteCircularTapCyan,
+            'up',
+            true
+        ),
+    autoSlideTickNote: () =>
+        autoNote(
+            ParticleEffect.NoteLinearTapCyan,
+            ParticleEffect.NoteCircularTapCyan,
+            'up',
+            true
+        ),
+    autoSlideEndNote: () =>
+        autoNote(
+            ParticleEffect.NoteLinearTapCyan,
+            ParticleEffect.NoteCircularTapCyan,
+            'up',
+            true
+        ),
+    autoSlideFlickNote: () =>
+        autoNote(
+            ParticleEffect.NoteLinearAlternativeRed,
+            ParticleEffect.NoteCircularAlternativeRed,
+            'up',
+            true
+        ),
 })

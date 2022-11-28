@@ -49,12 +49,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        scripts.autoTapNoteIndex,
-        false,
-        true
-    )
+    const initialize = initializeNote(bucket, scripts.autoTapNoteIndex, true)
 
     const touch = Or(
         options.isAutoplay,

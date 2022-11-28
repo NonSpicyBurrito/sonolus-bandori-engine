@@ -371,7 +371,6 @@ export function preprocessArrowOffset() {
 export function initializeNote(
     bucket: Code<number>,
     autoNoteIndex: Code<number>,
-    isSlide: boolean,
     canHaveSimLine: boolean
 ) {
     const leftIndex = Subtract(EntityInfo.index, 1)
@@ -383,8 +382,6 @@ export function initializeNote(
             InputBucket.set(bucket),
 
             Spawn(autoNoteIndex, [EntityInfo.index]),
-
-            And(isSlide, Spawn(scripts.autoSliderIndex, [EntityInfo.index])),
         ]),
 
         And(

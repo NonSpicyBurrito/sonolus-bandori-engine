@@ -66,12 +66,7 @@ export function flickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        scripts.autoFlickNoteIndex,
-        false,
-        true
-    )
+    const initialize = initializeNote(bucket, scripts.autoFlickNoteIndex, true)
 
     const touch = Or(options.isAutoplay, [
         And(
