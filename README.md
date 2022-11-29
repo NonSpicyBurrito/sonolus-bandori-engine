@@ -19,10 +19,14 @@ Engine ID: `1`
 
 ### Skin Sprites
 
-| ID  | Sprite        | Bandori Asset Path                                |
-| --- | ------------- | ------------------------------------------------- |
-| 1   | Stage         | `/ingameskin/fieldskin/{name}/bg_line_rhythm.png` |
-| 2   | Judgment Line | `/ingameskin/fieldskin/{name}/game_play_line.png` |
+| ID  | Sprite                         | Bandori Asset Path                                        |
+| --- | ------------------------------ | --------------------------------------------------------- |
+| 1   | Stage                          | `/ingameskin/fieldskin/{name}/bg_line_rhythm.png`         |
+| 2   | Judgment Line                  | `/ingameskin/fieldskin/{name}/game_play_line.png`         |
+| 11  | Left Directional Flick Note    | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
+| 12  | Right Directional Flick Note   | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
+| 21  | Left Directional Flick Marker  | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
+| 22  | Right Directional Flick Marker | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
 
 ### Effect Clips
 

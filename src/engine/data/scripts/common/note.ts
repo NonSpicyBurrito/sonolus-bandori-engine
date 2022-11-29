@@ -468,7 +468,7 @@ export function prepareDrawNote() {
     ]
 }
 export function drawNote(
-    sprite: SkinSprite,
+    sprite: Code<number>,
     directional?: { isLeft: boolean; offset: Code<number> }
 ) {
     const offset = directional
@@ -525,7 +525,7 @@ export function drawNoteFlickArrow() {
 }
 
 export function drawNoteDirectionalFlickArrow(
-    sprite: SkinSprite,
+    sprite: Code<number>,
     isLeft: boolean
 ) {
     const arrowX = EntityMemory.to<number>(48)

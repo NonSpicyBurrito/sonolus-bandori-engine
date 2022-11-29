@@ -1,5 +1,11 @@
 import { SkinSprite } from 'sonolus-core'
 import { defineBuckets } from 'sonolus.js'
+import {
+    BandoriLeftDirectionalFlickMarkerSprite,
+    BandoriLeftDirectionalFlickNoteSprite,
+    BandoriRightDirectionalFlickMarkerSprite,
+    BandoriRightDirectionalFlickNoteSprite,
+} from './scripts/common/constants'
 
 export const buckets = defineBuckets({
     tapNote: {
@@ -37,7 +43,7 @@ export const buckets = defineBuckets({
     leftDirectionalFlickNote: {
         sprites: [
             {
-                id: SkinSprite.NoteHeadPurple,
+                id: BandoriLeftDirectionalFlickNoteSprite,
                 x: 0,
                 y: 0,
                 w: 2,
@@ -45,7 +51,7 @@ export const buckets = defineBuckets({
                 rotation: 0,
             },
             {
-                id: SkinSprite.DirectionalMarkerPurple,
+                id: BandoriLeftDirectionalFlickMarkerSprite,
                 x: 0,
                 y: 0,
                 w: 2,
@@ -57,7 +63,7 @@ export const buckets = defineBuckets({
     rightDirectionalFlickNote: {
         sprites: [
             {
-                id: SkinSprite.NoteHeadYellow,
+                id: BandoriRightDirectionalFlickNoteSprite,
                 x: 0,
                 y: 0,
                 w: 2,
@@ -65,7 +71,7 @@ export const buckets = defineBuckets({
                 rotation: 180,
             },
             {
-                id: SkinSprite.DirectionalMarkerYellow,
+                id: BandoriRightDirectionalFlickMarkerSprite,
                 x: 0,
                 y: 0,
                 w: 2,

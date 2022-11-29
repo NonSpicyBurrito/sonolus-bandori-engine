@@ -1,4 +1,3 @@
-import { SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
@@ -34,7 +33,15 @@ import {
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
-import { goodWindow, greatWindow, perfectWindow } from './common/constants'
+import {
+    goodWindow,
+    greatWindow,
+    leftDirectionalFlickMarkerSprite,
+    leftDirectionalFlickNoteSprite,
+    perfectWindow,
+    rightDirectionalFlickMarkerSprite,
+    rightDirectionalFlickNoteSprite,
+} from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
     checkTouchXInNoteHitbox,
@@ -140,11 +147,11 @@ export function directionalFlickNote(): Script {
             While(LessOr(looper, NoteData.extraWidth), [
                 If(
                     NoteData.isLeft,
-                    drawNote(SkinSprite.NoteHeadPurple, {
+                    drawNote(leftDirectionalFlickNoteSprite, {
                         isLeft: true,
                         offset: looper,
                     }),
-                    drawNote(SkinSprite.NoteHeadYellow, {
+                    drawNote(rightDirectionalFlickNoteSprite, {
                         isLeft: false,
                         offset: looper,
                     })
@@ -155,11 +162,11 @@ export function directionalFlickNote(): Script {
             If(
                 NoteData.isLeft,
                 drawNoteDirectionalFlickArrow(
-                    SkinSprite.DirectionalMarkerPurple,
+                    leftDirectionalFlickMarkerSprite,
                     true
                 ),
                 drawNoteDirectionalFlickArrow(
-                    SkinSprite.DirectionalMarkerYellow,
+                    rightDirectionalFlickMarkerSprite,
                     false
                 )
             ),

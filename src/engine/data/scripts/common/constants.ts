@@ -1,11 +1,11 @@
+import { customEffectClip, customSkinSprite, SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
-    customEffectClip,
-    customSkinSprite,
     Divide,
     Greater,
     HasEffectClip,
+    HasSkinSprite,
     If,
     Lerp,
     LessOr,
@@ -161,6 +161,48 @@ export const noteOnScreenDuration = If(
     LessOr(options.noteSpeed, 11),
     Divide(Subtract(12, options.noteSpeed), 2),
     Divide(Subtract(16, options.noteSpeed), 10)
+)
+
+// Note with Bandori Sprites
+
+export const BandoriLeftDirectionalFlickNoteSprite = customSkinSprite(
+    engineId,
+    11
+)
+export const BandoriRightDirectionalFlickNoteSprite = customSkinSprite(
+    engineId,
+    12
+)
+
+export const BandoriLeftDirectionalFlickMarkerSprite = customSkinSprite(
+    engineId,
+    21
+)
+export const BandoriRightDirectionalFlickMarkerSprite = customSkinSprite(
+    engineId,
+    22
+)
+
+export const leftDirectionalFlickNoteSprite = If(
+    HasSkinSprite(BandoriLeftDirectionalFlickNoteSprite),
+    BandoriLeftDirectionalFlickNoteSprite,
+    SkinSprite.NoteHeadPurple
+)
+export const rightDirectionalFlickNoteSprite = If(
+    HasSkinSprite(BandoriRightDirectionalFlickNoteSprite),
+    BandoriRightDirectionalFlickNoteSprite,
+    SkinSprite.NoteHeadYellow
+)
+
+export const leftDirectionalFlickMarkerSprite = If(
+    HasSkinSprite(BandoriLeftDirectionalFlickMarkerSprite),
+    BandoriLeftDirectionalFlickMarkerSprite,
+    SkinSprite.DirectionalMarkerPurple
+)
+export const rightDirectionalFlickMarkerSprite = If(
+    HasSkinSprite(BandoriRightDirectionalFlickMarkerSprite),
+    BandoriRightDirectionalFlickMarkerSprite,
+    SkinSprite.DirectionalMarkerYellow
 )
 
 // Slot Effect
