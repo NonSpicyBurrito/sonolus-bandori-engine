@@ -42,6 +42,7 @@ import {
     drawNoteDirectionalFlickArrow,
     initializeNote,
     InputState,
+    isNotHidden,
     NoteData,
     noteInputState,
     NoteSharedMemory,
@@ -131,7 +132,7 @@ export function directionalFlickNote(): Script {
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
         Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
-        And(GreaterOr(Time, NoteData.visibleTime), [
+        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
             updateNoteScale(),
             prepareDrawNote(),
 

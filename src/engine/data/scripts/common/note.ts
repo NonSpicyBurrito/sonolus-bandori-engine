@@ -291,6 +291,16 @@ export function getZ(
     )
 }
 
+export function isNotHidden(time: Code<number> = NoteData.time) {
+    return Or(
+        LessOr(options.hidden, 0),
+        GreaterOr(
+            Divide(Subtract(time, Time), noteOnScreenDuration),
+            options.hidden
+        )
+    )
+}
+
 export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
     return [
         NoteData.time.set(Divide(NoteData.time, options.speed)),

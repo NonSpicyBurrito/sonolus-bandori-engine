@@ -12,6 +12,7 @@ import {
     GreaterOr,
     If,
     Lerp,
+    LessOr,
     Max,
     Min,
     Multiply,
@@ -126,6 +127,8 @@ export function slider(sprite: SkinSprite): Script {
         NoteSharedMemory.of(SliderData.tailIndex).isSliding
     )
 
+    const hiddenTime = Add(Time, Multiply(options.hidden, noteOnScreenDuration))
+
     const updateParallel = Or(
         Equal(EntityInfo.of(SliderData.tailIndex).state, State.Despawned),
         And(isSliding, Greater(Time, SliderData.tailTime)),
@@ -140,6 +143,11 @@ export function slider(sprite: SkinSprite): Script {
             tailTime.set(
                 Min(SliderData.tailTime, Add(Time, noteOnScreenDuration))
             ),
+
+            And(Greater(options.hidden, 0), [
+                headTime.set(Max(headTime, hiddenTime)),
+                tailTime.set(Max(tailTime, hiddenTime)),
+            ]),
 
             headXScale.set(
                 Unlerp(SliderData.headTime, SliderData.tailTime, headTime)
@@ -175,18 +183,21 @@ export function slider(sprite: SkinSprite): Script {
                 slideL.set(Lerp(headL, tailL, slideScale)),
                 slideR.set(Lerp(headR, tailR, slideScale)),
 
-                Draw(
-                    SkinSprite.NoteHeadGreen,
-                    Multiply(slideL, noteBaseBottomScale),
-                    noteBaseBottom,
-                    Multiply(slideL, noteBaseTopScale),
-                    noteBaseTop,
-                    Multiply(slideR, noteBaseTopScale),
-                    noteBaseTop,
-                    Multiply(slideR, noteBaseBottomScale),
-                    noteBaseBottom,
-                    slideZ,
-                    1
+                And(
+                    LessOr(options.hidden, 0),
+                    Draw(
+                        SkinSprite.NoteHeadGreen,
+                        Multiply(slideL, noteBaseBottomScale),
+                        noteBaseBottom,
+                        Multiply(slideL, noteBaseTopScale),
+                        noteBaseTop,
+                        Multiply(slideR, noteBaseTopScale),
+                        noteBaseTop,
+                        Multiply(slideR, noteBaseBottomScale),
+                        noteBaseBottom,
+                        slideZ,
+                        1
+                    )
                 ),
 
                 And(options.isNoteEffectEnabled, [

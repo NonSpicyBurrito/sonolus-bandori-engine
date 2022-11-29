@@ -37,6 +37,7 @@ import {
     drawNote,
     initializeNote,
     InputState,
+    isNotHidden,
     NoteData,
     noteInputState,
     NoteSharedMemory,
@@ -104,7 +105,7 @@ export function slideTickNote(): Script {
             Subtract(Time, NoteData.time, InputOffset),
             If(options.isStrictJudgment, goodWindow, slideWindow)
         ),
-        And(GreaterOr(Time, NoteData.visibleTime), [
+        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
             updateNoteSlideScale(),
             prepareDrawNote(),
             drawNote(SkinSprite.NoteTickGreen),

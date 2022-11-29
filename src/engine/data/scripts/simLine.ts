@@ -23,7 +23,13 @@ import {
     noteBaseTopScale,
     stageTop,
 } from './common/constants'
-import { approach, getVisibleTime, getZ, NoteData } from './common/note'
+import {
+    approach,
+    getVisibleTime,
+    getZ,
+    isNotHidden,
+    NoteData,
+} from './common/note'
 
 export function simLine(): Script {
     const rightIndex = EntityMemory.to<number>(0)
@@ -58,7 +64,7 @@ export function simLine(): Script {
         And(options.isAutoplay, GreaterOr(Time, time)),
         Equal(EntityInfo.of(leftIndex).state, State.Despawned),
         Equal(EntityInfo.of(rightIndex).state, State.Despawned),
-        And(GreaterOr(Time, visibleTime), [
+        And(GreaterOr(Time, visibleTime), isNotHidden(time), [
             scale.set(approach(time)),
             bottom.set(Lerp(stageTop, noteBaseBottom, scale)),
             top.set(Lerp(stageTop, noteBaseTop, scale)),

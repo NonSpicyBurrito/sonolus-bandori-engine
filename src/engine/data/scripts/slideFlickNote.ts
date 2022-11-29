@@ -43,6 +43,7 @@ import {
     drawNoteFlickArrow,
     initializeNote,
     InputState,
+    isNotHidden,
     NoteData,
     noteInputState,
     NoteSharedMemory,
@@ -137,7 +138,7 @@ export function slideFlickNote(): Script {
             Subtract(Time, NoteData.time, InputOffset),
             If(options.isStrictJudgment, goodWindow, slideWindow)
         ),
-        And(GreaterOr(Time, NoteData.visibleTime), [
+        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
             updateNoteSlideScale(),
             prepareDrawNote(),
             drawNote(SkinSprite.NoteHeadRed),

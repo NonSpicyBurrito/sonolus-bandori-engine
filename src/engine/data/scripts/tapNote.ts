@@ -30,6 +30,7 @@ import {
     drawNote,
     initializeNote,
     InputState,
+    isNotHidden,
     NoteData,
     noteInputState,
     NoteSharedMemory,
@@ -73,7 +74,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
         And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
         Equal(noteInputState, InputState.Terminated),
         Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
-        And(GreaterOr(Time, NoteData.visibleTime), [
+        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
             updateNoteScale(),
             prepareDrawNote(),
             drawNote(sprite),
