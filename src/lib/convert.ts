@@ -262,7 +262,7 @@ export function fromBestdori(
                                 time: head.time,
                                 lane: head.lane,
                             }
-                            segments.forEach((segment, index) => {
+                            segments.forEach((segment) => {
                                 wrappedSliderEntities.push({
                                     entity: {
                                         archetype: hasHidden
@@ -277,7 +277,6 @@ export function fromBestdori(
                                                 segment.time,
                                                 prevSegment.lane,
                                                 segment.lane,
-                                                index === 0 ? 1 : 0,
                                             ],
                                         },
                                     },

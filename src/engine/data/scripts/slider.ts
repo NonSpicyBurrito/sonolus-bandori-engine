@@ -12,24 +12,26 @@ import {
     GreaterOr,
     If,
     Lerp,
+    Max,
+    Min,
     Multiply,
     Or,
     Pointer,
-    RemapClamped,
     Script,
     State,
     Subtract,
     Time,
+    Unlerp,
 } from 'sonolus.js'
 import { options } from '../../configuration/options'
 import {
     halfNoteWidth,
-    laneBottom,
     Layer,
     noteBaseBottom,
     noteBaseBottomScale,
     noteBaseTop,
     noteBaseTopScale,
+    noteOnScreenDuration,
     noteWidth,
     stageBottom,
     stageTop,
@@ -62,46 +64,18 @@ class SliderDataPointer extends Pointer {
     public get tailLane() {
         return this.to<number>(5)
     }
-
-    public get isFirst() {
-        return this.to<boolean>(6)
-    }
-
-    public get spawnTime() {
-        return this.to<number>(16)
-    }
-
-    public get headBottomLeft() {
-        return this.to<number>(17)
-    }
-
-    public get headBottomRight() {
-        return this.to<number>(18)
-    }
-
-    public get tailBottomLeft() {
-        return this.to<number>(19)
-    }
-
-    public get tailBottomRight() {
-        return this.to<number>(20)
-    }
 }
 
 const SliderData = createEntityData(SliderDataPointer)
 
 export function slider(sprite: SkinSprite): Script {
-    const headScale = EntityMemory.to<number>(0)
-    const slideBottom = EntityMemory.to<number>(1)
-    const headCenter = EntityMemory.to<number>(2)
-    const headLeft = EntityMemory.to<number>(3)
-    const headRight = EntityMemory.to<number>(4)
-
-    const tailScale = EntityMemory.to<number>(5)
-    const slideTop = EntityMemory.to<number>(6)
-
-    const connectorZ = EntityMemory.to<number>(7)
-    const slideZ = EntityMemory.to<number>(8)
+    const spawnTime = EntityMemory.to<number>(0)
+    const headL = EntityMemory.to<number>(1)
+    const headR = EntityMemory.to<number>(2)
+    const tailL = EntityMemory.to<number>(3)
+    const tailR = EntityMemory.to<number>(4)
+    const connectorZ = EntityMemory.to<number>(5)
+    const slideZ = EntityMemory.to<number>(6)
 
     const preprocess = [
         repositionTime(SliderData.headTime),
@@ -109,20 +83,16 @@ export function slider(sprite: SkinSprite): Script {
         mirror(SliderData.headLane),
         mirror(SliderData.tailLane),
 
-        SliderData.headBottomLeft.set(
+        spawnTime.set(getVisibleTime(SliderData.headTime)),
+
+        headL.set(
             Subtract(getLaneBottomCenter(SliderData.headLane), halfNoteWidth)
         ),
-        SliderData.headBottomRight.set(
-            Add(SliderData.headBottomLeft, noteWidth)
-        ),
-        SliderData.tailBottomLeft.set(
+        headR.set(Add(headL, noteWidth)),
+        tailL.set(
             Subtract(getLaneBottomCenter(SliderData.tailLane), halfNoteWidth)
         ),
-        SliderData.tailBottomRight.set(
-            Add(SliderData.tailBottomLeft, noteWidth)
-        ),
-
-        SliderData.spawnTime.set(getVisibleTime(SliderData.headTime)),
+        tailR.set(Add(tailL, noteWidth)),
 
         connectorZ.set(
             getZ(Layer.NoteConnector, SliderData.headTime, SliderData.headIndex)
@@ -132,90 +102,101 @@ export function slider(sprite: SkinSprite): Script {
         ),
     ]
 
-    const spawnOrder = SliderData.spawnTime
+    const spawnOrder = spawnTime
 
-    const shouldSpawn = GreaterOr(Time, SliderData.spawnTime)
+    const shouldSpawn = GreaterOr(Time, spawnTime)
 
-    const initialize = [
-        headLeft.set(SliderData.headBottomLeft),
-        headRight.set(SliderData.headBottomRight),
-    ]
+    const headTime = EntityMemory.to<number>(32)
+    const tailTime = EntityMemory.to<number>(33)
+
+    const headXScale = EntityMemory.to<number>(34)
+    const tailXScale = EntityMemory.to<number>(35)
+    const headYScale = EntityMemory.to<number>(36)
+    const tailYScale = EntityMemory.to<number>(37)
+    const b = EntityMemory.to<number>(38)
+    const t = EntityMemory.to<number>(39)
+
+    const slideScale = EntityMemory.to<number>(40)
+    const slideCenter = EntityMemory.to<number>(41)
+    const slideL = EntityMemory.to<number>(42)
+    const slideR = EntityMemory.to<number>(43)
+
+    const isSliding = Or(
+        options.isAutoplay,
+        NoteSharedMemory.of(SliderData.tailIndex).isSliding
+    )
 
     const updateParallel = Or(
         Equal(EntityInfo.of(SliderData.tailIndex).state, State.Despawned),
-        Greater(Time, SliderData.tailTime),
+        And(isSliding, Greater(Time, SliderData.tailTime)),
         [
-            If(
-                Or(
-                    If(
-                        SliderData.isFirst,
-                        NoteSharedMemory.of(SliderData.tailIndex).isSliding,
-                        GreaterOr(Time, SliderData.headTime)
-                    ),
-                    And(
-                        options.isAutoplay,
-                        GreaterOr(Time, SliderData.headTime)
-                    )
-                ),
-                [
-                    headScale.set(1),
-                    slideBottom.set(laneBottom),
-
-                    headLeft.set(
-                        RemapClamped(
-                            SliderData.headTime,
-                            SliderData.tailTime,
-                            SliderData.headBottomLeft,
-                            SliderData.tailBottomLeft,
-                            Time
-                        )
-                    ),
-                    headRight.set(Add(headLeft, noteWidth)),
-
-                    Draw(
-                        SkinSprite.NoteHeadGreen,
-                        Multiply(headLeft, noteBaseBottomScale),
-                        noteBaseBottom,
-                        Multiply(headLeft, noteBaseTopScale),
-                        noteBaseTop,
-                        Multiply(headRight, noteBaseTopScale),
-                        noteBaseTop,
-                        Multiply(headRight, noteBaseBottomScale),
-                        noteBaseBottom,
-                        slideZ,
-                        1
-                    ),
-
-                    And(options.isNoteEffectEnabled, [
-                        headCenter.set(Divide(Add(headLeft, headRight), 2)),
-                        moveHoldEffect(
-                            NoteSharedMemory.of(SliderData.tailIndex),
-                            headCenter
-                        ),
-                    ]),
-                ],
-                [
-                    headScale.set(approach(SliderData.headTime)),
-                    slideBottom.set(Lerp(stageTop, stageBottom, headScale)),
-                ]
+            headTime.set(
+                If(
+                    isSliding,
+                    Max(SliderData.headTime, Time),
+                    SliderData.headTime
+                )
+            ),
+            tailTime.set(
+                Min(SliderData.tailTime, Add(Time, noteOnScreenDuration))
             ),
 
-            tailScale.set(approach(SliderData.tailTime)),
-            slideTop.set(Lerp(stageTop, stageBottom, tailScale)),
+            headXScale.set(
+                Unlerp(SliderData.headTime, SliderData.tailTime, headTime)
+            ),
+            tailXScale.set(
+                Unlerp(SliderData.headTime, SliderData.tailTime, tailTime)
+            ),
+            headYScale.set(approach(headTime)),
+            tailYScale.set(approach(tailTime)),
+
+            b.set(Lerp(stageTop, stageBottom, headYScale)),
+            t.set(Lerp(stageTop, stageBottom, tailYScale)),
 
             Draw(
                 sprite,
-                Multiply(headLeft, headScale),
-                slideBottom,
-                Multiply(SliderData.tailBottomLeft, tailScale),
-                slideTop,
-                Multiply(SliderData.tailBottomRight, tailScale),
-                slideTop,
-                Multiply(headRight, headScale),
-                slideBottom,
+                Multiply(Lerp(headL, tailL, headXScale), headYScale),
+                b,
+                Multiply(Lerp(headL, tailL, tailXScale), tailYScale),
+                t,
+                Multiply(Lerp(headR, tailR, tailXScale), tailYScale),
+                t,
+                Multiply(Lerp(headR, tailR, headXScale), headYScale),
+                b,
                 connectorZ,
                 options.connectorAlpha
             ),
+
+            And(isSliding, GreaterOr(Time, SliderData.headTime), [
+                slideScale.set(
+                    Unlerp(SliderData.headTime, SliderData.tailTime, Time)
+                ),
+
+                slideL.set(Lerp(headL, tailL, slideScale)),
+                slideR.set(Lerp(headR, tailR, slideScale)),
+
+                Draw(
+                    SkinSprite.NoteHeadGreen,
+                    Multiply(slideL, noteBaseBottomScale),
+                    noteBaseBottom,
+                    Multiply(slideL, noteBaseTopScale),
+                    noteBaseTop,
+                    Multiply(slideR, noteBaseTopScale),
+                    noteBaseTop,
+                    Multiply(slideR, noteBaseBottomScale),
+                    noteBaseBottom,
+                    slideZ,
+                    1
+                ),
+
+                And(options.isNoteEffectEnabled, [
+                    slideCenter.set(Divide(Add(slideL, slideR), 2)),
+                    moveHoldEffect(
+                        NoteSharedMemory.of(SliderData.tailIndex),
+                        slideCenter
+                    ),
+                ]),
+            ]),
         ]
     )
 
@@ -223,7 +204,6 @@ export function slider(sprite: SkinSprite): Script {
         preprocess,
         spawnOrder,
         shouldSpawn,
-        initialize,
         updateParallel,
     }
 
