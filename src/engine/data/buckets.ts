@@ -44,6 +44,7 @@ export const buckets = defineBuckets({
         sprites: [
             {
                 id: BandoriLeftDirectionalFlickNoteSprite,
+                fallbackId: SkinSprite.NoteHeadPurple,
                 x: 0,
                 y: 0,
                 w: 2,
@@ -52,6 +53,7 @@ export const buckets = defineBuckets({
             },
             {
                 id: BandoriLeftDirectionalFlickMarkerSprite,
+                fallbackId: SkinSprite.DirectionalMarkerPurple,
                 x: 0,
                 y: 0,
                 w: 2,
@@ -64,6 +66,7 @@ export const buckets = defineBuckets({
         sprites: [
             {
                 id: BandoriRightDirectionalFlickNoteSprite,
+                fallbackId: SkinSprite.NoteHeadYellow,
                 x: 0,
                 y: 0,
                 w: 2,
@@ -72,6 +75,7 @@ export const buckets = defineBuckets({
             },
             {
                 id: BandoriRightDirectionalFlickMarkerSprite,
+                fallbackId: SkinSprite.DirectionalMarkerYellow,
                 x: 0,
                 y: 0,
                 w: 2,
