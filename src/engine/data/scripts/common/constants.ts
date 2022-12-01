@@ -1,10 +1,17 @@
-import { customEffectClip, customSkinSprite, SkinSprite } from 'sonolus-core'
+import {
+    customEffectClip,
+    customParticleEffect,
+    customSkinSprite,
+    ParticleEffect,
+    SkinSprite,
+} from 'sonolus-core'
 import {
     Add,
     And,
     Divide,
     Greater,
     HasEffectClip,
+    HasParticleEffect,
     HasSkinSprite,
     If,
     Lerp,
@@ -246,4 +253,46 @@ export const halfCircularHoldEffectHeight = Multiply(
     halfBaseNoteWidth,
     options.noteEffectSize,
     1.2
+)
+
+// Effect with Bandori Particles
+
+export const BandoriCircularLeftDirectionalFlickEffect = customParticleEffect(
+    engineId,
+    1
+)
+export const BandoriCircularRightDirectionalFlickEffect = customParticleEffect(
+    engineId,
+    2
+)
+
+export const BandoriLinearLeftDirectionalFlickEffect = customParticleEffect(
+    engineId,
+    11
+)
+export const BandoriLinearRightDirectionalFlickEffect = customParticleEffect(
+    engineId,
+    12
+)
+
+export const circularLeftDirectionalFlickEffect = If(
+    HasParticleEffect(BandoriCircularLeftDirectionalFlickEffect),
+    BandoriCircularLeftDirectionalFlickEffect,
+    ParticleEffect.NoteCircularAlternativePurple
+)
+export const circularRightDirectionalFlickEffect = If(
+    HasParticleEffect(BandoriCircularRightDirectionalFlickEffect),
+    BandoriCircularRightDirectionalFlickEffect,
+    ParticleEffect.NoteCircularAlternativeYellow
+)
+
+export const linearLeftDirectionalFlickEffect = If(
+    HasParticleEffect(BandoriLinearLeftDirectionalFlickEffect),
+    BandoriLinearLeftDirectionalFlickEffect,
+    ParticleEffect.NoteLinearAlternativePurple
+)
+export const linearRightDirectionalFlickEffect = If(
+    HasParticleEffect(BandoriLinearRightDirectionalFlickEffect),
+    BandoriLinearRightDirectionalFlickEffect,
+    ParticleEffect.NoteLinearAlternativeYellow
 )

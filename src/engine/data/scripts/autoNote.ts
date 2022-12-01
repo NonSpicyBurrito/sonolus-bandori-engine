@@ -1,4 +1,4 @@
-import { EffectClip, ParticleEffect } from 'sonolus-core'
+import { EffectClip } from 'sonolus-core'
 import {
     And,
     AudioOffset,
@@ -26,8 +26,8 @@ import {
 
 export function autoNote(
     getClip: (noteData: NoteDataPointer) => Code<number>,
-    linear: ParticleEffect,
-    circular: ParticleEffect,
+    linear: Code<number>,
+    circular: Code<number>,
     direction: 'left' | 'up' | 'right',
     isSlide: boolean
 ): Script {

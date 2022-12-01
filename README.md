@@ -36,6 +36,15 @@ Engine ID: `1`
 | 2   | Directional Flick Double | `/sound/tapseskin/{name}/directional_fl_2.mp3` |
 | 3   | Directional Flick Triple | `/sound/tapseskin/{name}/directional_fl_3.mp3` |
 
+### Particle Effects
+
+| ID  | Effects                          |
+| --- | -------------------------------- |
+| 1   | Circular Left Directional Flick  |
+| 2   | Circular Right Directional Flick |
+| 11  | Linear Left Directional Flick    |
+| 12  | Linear Right Directional Flick   |
+
 ## Documentation
 
 ### `version`

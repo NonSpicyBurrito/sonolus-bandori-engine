@@ -2,6 +2,12 @@ import { EffectClip, ParticleEffect, SkinSprite } from 'sonolus-core'
 import { defineScripts } from 'sonolus.js'
 import { buckets } from '../buckets'
 import { autoNote } from './autoNote'
+import {
+    circularLeftDirectionalFlickEffect,
+    circularRightDirectionalFlickEffect,
+    linearLeftDirectionalFlickEffect,
+    linearRightDirectionalFlickEffect,
+} from './common/constants'
 import { getDirectionalFlickSFX } from './common/sfx'
 import { directionalFlickNote } from './directionalFlickNote'
 import { flickNote } from './flickNote'
@@ -51,16 +57,16 @@ export const scripts = defineScripts({
     autoLeftDirectionalFlickNote: () =>
         autoNote(
             (noteData) => getDirectionalFlickSFX(noteData.extraWidth),
-            ParticleEffect.NoteLinearAlternativePurple,
-            ParticleEffect.NoteCircularAlternativePurple,
+            linearLeftDirectionalFlickEffect,
+            circularLeftDirectionalFlickEffect,
             'left',
             false
         ),
     autoRightDirectionalFlickNote: () =>
         autoNote(
             (noteData) => getDirectionalFlickSFX(noteData.extraWidth),
-            ParticleEffect.NoteLinearAlternativeYellow,
-            ParticleEffect.NoteCircularAlternativeYellow,
+            linearRightDirectionalFlickEffect,
+            circularRightDirectionalFlickEffect,
             'right',
             false
         ),

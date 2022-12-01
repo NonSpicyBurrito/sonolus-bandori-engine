@@ -69,8 +69,8 @@ export function playLaneEffect(lane: Code<number>) {
 
 export function playNoteEffect(
     center: Code<number>,
-    linear: ParticleEffect,
-    circular: ParticleEffect,
+    linear: Code<number>,
+    circular: Code<number>,
     direction: 'left' | 'up' | 'right'
 ) {
     return And(options.isNoteEffectEnabled, [
@@ -93,7 +93,7 @@ export function playNoteEffect(
         ),
     ])
 }
-function playLinearNoteEffectUp(center: Code<number>, linear: ParticleEffect) {
+function playLinearNoteEffectUp(center: Code<number>, linear: Code<number>) {
     return SpawnParticleEffect(
         linear,
         ...rectByEdge(
@@ -106,10 +106,7 @@ function playLinearNoteEffectUp(center: Code<number>, linear: ParticleEffect) {
         false
     )
 }
-function playLinearNoteEffectLeft(
-    center: Code<number>,
-    linear: ParticleEffect
-) {
+function playLinearNoteEffectLeft(center: Code<number>, linear: Code<number>) {
     return SpawnParticleEffect(
         linear,
         ...rectByEdge(
@@ -123,10 +120,7 @@ function playLinearNoteEffectLeft(
         false
     )
 }
-function playLinearNoteEffectRight(
-    center: Code<number>,
-    linear: ParticleEffect
-) {
+function playLinearNoteEffectRight(center: Code<number>, linear: Code<number>) {
     return SpawnParticleEffect(
         linear,
         ...rectByEdge(
