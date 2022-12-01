@@ -9,7 +9,7 @@ export const version = '0.6.8'
 
 export const engineInfo = {
     name: 'bandori',
-    version: 6,
+    version: 7,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
