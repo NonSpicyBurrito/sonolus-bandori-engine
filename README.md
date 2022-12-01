@@ -19,26 +19,26 @@ Engine ID: `1`
 
 ### Skin Sprites
 
-| ID  | Sprite                         | Bandori Asset Path                                        |
-| --- | ------------------------------ | --------------------------------------------------------- |
-| 1   | Stage                          | `/ingameskin/fieldskin/{name}/bg_line_rhythm.png`         |
-| 2   | Judgment Line                  | `/ingameskin/fieldskin/{name}/game_play_line.png`         |
-| 11  | Left Directional Flick Note    | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
-| 12  | Right Directional Flick Note   | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
-| 21  | Left Directional Flick Marker  | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
-| 22  | Right Directional Flick Marker | `/ingameskin/noteskin/{name}/DirectionalFlickSprites.png` |
+| ID  | Sprite                         | Bandori Asset Path                                    |
+| --- | ------------------------------ | ----------------------------------------------------- |
+| 1   | Stage                          | `/ingameskin/fieldskin/{name}/bg_line_rhythm`         |
+| 2   | Judgment Line                  | `/ingameskin/fieldskin/{name}/game_play_line`         |
+| 11  | Left Directional Flick Note    | `/ingameskin/noteskin/{name}/DirectionalFlickSprites` |
+| 12  | Right Directional Flick Note   | `/ingameskin/noteskin/{name}/DirectionalFlickSprites` |
+| 21  | Left Directional Flick Marker  | `/ingameskin/noteskin/{name}/DirectionalFlickSprites` |
+| 22  | Right Directional Flick Marker | `/ingameskin/noteskin/{name}/DirectionalFlickSprites` |
 
 ### Effect Clips
 
-| ID  | Sprite                   | Bandori Asset Path                             |
-| --- | ------------------------ | ---------------------------------------------- |
-| 1   | Directional Flick Single | `/sound/tapseskin/{name}/directional_fl.mp3`   |
-| 2   | Directional Flick Double | `/sound/tapseskin/{name}/directional_fl_2.mp3` |
-| 3   | Directional Flick Triple | `/sound/tapseskin/{name}/directional_fl_3.mp3` |
+| ID  | Clip                     | Bandori Asset Path                         |
+| --- | ------------------------ | ------------------------------------------ |
+| 1   | Directional Flick Single | `/sound/tapseskin/{name}/directional_fl`   |
+| 2   | Directional Flick Double | `/sound/tapseskin/{name}/directional_fl_2` |
+| 3   | Directional Flick Triple | `/sound/tapseskin/{name}/directional_fl_3` |
 
 ### Particle Effects
 
-| ID  | Effects                          |
+| ID  | Effect                           |
 | --- | -------------------------------- |
 | 1   | Circular Left Directional Flick  |
 | 2   | Circular Right Directional Flick |
