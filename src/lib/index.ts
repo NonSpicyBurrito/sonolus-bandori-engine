@@ -1,4 +1,4 @@
-import { LevelData } from 'sonolus-core'
+import { EngineInfo, LevelData } from 'sonolus-core'
 import { ChartObject, fromBestdori as _fromBestdori } from './convert'
 import { Resource } from './Resource'
 
@@ -38,7 +38,7 @@ export const engineInfo = {
             'https://github.com/NonSpicyBurrito/sonolus-bandori-engine',
         ].join('\n'),
     },
-} as const
+} as const satisfies Partial<EngineInfo>
 
 export const engineConfiguration = new Resource('EngineConfiguration')
 export const engineData = new Resource('EngineData')
