@@ -285,10 +285,6 @@ export function approach(time: Code<number>) {
     )
 }
 
-export function getVisibleTime(time: Code<number>) {
-    return Subtract(time, noteOnScreenDuration)
-}
-
 export function getZ(
     layer: number,
     time: Code<number> = NoteData.time,
@@ -319,13 +315,11 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
             NoteData.isLeft.set(Not(NoteData.isLeft)),
         ]),
 
-        NoteData.visibleTime.set(getVisibleTime(NoteData.time)),
+        NoteData.visibleTime.set(Subtract(NoteData.time, noteOnScreenDuration)),
         NoteData.spawnTime.set(
             Min(
                 Subtract(NoteData.time, 0.5),
-                isSlide
-                    ? Min(NoteData.visibleTime, NoteData.head.visibleTime)
-                    : NoteData.visibleTime
+                (isSlide ? NoteData.head : NoteData).visibleTime
             )
         ),
 

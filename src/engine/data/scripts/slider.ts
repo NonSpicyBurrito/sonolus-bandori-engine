@@ -38,7 +38,7 @@ import {
     stageTop,
 } from './common/constants'
 import { moveHoldEffect } from './common/effect'
-import { approach, getVisibleTime, getZ, NoteSharedMemory } from './common/note'
+import { approach, getZ, NoteSharedMemory } from './common/note'
 import { getLaneBottomCenter } from './common/stage'
 
 class SliderDataPointer extends Pointer {
@@ -84,7 +84,7 @@ export function slider(sprite: SkinSprite): Script {
         mirror(SliderData.headLane),
         mirror(SliderData.tailLane),
 
-        spawnTime.set(getVisibleTime(SliderData.headTime)),
+        spawnTime.set(Subtract(SliderData.headTime, noteOnScreenDuration)),
 
         headL.set(
             Subtract(getLaneBottomCenter(SliderData.headLane), halfNoteWidth)
