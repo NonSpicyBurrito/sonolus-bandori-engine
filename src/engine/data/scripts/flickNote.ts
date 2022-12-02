@@ -114,6 +114,11 @@ export function flickNote(): Script {
         ])
     )
 
+    const terminate = And(options.isAutoplay, [
+        playNoteLaneEffect(),
+        playNoteFlickEffect(),
+    ])
+
     return {
         preprocess,
         spawnOrder,
@@ -121,6 +126,7 @@ export function flickNote(): Script {
         initialize,
         touch,
         updateParallel,
+        terminate,
     }
 
     function onActivate() {

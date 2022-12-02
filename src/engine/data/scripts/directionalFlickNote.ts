@@ -173,6 +173,15 @@ export function directionalFlickNote(): Script {
         ])
     )
 
+    const terminate = And(options.isAutoplay, [
+        playNoteLaneEffect(),
+        If(
+            NoteData.isLeft,
+            playNoteLeftDirectionalFlickEffect(),
+            playNoteRightDirectionalFlickEffect()
+        ),
+    ])
+
     return {
         preprocess,
         spawnOrder,
@@ -180,6 +189,7 @@ export function directionalFlickNote(): Script {
         initialize,
         touch,
         updateParallel,
+        terminate,
     }
 
     function onActivate() {

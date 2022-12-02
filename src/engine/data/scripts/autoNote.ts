@@ -16,7 +16,6 @@ import {
 } from 'sonolus.js'
 import { options } from '../../configuration/options'
 import { minSFXDistance } from './common/constants'
-import { playLaneEffect, playNoteEffect } from './common/effect'
 import {
     NoteData,
     NoteDataPointer,
@@ -26,9 +25,6 @@ import {
 
 export function autoNote(
     getClip: (noteData: NoteDataPointer) => Code<number>,
-    linear: Code<number>,
-    circular: Code<number>,
-    direction: 'left' | 'up' | 'right',
     isSlide: boolean
 ): Script {
     const noteIndex = EntityMemory.to<number>(0)
@@ -45,9 +41,6 @@ export function autoNote(
     const needStopHold = EntityMemory.to<boolean>(6)
 
     const needSlide = EntityMemory.to<boolean>(7)
-
-    const needLaneEffect = EntityMemory.to<boolean>(8)
-    const needNoteEffect = EntityMemory.to<boolean>(9)
 
     const initialize = [
         And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
@@ -66,18 +59,6 @@ export function autoNote(
         ]),
 
         And(options.isAutoplay, isSlide, needSlide.set(true)),
-
-        And(
-            options.isAutoplay,
-            options.isLaneEffectEnabled,
-            needLaneEffect.set(true)
-        ),
-
-        And(
-            options.isAutoplay,
-            options.isNoteEffectEnabled,
-            needNoteEffect.set(true)
-        ),
     ]
 
     const updateSequential = isSlide
@@ -105,34 +86,13 @@ export function autoNote(
             needSFX.set(false),
         ]),
 
-        And(needLaneEffect, GreaterOr(Time, noteData.time), [
-            playLaneEffect(noteData.lane),
-
-            needLaneEffect.set(false),
-        ]),
-
-        And(needNoteEffect, GreaterOr(Time, noteData.time), [
-            playNoteEffect(noteData.center, linear, circular, direction),
-
-            needNoteEffect.set(false),
-        ]),
-
         And(needStopHold, GreaterOr(Time, stopHoldTime), [
             StopLoopedScheduled(noteSharedMemory.holdSFXClipId, noteData.time),
 
             needStopHold.set(false),
         ]),
 
-        Not(
-            Or(
-                needSFX,
-                needPlayHold,
-                needStopHold,
-                needSlide,
-                needLaneEffect,
-                needNoteEffect
-            )
-        ),
+        Not(Or(needSFX, needPlayHold, needStopHold, needSlide)),
     ]
 
     return {

@@ -81,6 +81,11 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
         ])
     )
 
+    const terminate = And(options.isAutoplay, [
+        playNoteLaneEffect(),
+        playNoteTapEffect(),
+    ])
+
     return {
         preprocess,
         spawnOrder,
@@ -88,6 +93,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
         initialize,
         touch,
         updateParallel,
+        terminate,
     }
 
     function onComplete() {

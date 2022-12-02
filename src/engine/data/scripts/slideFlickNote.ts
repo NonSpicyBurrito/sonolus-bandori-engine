@@ -147,6 +147,8 @@ export function slideFlickNote(): Script {
     )
 
     const terminate = [
+        And(options.isAutoplay, [playNoteLaneEffect(), playNoteFlickEffect()]),
+
         And(
             Or(options.isAutoplay, bool(noteInputState)),
             destroyNoteHoldEffect()

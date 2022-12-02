@@ -113,6 +113,8 @@ export function slideTickNote(): Script {
     )
 
     const terminate = [
+        And(options.isAutoplay, [playNoteLaneEffect(), playNoteTapEffect()]),
+
         And(
             Or(options.isAutoplay, bool(noteInputState)),
             destroyNoteHoldEffect()
