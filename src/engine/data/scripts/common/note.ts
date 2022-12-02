@@ -37,10 +37,14 @@ import { scripts } from '..'
 import { options } from '../../../configuration/options'
 import { archetypes } from '../../archetypes'
 import {
+    circularLeftDirectionalFlickEffect,
+    circularRightDirectionalFlickEffect,
     goodWindow,
     halfNoteWidth,
     laneWidth,
     Layer,
+    linearLeftDirectionalFlickEffect,
+    linearRightDirectionalFlickEffect,
     noteBaseBottom,
     noteBaseBottomScale,
     noteBaseTop,
@@ -225,16 +229,16 @@ export function playNoteFlickEffect() {
 export function playNoteLeftDirectionalFlickEffect() {
     return playNoteEffect(
         NoteData.center,
-        ParticleEffect.NoteLinearAlternativePurple,
-        ParticleEffect.NoteCircularAlternativePurple,
+        linearLeftDirectionalFlickEffect,
+        circularLeftDirectionalFlickEffect,
         'left'
     )
 }
 export function playNoteRightDirectionalFlickEffect() {
     return playNoteEffect(
         NoteData.center,
-        ParticleEffect.NoteLinearAlternativeYellow,
-        ParticleEffect.NoteCircularAlternativeYellow,
+        linearRightDirectionalFlickEffect,
+        circularRightDirectionalFlickEffect,
         'right'
     )
 }
