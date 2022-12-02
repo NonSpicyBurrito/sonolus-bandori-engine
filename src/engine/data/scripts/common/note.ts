@@ -2,6 +2,7 @@ import { ParticleEffect, SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
+    AudioOffset,
     bool,
     Code,
     createEntityData,
@@ -24,6 +25,7 @@ import {
     Multiply,
     Not,
     Or,
+    PlayScheduled,
     Pointer,
     Power,
     Spawn,
@@ -45,6 +47,7 @@ import {
     Layer,
     linearLeftDirectionalFlickEffect,
     linearRightDirectionalFlickEffect,
+    minSFXDistance,
     noteBaseBottom,
     noteBaseBottomScale,
     noteBaseTop,
@@ -190,6 +193,9 @@ export const NoteSharedMemory = createEntitySharedMemory(
 
 export const noteScale = EntityMemory.to<number>(32)
 export const noteInputState = EntityMemory.to<InputState>(33)
+
+export const noteAutoSFXScheduleTime = EntityMemory.to<number>(34)
+export const noteNeedScheduleAutoSFX = EntityMemory.to<boolean>(35)
 
 export const noteBottom = EntityMemory.to<number>(48)
 export const noteTop = EntityMemory.to<number>(49)
@@ -350,6 +356,13 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
         NoteData.markerZ.set(getZ(Layer.NoteMarker)),
 
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
+
+        And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
+            noteAutoSFXScheduleTime.set(
+                Subtract(NoteData.time, AudioOffset, 0.5)
+            ),
+            noteNeedScheduleAutoSFX.set(true),
+        ]),
     ]
 }
 
@@ -452,6 +465,20 @@ export function touchProcessHead() {
 
 export function touchProcessDiscontinue() {
     return And(TouchEnded, noteInputState.set(InputState.Terminated))
+}
+
+export function scheduleNoteAutoSFX(clip: Code<number>) {
+    return And(
+        options.isSFXEnabled,
+        Or(options.isAutoplay, options.isAutoSFX),
+        noteNeedScheduleAutoSFX,
+        GreaterOr(Time, noteAutoSFXScheduleTime),
+        [
+            PlayScheduled(clip, NoteData.time, minSFXDistance),
+
+            noteNeedScheduleAutoSFX.set(false),
+        ]
+    )
 }
 
 export function updateNoteScale() {

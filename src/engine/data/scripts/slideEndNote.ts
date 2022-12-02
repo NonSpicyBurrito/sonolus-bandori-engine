@@ -1,4 +1,4 @@
-import { SkinSprite } from 'sonolus-core'
+import { EffectClip, SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -46,6 +46,7 @@ import {
     playNoteTapEffect,
     prepareDrawNote,
     preprocessNote,
+    scheduleNoteAutoSFX,
     stopNoteHoldSFX,
     touchProcessDiscontinue,
     touchProcessHead,
@@ -92,27 +93,31 @@ export function slideEndNote(): Script {
         ),
     ])
 
-    const updateParallel = Or(
-        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
-        And(
-            Not(options.isAutoplay),
-            Not(bool(noteInputState)),
+    const updateParallel = [
+        scheduleNoteAutoSFX(EffectClip.Perfect),
+
+        Or(
+            And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
+            And(
+                Not(options.isAutoplay),
+                Not(bool(noteInputState)),
+                Greater(
+                    Subtract(Time, NoteData.head.time, InputOffset),
+                    If(options.isStrictJudgment, goodWindow, slideWindow)
+                )
+            ),
+            Equal(noteInputState, InputState.Terminated),
             Greater(
-                Subtract(Time, NoteData.head.time, InputOffset),
+                Subtract(Time, NoteData.time, InputOffset),
                 If(options.isStrictJudgment, goodWindow, slideWindow)
-            )
+            ),
+            And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
+                updateNoteSlideScale(),
+                prepareDrawNote(),
+                drawNote(SkinSprite.NoteHeadGreen),
+            ])
         ),
-        Equal(noteInputState, InputState.Terminated),
-        Greater(
-            Subtract(Time, NoteData.time, InputOffset),
-            If(options.isStrictJudgment, goodWindow, slideWindow)
-        ),
-        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
-            updateNoteSlideScale(),
-            prepareDrawNote(),
-            drawNote(SkinSprite.NoteHeadGreen),
-        ])
-    )
+    ]
 
     const terminate = [
         And(options.isAutoplay, [playNoteLaneEffect(), playNoteTapEffect()]),

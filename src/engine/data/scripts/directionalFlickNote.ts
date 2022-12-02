@@ -59,10 +59,11 @@ import {
     prepareDrawNote,
     preprocessArrowOffset,
     preprocessNote,
+    scheduleNoteAutoSFX,
     touchProcessDiscontinue,
     updateNoteScale,
 } from './common/note'
-import { playDirectionalFlickSFX } from './common/sfx'
+import { getDirectionalFlickSFX, playDirectionalFlickSFX } from './common/sfx'
 import {
     checkTouchYInHitbox,
     getMinFlickDistanceSquared,
@@ -135,43 +136,47 @@ export function directionalFlickNote(): Script {
         ),
     ])
 
-    const updateParallel = Or(
-        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
-        Equal(noteInputState, InputState.Terminated),
-        Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
-        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
-            updateNoteScale(),
-            prepareDrawNote(),
+    const updateParallel = [
+        scheduleNoteAutoSFX(getDirectionalFlickSFX(NoteData.extraWidth)),
 
-            looper.set(0),
-            While(LessOr(looper, NoteData.extraWidth), [
+        Or(
+            And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
+            Equal(noteInputState, InputState.Terminated),
+            Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
+            And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
+                updateNoteScale(),
+                prepareDrawNote(),
+
+                looper.set(0),
+                While(LessOr(looper, NoteData.extraWidth), [
+                    If(
+                        NoteData.isLeft,
+                        drawNote(leftDirectionalFlickNoteSprite, {
+                            isLeft: true,
+                            offset: looper,
+                        }),
+                        drawNote(rightDirectionalFlickNoteSprite, {
+                            isLeft: false,
+                            offset: looper,
+                        })
+                    ),
+                    looper.set(Add(looper, 1)),
+                ]),
+
                 If(
                     NoteData.isLeft,
-                    drawNote(leftDirectionalFlickNoteSprite, {
-                        isLeft: true,
-                        offset: looper,
-                    }),
-                    drawNote(rightDirectionalFlickNoteSprite, {
-                        isLeft: false,
-                        offset: looper,
-                    })
+                    drawNoteDirectionalFlickArrow(
+                        leftDirectionalFlickMarkerSprite,
+                        true
+                    ),
+                    drawNoteDirectionalFlickArrow(
+                        rightDirectionalFlickMarkerSprite,
+                        false
+                    )
                 ),
-                looper.set(Add(looper, 1)),
-            ]),
-
-            If(
-                NoteData.isLeft,
-                drawNoteDirectionalFlickArrow(
-                    leftDirectionalFlickMarkerSprite,
-                    true
-                ),
-                drawNoteDirectionalFlickArrow(
-                    rightDirectionalFlickMarkerSprite,
-                    false
-                )
-            ),
-        ])
-    )
+            ])
+        ),
+    ]
 
     const terminate = And(options.isAutoplay, [
         playNoteLaneEffect(),

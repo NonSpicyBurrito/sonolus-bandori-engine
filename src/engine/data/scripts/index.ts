@@ -1,8 +1,7 @@
-import { EffectClip, SkinSprite } from 'sonolus-core'
+import { SkinSprite } from 'sonolus-core'
 import { defineScripts } from 'sonolus.js'
 import { buckets } from '../buckets'
 import { autoNote } from './autoNote'
-import { getDirectionalFlickSFX } from './common/sfx'
 import { directionalFlickNote } from './directionalFlickNote'
 import { flickNote } from './flickNote'
 import { initialization } from './initialization'
@@ -32,21 +31,12 @@ export const scripts = defineScripts({
 
     simLine,
 
-    autoTapNote: () => autoNote(() => EffectClip.Perfect, false),
-    autoFlickNote: () => autoNote(() => EffectClip.PerfectAlternative, false),
-    autoLeftDirectionalFlickNote: () =>
-        autoNote(
-            (noteData) => getDirectionalFlickSFX(noteData.extraWidth),
-            false
-        ),
-    autoRightDirectionalFlickNote: () =>
-        autoNote(
-            (noteData) => getDirectionalFlickSFX(noteData.extraWidth),
-            false
-        ),
-    autoSlideStartNote: () => autoNote(() => EffectClip.Perfect, true),
-    autoSlideTickNote: () => autoNote(() => EffectClip.Perfect, true),
-    autoSlideEndNote: () => autoNote(() => EffectClip.Perfect, true),
-    autoSlideFlickNote: () =>
-        autoNote(() => EffectClip.PerfectAlternative, true),
+    autoTapNote: () => autoNote(false),
+    autoFlickNote: () => autoNote(false),
+    autoLeftDirectionalFlickNote: () => autoNote(false),
+    autoRightDirectionalFlickNote: () => autoNote(false),
+    autoSlideStartNote: () => autoNote(true),
+    autoSlideTickNote: () => autoNote(true),
+    autoSlideEndNote: () => autoNote(true),
+    autoSlideFlickNote: () => autoNote(true),
 })

@@ -2,37 +2,23 @@ import { EffectClip } from 'sonolus-core'
 import {
     And,
     AudioOffset,
-    Code,
     EntityMemory,
     GreaterOr,
     Not,
     Or,
     PlayLoopedScheduled,
-    PlayScheduled,
     Script,
     StopLoopedScheduled,
     Subtract,
     Time,
 } from 'sonolus.js'
 import { options } from '../../configuration/options'
-import { minSFXDistance } from './common/constants'
-import {
-    NoteData,
-    NoteDataPointer,
-    NoteSharedMemory,
-    spawnNoteHoldEffect,
-} from './common/note'
+import { NoteData, NoteSharedMemory, spawnNoteHoldEffect } from './common/note'
 
-export function autoNote(
-    getClip: (noteData: NoteDataPointer) => Code<number>,
-    isSlide: boolean
-): Script {
+export function autoNote(isSlide: boolean): Script {
     const noteIndex = EntityMemory.to<number>(0)
     const noteData = NoteData.of(noteIndex)
     const noteSharedMemory = NoteSharedMemory.of(noteIndex)
-
-    const sfxTime = EntityMemory.to<number>(1)
-    const needSFX = EntityMemory.to<boolean>(2)
 
     const playHoldTime = EntityMemory.to<number>(3)
     const needPlayHold = EntityMemory.to<boolean>(4)
@@ -44,9 +30,6 @@ export function autoNote(
 
     const initialize = [
         And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
-            sfxTime.set(Subtract(noteData.time, AudioOffset, 0.5)),
-            needSFX.set(true),
-
             And(isSlide, [
                 playHoldTime.set(
                     Subtract(noteData.head.time, AudioOffset, 0.5)
@@ -80,19 +63,13 @@ export function autoNote(
         : undefined
 
     const updateParallel = [
-        And(needSFX, GreaterOr(Time, sfxTime), [
-            PlayScheduled(getClip(noteData), noteData.time, minSFXDistance),
-
-            needSFX.set(false),
-        ]),
-
         And(needStopHold, GreaterOr(Time, stopHoldTime), [
             StopLoopedScheduled(noteSharedMemory.holdSFXClipId, noteData.time),
 
             needStopHold.set(false),
         ]),
 
-        Not(Or(needSFX, needPlayHold, needStopHold, needSlide)),
+        Not(Or(needPlayHold, needStopHold, needSlide)),
     ]
 
     return {

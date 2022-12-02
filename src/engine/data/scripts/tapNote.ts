@@ -1,4 +1,4 @@
-import { SkinSprite } from 'sonolus-core'
+import { EffectClip, SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -38,6 +38,7 @@ import {
     playNoteTapEffect,
     prepareDrawNote,
     preprocessNote,
+    scheduleNoteAutoSFX,
     updateNoteScale,
 } from './common/note'
 import { playJudgmentSFX } from './common/sfx'
@@ -70,16 +71,20 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
         )
     )
 
-    const updateParallel = Or(
-        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
-        Equal(noteInputState, InputState.Terminated),
-        Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
-        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
-            updateNoteScale(),
-            prepareDrawNote(),
-            drawNote(sprite),
-        ])
-    )
+    const updateParallel = [
+        scheduleNoteAutoSFX(EffectClip.Perfect),
+
+        Or(
+            And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
+            Equal(noteInputState, InputState.Terminated),
+            Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
+            And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
+                updateNoteScale(),
+                prepareDrawNote(),
+                drawNote(sprite),
+            ])
+        ),
+    ]
 
     const terminate = And(options.isAutoplay, [
         playNoteLaneEffect(),

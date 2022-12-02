@@ -1,4 +1,4 @@
-import { SkinSprite } from 'sonolus-core'
+import { EffectClip, SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -51,6 +51,7 @@ import {
     playNoteLaneEffect,
     prepareDrawNote,
     preprocessNote,
+    scheduleNoteAutoSFX,
     stopNoteHoldSFX,
     touchProcessDiscontinue,
     touchProcessHead,
@@ -123,28 +124,32 @@ export function slideFlickNote(): Script {
         ),
     ])
 
-    const updateParallel = Or(
-        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
-        And(
-            Not(options.isAutoplay),
-            Not(bool(noteInputState)),
+    const updateParallel = [
+        scheduleNoteAutoSFX(EffectClip.PerfectAlternative),
+
+        Or(
+            And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
+            And(
+                Not(options.isAutoplay),
+                Not(bool(noteInputState)),
+                Greater(
+                    Subtract(Time, NoteData.head.time, InputOffset),
+                    If(options.isStrictJudgment, goodWindow, slideWindow)
+                )
+            ),
+            Equal(noteInputState, InputState.Terminated),
             Greater(
-                Subtract(Time, NoteData.head.time, InputOffset),
+                Subtract(Time, NoteData.time, InputOffset),
                 If(options.isStrictJudgment, goodWindow, slideWindow)
-            )
+            ),
+            And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
+                updateNoteSlideScale(),
+                prepareDrawNote(),
+                drawNote(SkinSprite.NoteHeadRed),
+                drawNoteFlickArrow(),
+            ])
         ),
-        Equal(noteInputState, InputState.Terminated),
-        Greater(
-            Subtract(Time, NoteData.time, InputOffset),
-            If(options.isStrictJudgment, goodWindow, slideWindow)
-        ),
-        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
-            updateNoteSlideScale(),
-            prepareDrawNote(),
-            drawNote(SkinSprite.NoteHeadRed),
-            drawNoteFlickArrow(),
-        ])
-    )
+    ]
 
     const terminate = [
         And(options.isAutoplay, [playNoteLaneEffect(), playNoteFlickEffect()]),

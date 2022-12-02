@@ -1,4 +1,4 @@
-import { SkinSprite } from 'sonolus-core'
+import { EffectClip, SkinSprite } from 'sonolus-core'
 import {
     And,
     bool,
@@ -45,6 +45,7 @@ import {
     playNoteLaneEffect,
     prepareDrawNote,
     preprocessNote,
+    scheduleNoteAutoSFX,
     touchProcessDiscontinue,
     updateNoteScale,
 } from './common/note'
@@ -102,17 +103,21 @@ export function flickNote(): Script {
         ),
     ])
 
-    const updateParallel = Or(
-        And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
-        Equal(noteInputState, InputState.Terminated),
-        Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
-        And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
-            updateNoteScale(),
-            prepareDrawNote(),
-            drawNote(SkinSprite.NoteHeadRed),
-            drawNoteFlickArrow(),
-        ])
-    )
+    const updateParallel = [
+        scheduleNoteAutoSFX(EffectClip.PerfectAlternative),
+
+        Or(
+            And(options.isAutoplay, GreaterOr(Time, NoteData.time)),
+            Equal(noteInputState, InputState.Terminated),
+            Greater(Subtract(Time, NoteData.time, InputOffset), goodWindow),
+            And(GreaterOr(Time, NoteData.visibleTime), isNotHidden(), [
+                updateNoteScale(),
+                prepareDrawNote(),
+                drawNote(SkinSprite.NoteHeadRed),
+                drawNoteFlickArrow(),
+            ])
+        ),
+    ]
 
     const terminate = And(options.isAutoplay, [
         playNoteLaneEffect(),
