@@ -21,8 +21,7 @@ export const scripts = defineScripts({
     tapNote: () => tapNote(buckets.tapNoteIndex, SkinSprite.NoteHeadCyan),
     flickNote,
     directionalFlickNote,
-    slideStartNote: () =>
-        tapNote(buckets.slideStartNoteIndex, SkinSprite.NoteHeadGreen),
+    slideStartNote: () => tapNote(buckets.slideStartNoteIndex, SkinSprite.NoteHeadGreen),
     slideTickNote,
     slideEndNote,
     slideFlickNote,

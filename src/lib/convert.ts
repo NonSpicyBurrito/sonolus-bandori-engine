@@ -94,10 +94,7 @@ export function fromBestdori(
     let beats = 0
     let time = 0
     chartObjects
-        .filter(
-            (chartObject): chartObject is BPMObject =>
-                chartObject.type === 'BPM'
-        )
+        .filter((chartObject): chartObject is BPMObject => chartObject.type === 'BPM')
         .sort((a, b) => a.beat - b.beat)
         .forEach((bpmObject) => {
             time += (bpmObject.beat - beats) * timePerBeat
@@ -176,13 +173,10 @@ export function fromBestdori(
                     lane: number
                 }[] = []
 
-                const hasHidden = chartObject.connections.some(
-                    (connection) => connection.hidden
-                )
+                const hasHidden = chartObject.connections.some((connection) => connection.hidden)
                 const isLong =
                     chartObject.connections.length === 2 &&
-                    chartObject.connections[0].lane ===
-                        chartObject.connections[1].lane
+                    chartObject.connections[0].lane === chartObject.connections[1].lane
                         ? 1
                         : 0
 
@@ -208,10 +202,7 @@ export function fromBestdori(
                                 lane,
                             })
                         } else {
-                            const head =
-                                wrappedNoteEntities[
-                                    wrappedNoteEntities.length - 1
-                                ]
+                            const head = wrappedNoteEntities[wrappedNoteEntities.length - 1]
                             if (index === chartObject.connections.length - 1) {
                                 wrappedNoteEntities.push({
                                     entity: {
@@ -220,14 +211,7 @@ export function fromBestdori(
                                             : archetypes.slideEndNoteIndex,
                                         data: {
                                             index: 0,
-                                            values: [
-                                                0,
-                                                time,
-                                                lane,
-                                                0,
-                                                0,
-                                                isLong,
-                                            ],
+                                            values: [0, time, lane, 0, 0, isLong],
                                         },
                                     },
                                     time,
@@ -237,8 +221,7 @@ export function fromBestdori(
                             } else {
                                 wrappedNoteEntities.push({
                                     entity: {
-                                        archetype:
-                                            archetypes.slideTickNoteIndex,
+                                        archetype: archetypes.slideTickNoteIndex,
                                         data: {
                                             index: 0,
                                             values: [0, time, lane],
@@ -254,10 +237,7 @@ export function fromBestdori(
                                 lane,
                             })
 
-                            const tail =
-                                wrappedNoteEntities[
-                                    wrappedNoteEntities.length - 1
-                                ]
+                            const tail = wrappedNoteEntities[wrappedNoteEntities.length - 1]
                             let prevSegment = {
                                 time: head.time,
                                 lane: head.lane,
@@ -298,28 +278,26 @@ export function fromBestdori(
         bgmOffset: 0,
         entities: [
             ...wrappedNoteEntities
-                .sort(
-                    (a, b) =>
-                        a.time - b.time || Math.abs(b.lane) - Math.abs(a.lane)
-                )
+                .sort((a, b) => a.time - b.time || Math.abs(b.lane) - Math.abs(a.lane))
                 .map((wrappedNoteEntity) => {
                     if (wrappedNoteEntity.head) {
-                        if (!wrappedNoteEntity.entity.data)
-                            throw 'Unexpected missing entity data'
+                        if (!wrappedNoteEntity.entity.data) throw 'Unexpected missing entity data'
 
-                        wrappedNoteEntity.entity.data.values[0] =
-                            wrappedNoteEntities.indexOf(wrappedNoteEntity.head)
+                        wrappedNoteEntity.entity.data.values[0] = wrappedNoteEntities.indexOf(
+                            wrappedNoteEntity.head
+                        )
                     }
                     return wrappedNoteEntity.entity
                 }),
             ...wrappedSliderEntities.map((wrappedSliderEntity) => {
-                if (!wrappedSliderEntity.entity.data)
-                    throw 'Unexpected missing entity data'
+                if (!wrappedSliderEntity.entity.data) throw 'Unexpected missing entity data'
 
-                wrappedSliderEntity.entity.data.values[0] =
-                    wrappedNoteEntities.indexOf(wrappedSliderEntity.head)
-                wrappedSliderEntity.entity.data.values[1] =
-                    wrappedNoteEntities.indexOf(wrappedSliderEntity.tail)
+                wrappedSliderEntity.entity.data.values[0] = wrappedNoteEntities.indexOf(
+                    wrappedSliderEntity.head
+                )
+                wrappedSliderEntity.entity.data.values[1] = wrappedNoteEntities.indexOf(
+                    wrappedSliderEntity.tail
+                )
                 return wrappedSliderEntity.entity
             }),
         ],
@@ -363,9 +341,7 @@ function repair(chartObjects: ChartObject[]) {
                             chartObject.connections.shift()
                         }
                         while (
-                            chartObject.connections[
-                                chartObject.connections.length - 1
-                            ]?.hidden
+                            chartObject.connections[chartObject.connections.length - 1]?.hidden
                         ) {
                             chartObject.connections.pop()
                         }

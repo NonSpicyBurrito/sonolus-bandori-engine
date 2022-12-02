@@ -25,12 +25,7 @@ import {
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
-import {
-    goodWindow,
-    greatWindow,
-    perfectWindow,
-    slideWindow,
-} from './common/constants'
+import { goodWindow, greatWindow, perfectWindow, slideWindow } from './common/constants'
 import {
     checkTouchXInNoteHitbox,
     destroyNoteHoldEffect,
@@ -57,21 +52,13 @@ import { checkTouchYInHitbox, isTouchOccupied } from './common/touch'
 export function slideTickNote(): Script {
     const bucket = buckets.slideTickNoteIndex
 
-    const preprocess = preprocessNote(
-        true,
-        If(options.isStrictJudgment, goodWindow, slideWindow)
-    )
+    const preprocess = preprocessNote(true, If(options.isStrictJudgment, goodWindow, slideWindow))
 
     const spawnOrder = NoteData.spawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        scripts.autoSlideTickNoteIndex,
-        true,
-        false
-    )
+    const initialize = initializeNote(bucket, scripts.autoSlideTickNoteIndex, true, false)
 
     const touch = Or(options.isAutoplay, [
         touchProcessHead(),
@@ -120,10 +107,7 @@ export function slideTickNote(): Script {
     const terminate = [
         And(options.isAutoplay, [playNoteLaneEffect(), playNoteTapEffect()]),
 
-        And(
-            Or(options.isAutoplay, bool(noteInputState)),
-            destroyNoteHoldEffect()
-        ),
+        And(Or(options.isAutoplay, bool(noteInputState)), destroyNoteHoldEffect()),
         Or(options.isAutoplay, stopNoteHoldSFX()),
     ]
 
@@ -162,9 +146,7 @@ export function slideTickNote(): Script {
                     )
                 )
             ),
-            InputAccuracy.set(
-                Max(Subtract(TouchT, InputOffset, NoteData.time), 0)
-            ),
+            InputAccuracy.set(Max(Subtract(TouchT, InputOffset, NoteData.time), 0)),
             InputBucket.set(bucket),
             InputBucketValue.set(Multiply(1000, InputAccuracy)),
 

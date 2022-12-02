@@ -51,12 +51,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        scripts.autoTapNoteIndex,
-        false,
-        true
-    )
+    const initialize = initializeNote(bucket, scripts.autoTapNoteIndex, false, true)
 
     const touch = Or(
         options.isAutoplay,
@@ -86,10 +81,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
         ),
     ]
 
-    const terminate = And(options.isAutoplay, [
-        playNoteLaneEffect(),
-        playNoteTapEffect(),
-    ])
+    const terminate = And(options.isAutoplay, [playNoteLaneEffect(), playNoteTapEffect()])
 
     return {
         preprocess,

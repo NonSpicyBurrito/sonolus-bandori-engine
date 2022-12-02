@@ -1,13 +1,4 @@
-import {
-    And,
-    Code,
-    GreaterOr,
-    LessOr,
-    LevelMemory,
-    Multiply,
-    TouchX,
-    TouchY,
-} from 'sonolus.js'
+import { And, Code, GreaterOr, LessOr, LevelMemory, Multiply, TouchX, TouchY } from 'sonolus.js'
 import { stageWidth } from './constants'
 
 export const isTouchOccupied = LevelMemory.to<boolean>(1)

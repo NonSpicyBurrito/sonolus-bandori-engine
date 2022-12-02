@@ -58,11 +58,5 @@ export function rectBySize(
     h: Code<number>,
     direction: Direction = 'up'
 ): Rect {
-    return rectByEdge(
-        Subtract(x, w),
-        Add(x, w),
-        Subtract(y, h),
-        Add(y, h),
-        direction
-    )
+    return rectByEdge(Subtract(x, w), Add(x, w), Subtract(y, h), Add(y, h), direction)
 }

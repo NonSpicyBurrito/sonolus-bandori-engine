@@ -57,19 +57,10 @@ import {
     stageBottom,
     stageTop,
 } from './constants'
-import {
-    destroyHoldEffect,
-    playLaneEffect,
-    playNoteEffect,
-    spawnHoldEffect,
-} from './effect'
+import { destroyHoldEffect, playLaneEffect, playNoteEffect, spawnHoldEffect } from './effect'
 import { playHoldSFX, stopHoldSFX } from './sfx'
 import { getLaneBottomCenter } from './stage'
-import {
-    checkTouchXInHitbox,
-    checkTouchYInHitbox,
-    isTouchOccupied,
-} from './touch'
+import { checkTouchXInHitbox, checkTouchYInHitbox, isTouchOccupied } from './touch'
 import { rectByEdge, rectBySize, rotate } from './utils'
 
 export enum InputState {
@@ -185,9 +176,7 @@ export class NoteSharedMemoryPointer extends Pointer {
     }
 }
 
-export const NoteSharedMemory = createEntitySharedMemory(
-    NoteSharedMemoryPointer
-)
+export const NoteSharedMemory = createEntitySharedMemory(NoteSharedMemoryPointer)
 
 // Memory
 
@@ -267,10 +256,7 @@ export function checkTouchXInNoteHitbox(noteData: NoteDataPointer = NoteData) {
 }
 
 export function checkNoteTimeInGoodWindow() {
-    return LessOr(
-        Subtract(NoteData.time, Subtract(Time, InputOffset)),
-        goodWindow
-    )
+    return LessOr(Subtract(NoteData.time, Subtract(Time, InputOffset)), goodWindow)
 }
 
 // Note
@@ -278,10 +264,7 @@ export function checkNoteTimeInGoodWindow() {
 export function approach(time: Code<number>) {
     return Add(
         0.05,
-        Multiply(
-            0.95,
-            Power(1.1 ** 50, Divide(Subtract(Time, time), noteOnScreenDuration))
-        )
+        Multiply(0.95, Power(1.1 ** 50, Divide(Subtract(Time, time), noteOnScreenDuration)))
     )
 }
 
@@ -290,20 +273,13 @@ export function getZ(
     time: Code<number> = NoteData.time,
     index: Code<number> = EntityInfo.index
 ) {
-    return Subtract(
-        layer,
-        Divide(Mod(time, 10), 10),
-        Divide(Mod(index, 100), 100000)
-    )
+    return Subtract(layer, Divide(Mod(time, 10), 10), Divide(Mod(index, 100), 100000))
 }
 
 export function isNotHidden(time: Code<number> = NoteData.time) {
     return Or(
         LessOr(options.hidden, 0),
-        GreaterOr(
-            Divide(Subtract(time, Time), noteOnScreenDuration),
-            options.hidden
-        )
+        GreaterOr(Divide(Subtract(time, Time), noteOnScreenDuration), options.hidden)
     )
 }
 
@@ -317,10 +293,7 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
 
         NoteData.visibleTime.set(Subtract(NoteData.time, noteOnScreenDuration)),
         NoteData.spawnTime.set(
-            Min(
-                Subtract(NoteData.time, 0.5),
-                (isSlide ? NoteData.head : NoteData).visibleTime
-            )
+            Min(Subtract(NoteData.time, 0.5), (isSlide ? NoteData.head : NoteData).visibleTime)
         ),
 
         NoteData.center.set(getLaneBottomCenter(NoteData.lane)),
@@ -330,19 +303,13 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
         NoteData.hitboxLeft.set(
             Subtract(
                 NoteData.center,
-                Multiply(
-                    laneWidth,
-                    If(NoteData.isLeft, Add(1.175, NoteData.extraWidth), 1.175)
-                )
+                Multiply(laneWidth, If(NoteData.isLeft, Add(1.175, NoteData.extraWidth), 1.175))
             )
         ),
         NoteData.hitboxRight.set(
             Add(
                 NoteData.center,
-                Multiply(
-                    laneWidth,
-                    If(NoteData.isLeft, 1.175, Add(1.175, NoteData.extraWidth))
-                )
+                Multiply(laneWidth, If(NoteData.isLeft, 1.175, Add(1.175, NoteData.extraWidth)))
             )
         ),
 
@@ -352,9 +319,7 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
         Or(options.isAutoplay, InputAccuracy.set(missAccuracy)),
 
         And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
-            noteAutoSFXScheduleTime.set(
-                Subtract(NoteData.time, AudioOffset, 0.5)
-            ),
+            noteAutoSFXScheduleTime.set(Subtract(NoteData.time, AudioOffset, 0.5)),
             noteNeedScheduleAutoSFX.set(true),
         ]),
     ]
@@ -363,9 +328,7 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
 export function preprocessArrowOffset() {
     const offset = Add(Multiply(laneWidth, NoteData.extraWidth), noteWidth)
 
-    return NoteData.arrowOffset.set(
-        If(NoteData.isLeft, Multiply(-1, offset), offset)
-    )
+    return NoteData.arrowOffset.set(If(NoteData.isLeft, Multiply(-1, offset), offset))
 }
 
 export function initializeNote(
@@ -378,17 +341,11 @@ export function initializeNote(
     const leftArchetype = EntityInfo.of(leftIndex).archetype
 
     return [
-        And(options.isAutoplay, [
-            InputJudgment.set(1),
-            InputBucket.set(bucket),
-        ]),
+        And(options.isAutoplay, [InputJudgment.set(1), InputBucket.set(bucket)]),
 
         And(
             Or(
-                And(
-                    options.isSFXEnabled,
-                    Or(options.isAutoplay, options.isAutoSFX)
-                ),
+                And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX)),
                 And(options.isAutoplay, isSlide),
                 And(options.isAutoplay, options.isLaneEffectEnabled),
                 And(options.isAutoplay, options.isNoteEffectEnabled)
@@ -422,20 +379,16 @@ export function touchProcessHead() {
         Not(bool(noteInputState)),
         If(
             NoteSharedMemory.head.isInputSuccess,
-            And(
-                Equal(TouchId, NoteSharedMemory.head.inputTouchId),
-                Not(TouchEnded),
-                [
-                    isTouchOccupied.set(true),
-                    noteInputState.set(InputState.Activated),
+            And(Equal(TouchId, NoteSharedMemory.head.inputTouchId), Not(TouchEnded), [
+                isTouchOccupied.set(true),
+                noteInputState.set(InputState.Activated),
 
-                    NoteSharedMemory.inputTouchId.set(TouchId),
-                    NoteSharedMemory.isSliding.set(true),
+                NoteSharedMemory.inputTouchId.set(TouchId),
+                NoteSharedMemory.isSliding.set(true),
 
-                    spawnNoteHoldEffect(),
-                    playNoteHoldSFX(),
-                ]
-            ),
+                spawnNoteHoldEffect(),
+                playNoteHoldSFX(),
+            ]),
             And(
                 Equal(noteHeadInfo.state, State.Despawned),
                 GreaterOr(Subtract(Time, InputOffset), NoteData.head.time),
@@ -467,11 +420,7 @@ export function scheduleNoteAutoSFX(clip: Code<number>) {
         Or(options.isAutoplay, options.isAutoSFX),
         noteNeedScheduleAutoSFX,
         GreaterOr(Time, noteAutoSFXScheduleTime),
-        [
-            PlayScheduled(clip, NoteData.time, minSFXDistance),
-
-            noteNeedScheduleAutoSFX.set(false),
-        ]
+        [PlayScheduled(clip, NoteData.time, minSFXDistance), noteNeedScheduleAutoSFX.set(false)]
     )
 }
 
@@ -519,9 +468,7 @@ export function drawNote(
             ],
             directional ? (directional.isLeft ? 'left' : 'right') : 'up'
         ),
-        directional
-            ? Add(NoteData.z, Divide(directional.offset, 100000))
-            : NoteData.z,
+        directional ? Add(NoteData.z, Divide(directional.offset, 100000)) : NoteData.z,
         1
     )
 }
@@ -549,30 +496,19 @@ export function drawNoteFlickArrow() {
     ]
 }
 
-export function drawNoteDirectionalFlickArrow(
-    sprite: Code<number>,
-    isLeft: boolean
-) {
+export function drawNoteDirectionalFlickArrow(sprite: Code<number>, isLeft: boolean) {
     const arrowX = EntityMemory.to<number>(48)
     const arrowY = EntityMemory.to<number>(49)
     const arrowWidth = EntityMemory.to<number>(50)
 
     return [
-        arrowX.set(
-            Multiply(noteScale, Add(NoteData.center, NoteData.arrowOffset))
-        ),
+        arrowX.set(Multiply(noteScale, Add(NoteData.center, NoteData.arrowOffset))),
         arrowY.set(Lerp(stageTop, stageBottom, noteScale)),
         arrowWidth.set(Multiply(noteScale, halfNoteWidth)),
 
         Draw(
             sprite,
-            ...rectBySize(
-                arrowX,
-                arrowY,
-                arrowWidth,
-                arrowWidth,
-                isLeft ? 'left' : 'right'
-            ),
+            ...rectBySize(arrowX, arrowY, arrowWidth, arrowWidth, isLeft ? 'left' : 'right'),
             NoteData.markerZ,
             1
         ),

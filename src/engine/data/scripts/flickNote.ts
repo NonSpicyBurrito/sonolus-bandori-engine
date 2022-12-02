@@ -50,11 +50,7 @@ import {
     updateNoteScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import {
-    checkTouchYInHitbox,
-    getMinFlickDistanceSquared,
-    isTouchOccupied,
-} from './common/touch'
+import { checkTouchYInHitbox, getMinFlickDistanceSquared, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function flickNote(): Script {
@@ -68,12 +64,7 @@ export function flickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        scripts.autoFlickNoteIndex,
-        false,
-        true
-    )
+    const initialize = initializeNote(bucket, scripts.autoFlickNoteIndex, false, true)
 
     const touch = Or(options.isAutoplay, [
         And(
@@ -119,10 +110,7 @@ export function flickNote(): Script {
         ),
     ]
 
-    const terminate = And(options.isAutoplay, [
-        playNoteLaneEffect(),
-        playNoteFlickEffect(),
-    ])
+    const terminate = And(options.isAutoplay, [playNoteLaneEffect(), playNoteFlickEffect()])
 
     return {
         preprocess,
@@ -160,9 +148,7 @@ export function flickNote(): Script {
                     goodWindow
                 )
             ),
-            InputAccuracy.set(
-                Subtract(flickActivationTime, InputOffset, NoteData.time)
-            ),
+            InputAccuracy.set(Subtract(flickActivationTime, InputOffset, NoteData.time)),
             InputBucket.set(bucket),
             InputBucketValue.set(Multiply(1000, InputAccuracy)),
 

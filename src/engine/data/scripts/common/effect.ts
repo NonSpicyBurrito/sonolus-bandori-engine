@@ -135,10 +135,7 @@ function playLinearNoteEffectRight(center: Code<number>, linear: Code<number>) {
     )
 }
 
-export function spawnHoldEffect(
-    noteSharedMemory: NoteSharedMemoryPointer,
-    center: Code<number>
-) {
+export function spawnHoldEffect(noteSharedMemory: NoteSharedMemoryPointer, center: Code<number>) {
     return And(options.isNoteEffectEnabled, [
         noteSharedMemory.linearHoldEffectId.set(
             SpawnParticleEffect(
@@ -170,10 +167,7 @@ export function spawnHoldEffect(
     ])
 }
 
-export function moveHoldEffect(
-    noteSharedMemory: NoteSharedMemoryPointer,
-    center: Code<number>
-) {
+export function moveHoldEffect(noteSharedMemory: NoteSharedMemoryPointer, center: Code<number>) {
     return [
         MoveParticleEffect(
             noteSharedMemory.linearHoldEffectId,

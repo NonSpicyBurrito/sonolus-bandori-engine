@@ -21,10 +21,7 @@ import {
 } from './constants'
 import { NoteData, NoteSharedMemoryPointer } from './note'
 
-export const getDirectionalFlickSFX = (
-    extraWidth: Code<number>,
-    judgment: Code<number> = 0
-) =>
+export const getDirectionalFlickSFX = (extraWidth: Code<number>, judgment: Code<number> = 0) =>
     If(
         hasDirectionalFlickClips,
         Switch(extraWidth, [
@@ -35,14 +32,11 @@ export const getDirectionalFlickSFX = (
         Add(EffectClip.MissAlternative, judgment)
     )
 
-export const playStageSFX = () =>
-    And(options.isSFXEnabled, Play(EffectClip.Stage, minSFXDistance))
+export const playStageSFX = () => And(options.isSFXEnabled, Play(EffectClip.Stage, minSFXDistance))
 
-export const playJudgmentSFX = () =>
-    playSFX(Add(EffectClip.Miss, InputJudgment))
+export const playJudgmentSFX = () => playSFX(Add(EffectClip.Miss, InputJudgment))
 
-export const playFlickSFX = () =>
-    playSFX(Add(EffectClip.MissAlternative, InputJudgment))
+export const playFlickSFX = () => playSFX(Add(EffectClip.MissAlternative, InputJudgment))
 
 export const playDirectionalFlickSFX = () =>
     playSFX(getDirectionalFlickSFX(NoteData.extraWidth, InputJudgment))
@@ -55,11 +49,7 @@ export const playHoldSFX = (noteSharedMemory: NoteSharedMemoryPointer) =>
     )
 
 export const stopHoldSFX = (noteSharedMemory: NoteSharedMemoryPointer) =>
-    And(
-        options.isSFXEnabled,
-        Not(options.isAutoSFX),
-        StopLooped(noteSharedMemory.holdSFXClipId)
-    )
+    And(options.isSFXEnabled, Not(options.isAutoSFX), StopLooped(noteSharedMemory.holdSFXClipId))
 
 const playSFX = (id: Code<number>) =>
     And(options.isSFXEnabled, Not(options.isAutoSFX), Play(id, minSFXDistance))

@@ -140,10 +140,7 @@ export const bandoriStageBottom = stageBottom
 export const bandoriStageTop = Lerp(stageTop, stageBottom, 0.015)
 
 export const bandoriJudgmentLineWidth = Multiply(stageWidth, 1.335)
-export const bandoriJudgmentLineHeight = Multiply(
-    bandoriJudgmentLineWidth,
-    90 / 1800
-)
+export const bandoriJudgmentLineHeight = Multiply(bandoriJudgmentLineWidth, 90 / 1800)
 
 // Note
 
@@ -172,23 +169,11 @@ export const noteOnScreenDuration = If(
 
 // Note with Bandori Sprites
 
-export const BandoriLeftDirectionalFlickNoteSprite = customSkinSprite(
-    engineId,
-    11
-)
-export const BandoriRightDirectionalFlickNoteSprite = customSkinSprite(
-    engineId,
-    12
-)
+export const BandoriLeftDirectionalFlickNoteSprite = customSkinSprite(engineId, 11)
+export const BandoriRightDirectionalFlickNoteSprite = customSkinSprite(engineId, 12)
 
-export const BandoriLeftDirectionalFlickMarkerSprite = customSkinSprite(
-    engineId,
-    21
-)
-export const BandoriRightDirectionalFlickMarkerSprite = customSkinSprite(
-    engineId,
-    22
-)
+export const BandoriLeftDirectionalFlickMarkerSprite = customSkinSprite(engineId, 21)
+export const BandoriRightDirectionalFlickMarkerSprite = customSkinSprite(engineId, 22)
 
 export const leftDirectionalFlickNoteSprite = If(
     HasSkinSprite(BandoriLeftDirectionalFlickNoteSprite),
@@ -214,66 +199,29 @@ export const rightDirectionalFlickMarkerSprite = If(
 
 // Slot Effect
 
-export const halfSlotEffectSize = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize
-)
+export const halfSlotEffectSize = Multiply(halfBaseNoteWidth, options.noteEffectSize)
 
 // Tap Effect
 
-export const halfLinearTapEffectSize = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize
-)
+export const halfLinearTapEffectSize = Multiply(halfBaseNoteWidth, options.noteEffectSize)
 
-export const halfCircularTapEffectWidth = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize,
-    3
-)
-export const halfCircularTapEffectHeight = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize,
-    2
-)
+export const halfCircularTapEffectWidth = Multiply(halfBaseNoteWidth, options.noteEffectSize, 3)
+export const halfCircularTapEffectHeight = Multiply(halfBaseNoteWidth, options.noteEffectSize, 2)
 
 // Hold Effect
 
-export const halfLinearHoldEffectSize = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize
-)
+export const halfLinearHoldEffectSize = Multiply(halfBaseNoteWidth, options.noteEffectSize)
 
-export const halfCircularHoldEffectWidth = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize,
-    1.8
-)
-export const halfCircularHoldEffectHeight = Multiply(
-    halfBaseNoteWidth,
-    options.noteEffectSize,
-    1.2
-)
+export const halfCircularHoldEffectWidth = Multiply(halfBaseNoteWidth, options.noteEffectSize, 1.8)
+export const halfCircularHoldEffectHeight = Multiply(halfBaseNoteWidth, options.noteEffectSize, 1.2)
 
 // Effect with Bandori Particles
 
-export const BandoriCircularLeftDirectionalFlickEffect = customParticleEffect(
-    engineId,
-    1
-)
-export const BandoriCircularRightDirectionalFlickEffect = customParticleEffect(
-    engineId,
-    2
-)
+export const BandoriCircularLeftDirectionalFlickEffect = customParticleEffect(engineId, 1)
+export const BandoriCircularRightDirectionalFlickEffect = customParticleEffect(engineId, 2)
 
-export const BandoriLinearLeftDirectionalFlickEffect = customParticleEffect(
-    engineId,
-    11
-)
-export const BandoriLinearRightDirectionalFlickEffect = customParticleEffect(
-    engineId,
-    12
-)
+export const BandoriLinearLeftDirectionalFlickEffect = customParticleEffect(engineId, 11)
+export const BandoriLinearRightDirectionalFlickEffect = customParticleEffect(engineId, 12)
 
 export const circularLeftDirectionalFlickEffect = If(
     HasParticleEffect(BandoriCircularLeftDirectionalFlickEffect),

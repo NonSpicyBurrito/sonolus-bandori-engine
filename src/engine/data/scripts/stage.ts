@@ -89,12 +89,7 @@ export function stage(): Script {
             bool(options.stageCover),
             Draw(
                 SkinSprite.StageCover,
-                ...rectByEdge(
-                    screenLeft,
-                    screenRight,
-                    stageCoverBottom,
-                    screenTop
-                ),
+                ...rectByEdge(screenLeft, screenRight, stageCoverBottom, screenTop),
                 Layer.Cover,
                 1
             )
@@ -193,9 +188,7 @@ export function stage(): Script {
 
                     [...Array(7).keys()].map((i) =>
                         Draw(
-                            i % 2
-                                ? SkinSprite.Lane
-                                : SkinSprite.LaneAlternative,
+                            i % 2 ? SkinSprite.Lane : SkinSprite.LaneAlternative,
                             getLaneBottomLeft(i - 3),
                             laneBottom,
                             getLaneTopLeft(i - 3),

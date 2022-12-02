@@ -64,11 +64,7 @@ import {
     updateNoteScale,
 } from './common/note'
 import { getDirectionalFlickSFX, playDirectionalFlickSFX } from './common/sfx'
-import {
-    checkTouchYInHitbox,
-    getMinFlickDistanceSquared,
-    isTouchOccupied,
-} from './common/touch'
+import { checkTouchYInHitbox, getMinFlickDistanceSquared, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function directionalFlickNote(): Script {
@@ -81,10 +77,7 @@ export function directionalFlickNote(): Script {
         buckets.rightDirectionalFlickNoteIndex
     )
 
-    const preprocess = [
-        preprocessNote(false, goodWindow),
-        preprocessArrowOffset(),
-    ]
+    const preprocess = [preprocessNote(false, goodWindow), preprocessArrowOffset()]
 
     const spawnOrder = NoteData.spawnTime
 
@@ -118,16 +111,10 @@ export function directionalFlickNote(): Script {
                 isTouchOccupied.set(true),
                 And(
                     checkNoteTimeInGoodWindow(),
-                    If(
-                        NoteData.isLeft,
-                        Less(TouchX, TouchSX),
-                        Greater(TouchX, TouchSX)
-                    ),
+                    If(NoteData.isLeft, Less(TouchX, TouchSX), Greater(TouchX, TouchSX)),
                     GreaterOr(
                         getDistanceSquared(TouchSX, TouchSY, TouchX, TouchY),
-                        getMinFlickDistanceSquared(
-                            Add(Multiply(0.01, NoteData.extraWidth), 0.01)
-                        )
+                        getMinFlickDistanceSquared(Add(Multiply(0.01, NoteData.extraWidth), 0.01))
                     ),
                     onComplete()
                 ),
@@ -165,14 +152,8 @@ export function directionalFlickNote(): Script {
 
                 If(
                     NoteData.isLeft,
-                    drawNoteDirectionalFlickArrow(
-                        leftDirectionalFlickMarkerSprite,
-                        true
-                    ),
-                    drawNoteDirectionalFlickArrow(
-                        rightDirectionalFlickMarkerSprite,
-                        false
-                    )
+                    drawNoteDirectionalFlickArrow(leftDirectionalFlickMarkerSprite, true),
+                    drawNoteDirectionalFlickArrow(rightDirectionalFlickMarkerSprite, false)
                 ),
             ])
         ),
@@ -223,9 +204,7 @@ export function directionalFlickNote(): Script {
                     goodWindow
                 )
             ),
-            InputAccuracy.set(
-                Subtract(flickActivationTime, InputOffset, NoteData.time)
-            ),
+            InputAccuracy.set(Subtract(flickActivationTime, InputOffset, NoteData.time)),
             InputBucket.set(bucket),
             InputBucketValue.set(Multiply(1000, InputAccuracy)),
 

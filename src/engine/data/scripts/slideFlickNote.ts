@@ -29,12 +29,7 @@ import {
 import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
-import {
-    goodWindow,
-    greatWindow,
-    perfectWindow,
-    slideWindow,
-} from './common/constants'
+import { goodWindow, greatWindow, perfectWindow, slideWindow } from './common/constants'
 import {
     checkNoteTimeInGoodWindow,
     checkTouchXInNoteHitbox,
@@ -58,11 +53,7 @@ import {
     updateNoteSlideScale,
 } from './common/note'
 import { playFlickSFX } from './common/sfx'
-import {
-    checkTouchYInHitbox,
-    getMinFlickDistanceSquared,
-    isTouchOccupied,
-} from './common/touch'
+import { checkTouchYInHitbox, getMinFlickDistanceSquared, isTouchOccupied } from './common/touch'
 import { getDistanceSquared } from './common/utils'
 
 export function slideFlickNote(): Script {
@@ -71,21 +62,13 @@ export function slideFlickNote(): Script {
     const flickActivationX = EntityMemory.to<number>(0)
     const flickActivationY = EntityMemory.to<number>(1)
 
-    const preprocess = preprocessNote(
-        true,
-        If(options.isStrictJudgment, goodWindow, slideWindow)
-    )
+    const preprocess = preprocessNote(true, If(options.isStrictJudgment, goodWindow, slideWindow))
 
     const spawnOrder = NoteData.spawnTime
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        scripts.autoSlideFlickNoteIndex,
-        true,
-        true
-    )
+    const initialize = initializeNote(bucket, scripts.autoSlideFlickNoteIndex, true, true)
 
     const touch = Or(options.isAutoplay, [
         touchProcessHead(),
@@ -109,12 +92,7 @@ export function slideFlickNote(): Script {
                 And(
                     Equal(noteInputState, InputState.ActivatedNext),
                     GreaterOr(
-                        getDistanceSquared(
-                            flickActivationX,
-                            flickActivationY,
-                            TouchX,
-                            TouchY
-                        ),
+                        getDistanceSquared(flickActivationX, flickActivationY, TouchX, TouchY),
                         getMinFlickDistanceSquared(0.04)
                     ),
                     onComplete()
@@ -154,10 +132,7 @@ export function slideFlickNote(): Script {
     const terminate = [
         And(options.isAutoplay, [playNoteLaneEffect(), playNoteFlickEffect()]),
 
-        And(
-            Or(options.isAutoplay, bool(noteInputState)),
-            destroyNoteHoldEffect()
-        ),
+        And(Or(options.isAutoplay, bool(noteInputState)), destroyNoteHoldEffect()),
         Or(options.isAutoplay, stopNoteHoldSFX()),
     ]
 
@@ -205,9 +180,7 @@ export function slideFlickNote(): Script {
                     )
                 )
             ),
-            InputAccuracy.set(
-                Max(Subtract(TouchT, InputOffset, NoteData.time), 0)
-            ),
+            InputAccuracy.set(Max(Subtract(TouchT, InputOffset, NoteData.time), 0)),
             InputBucket.set(bucket),
             InputBucketValue.set(Multiply(1000, InputAccuracy)),
 

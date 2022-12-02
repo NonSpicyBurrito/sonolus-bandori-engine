@@ -86,21 +86,13 @@ export function slider(sprite: SkinSprite): Script {
 
         spawnTime.set(Subtract(SliderData.headTime, noteOnScreenDuration)),
 
-        headL.set(
-            Subtract(getLaneBottomCenter(SliderData.headLane), halfNoteWidth)
-        ),
+        headL.set(Subtract(getLaneBottomCenter(SliderData.headLane), halfNoteWidth)),
         headR.set(Add(headL, noteWidth)),
-        tailL.set(
-            Subtract(getLaneBottomCenter(SliderData.tailLane), halfNoteWidth)
-        ),
+        tailL.set(Subtract(getLaneBottomCenter(SliderData.tailLane), halfNoteWidth)),
         tailR.set(Add(tailL, noteWidth)),
 
-        connectorZ.set(
-            getZ(Layer.NoteConnector, SliderData.headTime, SliderData.headIndex)
-        ),
-        slideZ.set(
-            getZ(Layer.NoteSlide, SliderData.headTime, SliderData.headIndex)
-        ),
+        connectorZ.set(getZ(Layer.NoteConnector, SliderData.headTime, SliderData.headIndex)),
+        slideZ.set(getZ(Layer.NoteSlide, SliderData.headTime, SliderData.headIndex)),
     ]
 
     const spawnOrder = spawnTime
@@ -122,10 +114,7 @@ export function slider(sprite: SkinSprite): Script {
     const slideL = EntityMemory.to<number>(42)
     const slideR = EntityMemory.to<number>(43)
 
-    const isSliding = Or(
-        options.isAutoplay,
-        NoteSharedMemory.of(SliderData.tailIndex).isSliding
-    )
+    const isSliding = Or(options.isAutoplay, NoteSharedMemory.of(SliderData.tailIndex).isSliding)
 
     const hiddenTime = Add(Time, Multiply(options.hidden, noteOnScreenDuration))
 
@@ -133,28 +122,16 @@ export function slider(sprite: SkinSprite): Script {
         Equal(EntityInfo.of(SliderData.tailIndex).state, State.Despawned),
         And(isSliding, Greater(Time, SliderData.tailTime)),
         [
-            headTime.set(
-                If(
-                    isSliding,
-                    Max(SliderData.headTime, Time),
-                    SliderData.headTime
-                )
-            ),
-            tailTime.set(
-                Min(SliderData.tailTime, Add(Time, noteOnScreenDuration))
-            ),
+            headTime.set(If(isSliding, Max(SliderData.headTime, Time), SliderData.headTime)),
+            tailTime.set(Min(SliderData.tailTime, Add(Time, noteOnScreenDuration))),
 
             And(Greater(options.hidden, 0), [
                 headTime.set(Max(headTime, hiddenTime)),
                 tailTime.set(Max(tailTime, hiddenTime)),
             ]),
 
-            headXScale.set(
-                Unlerp(SliderData.headTime, SliderData.tailTime, headTime)
-            ),
-            tailXScale.set(
-                Unlerp(SliderData.headTime, SliderData.tailTime, tailTime)
-            ),
+            headXScale.set(Unlerp(SliderData.headTime, SliderData.tailTime, headTime)),
+            tailXScale.set(Unlerp(SliderData.headTime, SliderData.tailTime, tailTime)),
             headYScale.set(approach(headTime)),
             tailYScale.set(approach(tailTime)),
 
@@ -176,9 +153,7 @@ export function slider(sprite: SkinSprite): Script {
             ),
 
             And(isSliding, GreaterOr(Time, SliderData.headTime), [
-                slideScale.set(
-                    Unlerp(SliderData.headTime, SliderData.tailTime, Time)
-                ),
+                slideScale.set(Unlerp(SliderData.headTime, SliderData.tailTime, Time)),
 
                 slideL.set(Lerp(headL, tailL, slideScale)),
                 slideR.set(Lerp(headR, tailR, slideScale)),
@@ -202,10 +177,7 @@ export function slider(sprite: SkinSprite): Script {
 
                 And(options.isNoteEffectEnabled, [
                     slideCenter.set(Divide(Add(slideL, slideR), 2)),
-                    moveHoldEffect(
-                        NoteSharedMemory.of(SliderData.tailIndex),
-                        slideCenter
-                    ),
+                    moveHoldEffect(NoteSharedMemory.of(SliderData.tailIndex), slideCenter),
                 ]),
             ]),
         ]

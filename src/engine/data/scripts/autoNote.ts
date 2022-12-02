@@ -31,9 +31,7 @@ export function autoNote(isSlide: boolean): Script {
     const initialize = [
         And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
             And(isSlide, [
-                playHoldTime.set(
-                    Subtract(noteData.head.time, AudioOffset, 0.5)
-                ),
+                playHoldTime.set(Subtract(noteData.head.time, AudioOffset, 0.5)),
                 needPlayHold.set(true),
 
                 stopHoldTime.set(Subtract(noteData.time, AudioOffset, 0.5)),
