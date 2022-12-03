@@ -1,4 +1,4 @@
-import { ParticleEffect, SkinSprite } from 'sonolus-core'
+import { EffectClip, ParticleEffect, SkinSprite } from 'sonolus-core'
 import {
     Add,
     And,
@@ -25,11 +25,13 @@ import {
     Multiply,
     Not,
     Or,
+    PlayLoopedScheduled,
     PlayScheduled,
     Pointer,
     Power,
     Spawn,
     State,
+    StopLoopedScheduled,
     Subtract,
     Time,
     TouchEnded,
@@ -186,6 +188,9 @@ export const noteInputState = EntityMemory.to<InputState>(33)
 export const noteAutoSFXScheduleTime = EntityMemory.to<number>(34)
 export const noteNeedScheduleAutoSFX = EntityMemory.to<boolean>(35)
 
+export const noteAutoHoldSFXScheduleTime = EntityMemory.to<number>(36)
+export const noteNeedScheduleAutoHoldSFX = EntityMemory.to<boolean>(37)
+
 export const noteBottom = EntityMemory.to<number>(48)
 export const noteTop = EntityMemory.to<number>(49)
 
@@ -321,6 +326,11 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
         And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
             noteAutoSFXScheduleTime.set(Subtract(NoteData.time, AudioOffset, 0.5)),
             noteNeedScheduleAutoSFX.set(true),
+
+            And(isSlide, [
+                noteAutoHoldSFXScheduleTime.set(Subtract(NoteData.head.time, AudioOffset, 0.5)),
+                noteNeedScheduleAutoHoldSFX.set(true),
+            ]),
         ]),
     ]
 }
@@ -415,13 +425,22 @@ export function touchProcessDiscontinue() {
 }
 
 export function scheduleNoteAutoSFX(clip: Code<number>) {
-    return And(
-        options.isSFXEnabled,
-        Or(options.isAutoplay, options.isAutoSFX),
-        noteNeedScheduleAutoSFX,
-        GreaterOr(Time, noteAutoSFXScheduleTime),
-        [PlayScheduled(clip, NoteData.time, minSFXDistance), noteNeedScheduleAutoSFX.set(false)]
-    )
+    return And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
+        And(noteNeedScheduleAutoSFX, GreaterOr(Time, noteAutoSFXScheduleTime), [
+            PlayScheduled(clip, NoteData.time, minSFXDistance),
+
+            noteNeedScheduleAutoSFX.set(false),
+        ]),
+
+        And(noteNeedScheduleAutoHoldSFX, GreaterOr(Time, noteAutoHoldSFXScheduleTime), [
+            StopLoopedScheduled(
+                PlayLoopedScheduled(EffectClip.Hold, NoteData.head.time),
+                NoteData.time
+            ),
+
+            noteNeedScheduleAutoHoldSFX.set(false),
+        ]),
+    ])
 }
 
 export function updateNoteScale() {
