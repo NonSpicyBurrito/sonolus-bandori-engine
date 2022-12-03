@@ -21,10 +21,9 @@ import {
     noteBaseBottomScale,
     noteBaseTop,
     noteBaseTopScale,
-    noteOnScreenDuration,
     stageTop,
 } from './common/constants'
-import { approach, getZ, isNotHidden, NoteData } from './common/note'
+import { approach, getVisibleTime, getZ, isNotHidden, NoteData } from './common/note'
 
 export function simLine(): Script {
     const rightIndex = EntityMemory.to<number>(0)
@@ -47,7 +46,7 @@ export function simLine(): Script {
 
     const initialize = [
         time.set(NoteData.of(rightIndex).time),
-        visibleTime.set(Subtract(time, noteOnScreenDuration)),
+        visibleTime.set(getVisibleTime(time)),
 
         left.set(leftData.center),
         right.set(rightData.center),
