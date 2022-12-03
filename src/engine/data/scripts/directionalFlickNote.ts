@@ -30,7 +30,6 @@ import {
     TouchY,
     While,
 } from 'sonolus.js'
-import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
 import {
@@ -83,16 +82,7 @@ export function directionalFlickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(
-        bucket,
-        If(
-            NoteData.isLeft,
-            scripts.autoLeftDirectionalFlickNoteIndex,
-            scripts.autoRightDirectionalFlickNoteIndex
-        ),
-        false,
-        true
-    )
+    const initialize = initializeNote(bucket, false, true)
 
     const touch = Or(options.isAutoplay, [
         And(

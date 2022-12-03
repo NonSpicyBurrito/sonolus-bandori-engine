@@ -22,7 +22,6 @@ import {
     TouchId,
     TouchT,
 } from 'sonolus.js'
-import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { buckets } from '../buckets'
 import { goodWindow, greatWindow, perfectWindow, slideWindow } from './common/constants'
@@ -41,6 +40,7 @@ import {
     prepareDrawNote,
     preprocessNote,
     scheduleNoteAutoSFX,
+    scheduleNoteAutoSlide,
     stopNoteHoldSFX,
     touchProcessDiscontinue,
     touchProcessHead,
@@ -58,7 +58,9 @@ export function slideTickNote(): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(bucket, scripts.autoSlideTickNoteIndex, true, false)
+    const initialize = initializeNote(bucket, true, false)
+
+    const updateSequential = scheduleNoteAutoSlide()
 
     const touch = Or(options.isAutoplay, [
         touchProcessHead(),
@@ -116,6 +118,7 @@ export function slideTickNote(): Script {
         spawnOrder,
         shouldSpawn,
         initialize,
+        updateSequential,
         touch,
         updateParallel,
         terminate,

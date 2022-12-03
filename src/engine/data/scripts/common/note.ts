@@ -191,6 +191,9 @@ export const noteNeedScheduleAutoSFX = EntityMemory.to<boolean>(35)
 export const noteAutoHoldSFXScheduleTime = EntityMemory.to<number>(36)
 export const noteNeedScheduleAutoHoldSFX = EntityMemory.to<boolean>(37)
 
+export const noteAutoSlideScheduleTime = EntityMemory.to<number>(38)
+export const noteNeedScheduleAutoSlide = EntityMemory.to<boolean>(39)
+
 export const noteBottom = EntityMemory.to<number>(48)
 export const noteTop = EntityMemory.to<number>(49)
 
@@ -332,6 +335,11 @@ export function preprocessNote(isSlide: boolean, missAccuracy: Code<number>) {
                 noteNeedScheduleAutoHoldSFX.set(true),
             ]),
         ]),
+
+        And(options.isAutoplay, isSlide, [
+            noteAutoSlideScheduleTime.set(NoteData.head.time),
+            noteNeedScheduleAutoSlide.set(true),
+        ]),
     ]
 }
 
@@ -341,27 +349,12 @@ export function preprocessArrowOffset() {
     return NoteData.arrowOffset.set(If(NoteData.isLeft, Multiply(-1, offset), offset))
 }
 
-export function initializeNote(
-    bucket: Code<number>,
-    autoNoteIndex: Code<number>,
-    isSlide: boolean,
-    canHaveSimLine: boolean
-) {
+export function initializeNote(bucket: Code<number>, isSlide: boolean, canHaveSimLine: boolean) {
     const leftIndex = Subtract(EntityInfo.index, 1)
     const leftArchetype = EntityInfo.of(leftIndex).archetype
 
     return [
         And(options.isAutoplay, [InputJudgment.set(1), InputBucket.set(bucket)]),
-
-        And(
-            Or(
-                And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX)),
-                And(options.isAutoplay, isSlide),
-                And(options.isAutoplay, options.isLaneEffectEnabled),
-                And(options.isAutoplay, options.isNoteEffectEnabled)
-            ),
-            Spawn(autoNoteIndex, [EntityInfo.index])
-        ),
 
         And(
             canHaveSimLine,
@@ -422,6 +415,15 @@ export function touchProcessHead() {
 
 export function touchProcessDiscontinue() {
     return And(TouchEnded, noteInputState.set(InputState.Terminated))
+}
+
+export function scheduleNoteAutoSlide() {
+    return And(
+        options.isAutoplay,
+        noteNeedScheduleAutoSlide,
+        GreaterOr(Time, noteAutoSlideScheduleTime),
+        [spawnNoteHoldEffect(), noteNeedScheduleAutoSlide.set(false)]
+    )
 }
 
 export function scheduleNoteAutoSFX(clip: Code<number>) {

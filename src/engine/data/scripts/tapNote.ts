@@ -21,7 +21,6 @@ import {
     TouchST,
     TouchStarted,
 } from 'sonolus.js'
-import { scripts } from '.'
 import { options } from '../../configuration/options'
 import { goodWindow, greatWindow, perfectWindow } from './common/constants'
 import {
@@ -51,7 +50,7 @@ export function tapNote(bucket: number, sprite: SkinSprite): Script {
 
     const shouldSpawn = GreaterOr(Time, NoteData.spawnTime)
 
-    const initialize = initializeNote(bucket, scripts.autoTapNoteIndex, false, true)
+    const initialize = initializeNote(bucket, false, true)
 
     const touch = Or(
         options.isAutoplay,
