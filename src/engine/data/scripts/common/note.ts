@@ -246,11 +246,8 @@ export function playNoteRightDirectionalFlickEffect() {
     )
 }
 
-export function spawnNoteHoldEffect(index?: Code<number>) {
-    return spawnHoldEffect(
-        index ? NoteSharedMemory.of(index) : NoteSharedMemory,
-        (index ? NoteData.of(index) : NoteData).head.center
-    )
+export function spawnNoteHoldEffect() {
+    return spawnHoldEffect(NoteSharedMemory, NoteData.head.center)
 }
 
 export function destroyNoteHoldEffect() {
@@ -430,7 +427,6 @@ export function scheduleNoteAutoSFX(clip: Code<number>) {
     return And(options.isSFXEnabled, Or(options.isAutoplay, options.isAutoSFX), [
         And(noteNeedScheduleAutoSFX, GreaterOr(Time, noteAutoSFXScheduleTime), [
             PlayScheduled(clip, NoteData.time, minSFXDistance),
-
             noteNeedScheduleAutoSFX.set(false),
         ]),
 
@@ -439,7 +435,6 @@ export function scheduleNoteAutoSFX(clip: Code<number>) {
                 PlayLoopedScheduled(EffectClip.Hold, NoteData.head.time),
                 NoteData.time
             ),
-
             noteNeedScheduleAutoHoldSFX.set(false),
         ]),
     ])
