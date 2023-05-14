@@ -41,7 +41,8 @@ export class SlideTickNote extends SlideNote {
     preprocess() {
         super.preprocess()
 
-        const minPrevInputTime = bpmChanges.at(this.prevData.beat).time + windows.minGood
+        const minPrevInputTime =
+            bpmChanges.at(this.prevData.beat).time + windows.minGood + input.offset
 
         this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
