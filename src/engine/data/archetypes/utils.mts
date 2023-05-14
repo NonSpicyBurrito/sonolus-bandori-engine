@@ -40,10 +40,10 @@ export const linearEffectLayout = ({ lane, size }: { lane: number; size: number 
     })
 }
 
-export const getHitbox = (options: { l: number; r: number }) =>
+export const getHitbox = ({ l, r }: { l: number; r: number }) =>
     new Rect({
-        l: options.l - 1.175,
-        r: options.r + 1.175,
+        l: l - 1.175,
+        r: r + 1.175,
         b: lane.hitbox.b,
         t: lane.hitbox.t,
     }).transform(skin.transform)
