@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
 import { LevelData } from 'sonolus-core'
+import chart from './special.json'
 
-export const data: LevelData = JSON.parse(readFileSync('./src/level/data/special.json', 'utf8'))
+export const data: LevelData = chart
