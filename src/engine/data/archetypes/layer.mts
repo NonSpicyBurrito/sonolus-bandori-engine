@@ -10,6 +10,7 @@ export const layer = {
 
     simLine: 90,
 
+    slot: 2,
     judgmentLine: 1,
     stage: 0,
 }

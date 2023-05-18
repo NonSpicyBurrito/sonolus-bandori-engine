@@ -157,7 +157,7 @@ export class Stage extends Archetype {
                     t: 1 - sh,
                     b: 1 + sh,
                 }),
-                layer.stage,
+                layer.slot,
                 1,
             )
         }
