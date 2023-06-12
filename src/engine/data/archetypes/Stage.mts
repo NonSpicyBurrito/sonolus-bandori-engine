@@ -137,7 +137,7 @@ export class Stage extends Archetype {
         const h = 0.11625 / 4
 
         skin.sprites.judgmentLine.draw(
-            perspectiveLayout({ l: scaledScreen.l, r: scaledScreen.r, t: 1 - h, b: 1 + h }),
+            new Rect({ l: scaledScreen.l, r: scaledScreen.r, t: 1 - h, b: 1 + h }),
             layer.judgmentLine,
             1,
         )
