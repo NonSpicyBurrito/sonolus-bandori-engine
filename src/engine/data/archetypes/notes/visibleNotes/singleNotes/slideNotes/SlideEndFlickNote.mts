@@ -16,7 +16,7 @@ export class SlideEndFlickNote extends SlideNote {
     })
 
     sprites = {
-        note: skin.sprites.flickNote,
+        note: skin.sprites.flickEndNote,
         arrow: skin.sprites.flickArrow,
     }
 

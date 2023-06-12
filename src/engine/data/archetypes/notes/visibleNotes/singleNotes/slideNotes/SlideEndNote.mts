@@ -9,7 +9,7 @@ import { SlideNote } from './SlideNote.mjs'
 
 export class SlideEndNote extends SlideNote {
     sprites = {
-        note: skin.sprites.slideNote,
+        note: skin.sprites.slideEndNote,
     }
 
     clips = {

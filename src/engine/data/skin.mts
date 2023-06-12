@@ -19,6 +19,7 @@ export const skin = defineSkin({
         tapNote: SkinSpriteName.NoteHeadCyan,
 
         flickNote: SkinSpriteName.NoteHeadRed,
+        flickEndNote: SkinSpriteName.NoteTailRed,
         flickArrow: SkinSpriteName.DirectionalMarkerRed,
 
         directionalFlickLeftNote: 'Bandori Directional Flick Note Left',
@@ -32,6 +33,7 @@ export const skin = defineSkin({
         directionalFlickRightArrowFallback: SkinSpriteName.DirectionalMarkerYellow,
 
         slideNote: SkinSpriteName.NoteHeadGreen,
+        slideEndNote: SkinSpriteName.NoteTailGreen,
 
         tickNote: SkinSpriteName.NoteTickGreen,
 
