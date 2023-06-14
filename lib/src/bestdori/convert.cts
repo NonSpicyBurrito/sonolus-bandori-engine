@@ -25,7 +25,7 @@ type Append = (intermediate: Intermediate) => void
 
 type Handler<T extends ChartObject> = (object: T, append: Append) => void
 
-export function bestdoriToLevelData(chart: BestdoriChart, bgmOffset = 0): LevelData {
+export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData {
     const entities: LevelDataEntity[] = []
 
     const beatToIntermediates = new Map<number, Intermediate[]>()
@@ -122,7 +122,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, bgmOffset = 0): LevelD
     }
 
     return {
-        bgmOffset,
+        bgmOffset: offset,
         entities,
     }
 }
