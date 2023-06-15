@@ -1,54 +1,54 @@
-export type BestdoriChart = ChartObject[]
+export type BestdoriChart = BestdoriObject[]
 
-export type ChartObject =
-    | SingleObject
-    | DirectionalObject
-    | SlideObject
-    | LongObject
-    | BPMObject
-    | SystemObject
+export type BestdoriObject =
+    | BestdoriSingleNote
+    | BestdoriDirectionalNote
+    | BestdoriSlideNote
+    | BestdoriLongNote
+    | BestdoriBPMObject
+    | BestdoriSystemObject
 
-type ObjectBase = {
+type BaseBestdoriObject = {
     beat: number
 }
 
-type NoteBase = ObjectBase & {
+type BaseBestdoriNote = BaseBestdoriObject & {
     lane: number
     flick?: true
     skill?: true
     charge?: true
 }
 
-export type SingleObject = NoteBase & {
+export type BestdoriSingleNote = BaseBestdoriNote & {
     type: 'Single'
 }
 
-export type DirectionalObject = NoteBase & {
+export type BestdoriDirectionalNote = BaseBestdoriNote & {
     type: 'Directional'
     direction: 'Left' | 'Right'
     width: number
 }
 
-export type SlideObject = {
+export type BestdoriSlideNote = {
     type: 'Slide'
-    connections: Connection[]
+    connections: BestdoriConnectionNote[]
 }
 
-export type LongObject = {
+export type BestdoriLongNote = {
     type: 'Long'
-    connections: Connection[]
+    connections: BestdoriConnectionNote[]
 }
 
-export type Connection = NoteBase & {
+export type BestdoriConnectionNote = BaseBestdoriNote & {
     hidden?: true
 }
 
-export type BPMObject = ObjectBase & {
+export type BestdoriBPMObject = BaseBestdoriObject & {
     type: 'BPM'
     bpm: number
 }
 
-export type SystemObject = ObjectBase & {
+export type BestdoriSystemObject = BaseBestdoriObject & {
     type: 'System'
     data: string
 }

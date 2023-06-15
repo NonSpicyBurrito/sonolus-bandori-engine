@@ -5,14 +5,14 @@ import {
     LevelDataEntity,
 } from 'sonolus-core'
 import {
-    BPMObject,
+    BestdoriBPMObject,
     BestdoriChart,
-    ChartObject,
-    DirectionalObject,
-    LongObject,
-    SingleObject,
-    SlideObject,
-    SystemObject,
+    BestdoriDirectionalNote,
+    BestdoriLongNote,
+    BestdoriObject,
+    BestdoriSingleNote,
+    BestdoriSlideNote,
+    BestdoriSystemObject,
 } from './index.cjs'
 
 type Intermediate = {
@@ -23,7 +23,7 @@ type Intermediate = {
 
 type Append = (intermediate: Intermediate) => void
 
-type Handler<T extends ChartObject> = (object: T, append: Append) => void
+type Handler<T extends BestdoriObject> = (object: T, append: Append) => void
 
 export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData {
     const entities: LevelDataEntity[] = []
@@ -127,7 +127,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
     }
 }
 
-const bpm: Handler<BPMObject> = (object, append) =>
+const bpm: Handler<BestdoriBPMObject> = (object, append) =>
     append({
         archetype: EngineArchetypeName.BpmChange,
         data: {
@@ -137,7 +137,7 @@ const bpm: Handler<BPMObject> = (object, append) =>
         sim: false,
     })
 
-const single: Handler<SingleObject> = (object, append) =>
+const single: Handler<BestdoriSingleNote> = (object, append) =>
     append({
         archetype: object.flick ? 'FlickNote' : 'TapNote',
         data: {
@@ -147,7 +147,7 @@ const single: Handler<SingleObject> = (object, append) =>
         sim: true,
     })
 
-const directional: Handler<DirectionalObject> = (object, append) =>
+const directional: Handler<BestdoriDirectionalNote> = (object, append) =>
     append({
         archetype: 'DirectionalFlickNote',
         data: {
@@ -159,7 +159,7 @@ const directional: Handler<DirectionalObject> = (object, append) =>
         sim: true,
     })
 
-const longAndSlide: Handler<LongObject | SlideObject> = (object, append) => {
+const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, append) => {
     let start: Intermediate | undefined
     let head: Intermediate | undefined
     const connectors: Intermediate[] = []
@@ -279,12 +279,12 @@ const longAndSlide: Handler<LongObject | SlideObject> = (object, append) => {
     }
 }
 
-const system: Handler<SystemObject> = () => {
+const system: Handler<BestdoriSystemObject> = () => {
     // noop
 }
 
 const handlers: {
-    [K in ChartObject['type']]: Handler<Extract<ChartObject, { type: K }>>
+    [K in BestdoriObject['type']]: Handler<Extract<BestdoriObject, { type: K }>>
 } = {
     BPM: bpm,
     Single: single,
@@ -294,10 +294,11 @@ const handlers: {
     System: system,
 }
 
-const repair = (objects: ChartObject[]) => {
-    const replace = (o: ChartObject, n: ChartObject) => objects.splice(objects.indexOf(o), 1, n)
+const repair = (objects: BestdoriObject[]) => {
+    const replace = (o: BestdoriObject, n: BestdoriObject) =>
+        objects.splice(objects.indexOf(o), 1, n)
 
-    const remove = (o: ChartObject) => objects.splice(objects.indexOf(o), 1)
+    const remove = (o: BestdoriObject) => objects.splice(objects.indexOf(o), 1)
 
     for (const object of objects) {
         switch (object.type) {
@@ -316,7 +317,7 @@ const repair = (objects: ChartObject[]) => {
                     case 1: {
                         const connection = visibleConnections[0]
 
-                        const single: SingleObject = {
+                        const single: BestdoriSingleNote = {
                             type: 'Single',
                             lane: connection.lane,
                             beat: connection.beat,
