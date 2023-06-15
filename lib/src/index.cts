@@ -4,7 +4,7 @@ import { Resource } from './Resource.cjs'
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
 
-export const version = '1.0.2'
+export const version = '1.0.3'
 
 export const engineInfo = {
     name: 'bandori',
