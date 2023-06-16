@@ -5,7 +5,7 @@ import {
     LevelDataEntity,
 } from 'sonolus-core'
 import {
-    BestdoriBPMObject,
+    BestdoriBpmObject,
     BestdoriChart,
     BestdoriDirectionalNote,
     BestdoriLongNote,
@@ -127,7 +127,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
     }
 }
 
-const bpm: Handler<BestdoriBPMObject> = (object, append) =>
+const bpm: Handler<BestdoriBpmObject> = (object, append) =>
     append({
         archetype: EngineArchetypeName.BpmChange,
         data: {

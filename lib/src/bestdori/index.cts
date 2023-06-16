@@ -5,7 +5,7 @@ export type BestdoriObject =
     | BestdoriDirectionalNote
     | BestdoriSlideNote
     | BestdoriLongNote
-    | BestdoriBPMObject
+    | BestdoriBpmObject
     | BestdoriSystemObject
 
 type BaseBestdoriObject = {
@@ -43,7 +43,7 @@ export type BestdoriConnectionNote = BaseBestdoriNote & {
     hidden?: true
 }
 
-export type BestdoriBPMObject = BaseBestdoriObject & {
+export type BestdoriBpmObject = BaseBestdoriObject & {
     type: 'BPM'
     bpm: number
 }
