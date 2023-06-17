@@ -12,7 +12,7 @@ import { SlideNote } from './SlideNote.mjs'
 
 export class SlideEndFlickNote extends SlideNote {
     slideEndFlickData = this.defineData({
-        long: { name: 'long', type: Number },
+        long: { name: 'long', type: Boolean },
     })
 
     sprites = {
@@ -58,7 +58,7 @@ export class SlideEndFlickNote extends SlideNote {
     initialize() {
         super.initialize()
 
-        if (this.slideEndFlickData.long) this.inputTime.min = this.targetTime + input.offset
+        if (!this.slideEndFlickData.long) this.inputTime.min = this.targetTime + input.offset
 
         const w = 0.5 * options.noteSize
         const h = scaledScreen.wToH * options.noteSize
