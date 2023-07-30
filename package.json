@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "dev:play": "sonolus-cli --dev ./play/sonolus-cli.config.mjs",
-    "prebuild": "tsc -p ./lib --noEmit && tsc -p ./play --noEmit && eslint --ext .cts ./lib && eslint --ext .mts ./play",
+    "prebuild": "tsc -p ./lib --noEmit && tsc -p ./shared --noEmit && tsc -p ./play --noEmit && eslint --ext .cts ./lib && eslint --ext .mts ./shared && eslint --ext .mts ./play",
     "build": "tsc -p ./lib && sonolus-cli --build ./play/sonolus-cli.config.mjs && node ./lib/build.mjs"
   },
   "dependencies": {
