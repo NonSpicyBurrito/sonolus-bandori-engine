@@ -1,4 +1,4 @@
-import 'sonolus.js'
+import 'sonolus.js/play'
 
 import { engine } from './engine/index.mjs'
 import { level } from './level/index.mjs'

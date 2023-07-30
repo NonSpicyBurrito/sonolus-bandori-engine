@@ -1,7 +1,7 @@
 import { configuration } from './configuration/index.mjs'
-import { data } from './data/index.mjs'
+import { playData } from './playData/index.mjs'
 
 export const engine = {
     configuration,
-    data,
+    playData,
 }

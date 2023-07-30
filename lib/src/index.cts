@@ -8,7 +8,7 @@ export const version = '1.0.5'
 
 export const engineInfo = {
     name: 'bandori',
-    version: 8,
+    version: 9,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
@@ -40,5 +40,5 @@ export const engineInfo = {
 } as const satisfies Partial<EngineInfo>
 
 export const engineConfiguration = new Resource('EngineConfiguration')
-export const engineData = new Resource('EngineData')
+export const enginePlayData = new Resource('EnginePlayData')
 export const engineThumbnail = new Resource('thumbnail.png')

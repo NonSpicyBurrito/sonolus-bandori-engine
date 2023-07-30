@@ -2,12 +2,14 @@ import { error, log } from 'node:console'
 import { copyFileSync, readFileSync } from 'node:fs'
 import { hash } from 'sonolus-core'
 
-/** @type import('sonolus.js').SonolusCLIConfig */
+/** @type {import('sonolus.js').SonolusCLIConfig} */
 export default {
-    entry: './src/index.mts',
+    type: 'play',
+    entry: './play/src/index.mts',
+
     devServer(sonolus) {
         try {
-            copyFileSync('./src/level/bgm.mp3', './.dev/bgm.mp3')
+            copyFileSync('./play/src/level/bgm.mp3', './.dev/bgm.mp3')
 
             const level = sonolus.db.levels[0]
             level.bgm = {
