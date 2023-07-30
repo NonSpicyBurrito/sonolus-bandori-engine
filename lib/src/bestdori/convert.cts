@@ -55,7 +55,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
 
         if (intermediate.sim) {
             const beat = intermediate.data[EngineArchetypeDataName.Beat]
-            if (typeof beat !== 'number') throw 'Unexpected beat'
+            if (typeof beat !== 'number') throw new Error('Unexpected beat')
 
             const intermediates = beatToIntermediates.get(beat)
             if (intermediates) {
@@ -127,7 +127,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
     }
 }
 
-const bpm: Handler<BestdoriBpmObject> = (object, append) =>
+const bpm: Handler<BestdoriBpmObject> = (object, append) => {
     append({
         archetype: EngineArchetypeName.BpmChange,
         data: {
@@ -136,8 +136,9 @@ const bpm: Handler<BestdoriBpmObject> = (object, append) =>
         },
         sim: false,
     })
+}
 
-const single: Handler<BestdoriSingleNote> = (object, append) =>
+const single: Handler<BestdoriSingleNote> = (object, append) => {
     append({
         archetype: object.flick ? 'FlickNote' : 'TapNote',
         data: {
@@ -146,8 +147,9 @@ const single: Handler<BestdoriSingleNote> = (object, append) =>
         },
         sim: true,
     })
+}
 
-const directional: Handler<BestdoriDirectionalNote> = (object, append) =>
+const directional: Handler<BestdoriDirectionalNote> = (object, append) => {
     append({
         archetype: 'DirectionalFlickNote',
         data: {
@@ -158,6 +160,7 @@ const directional: Handler<BestdoriDirectionalNote> = (object, append) =>
         },
         sim: true,
     })
+}
 
 const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, append) => {
     let start: Intermediate | undefined
@@ -184,8 +187,8 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
             continue
         }
 
-        if (!start) throw 'Unexpected missing start'
-        if (!head) throw 'Unexpected missing head'
+        if (!start) throw new Error('Unexpected missing start')
+        if (!head) throw new Error('Unexpected missing head')
 
         if (i === object.connections.length - 1) {
             const tail: Intermediate = {
