@@ -69,6 +69,14 @@ Engine Play Data.
 -   `enginePlayData.buffer`: buffer of file.
 -   `enginePlayData.hash`: hash of file.
 
+### `engineTutorialData`
+
+Engine Tutorial Data.
+
+-   `engineTutorialData.path`: path to file.
+-   `engineTutorialData.buffer`: buffer of file.
+-   `engineTutorialData.hash`: hash of file.
+
 ### `engineThumbnail`
 
 Engine Thumbnail.
