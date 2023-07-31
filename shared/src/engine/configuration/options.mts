@@ -12,12 +12,14 @@ export const optionsDefinition = {
         name: NameText.StrictJudgment,
         scope: 'Bandori',
         standard: true,
+        advanced: true,
         type: 'toggle',
         def: 0,
     },
     speed: {
         name: NameText.LevelSpeed,
         standard: true,
+        advanced: true,
         type: 'slider',
         def: 1,
         min: 0.5,
@@ -28,6 +30,7 @@ export const optionsDefinition = {
     hidden: {
         name: NameText.Hidden,
         standard: true,
+        advanced: true,
         type: 'slider',
         def: 0,
         min: 0,
