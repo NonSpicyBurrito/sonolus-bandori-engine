@@ -7,7 +7,13 @@ import { isUsed, markAsUsed } from '../../../InputManager.mjs'
 import { minSFXDistance, note } from '../../../constants.mjs'
 import { layer } from '../../../layer.mjs'
 import { flick, scaledScreen } from '../../../shared.mjs'
-import { circularEffectLayout, getHitbox, getZ } from '../../../utils.mjs'
+import {
+    circularEffectLayout,
+    getHitbox,
+    getZ,
+    leftRotated,
+    rightRotated,
+} from '../../../utils.mjs'
 import { windows } from '../../../windows.mjs'
 import { VisibleNote } from '../VisibleNote.mjs'
 import { FlickDirection } from './FlickDirection.mjs'
@@ -124,32 +130,14 @@ export class DirectionalFlickNote extends VisibleNote {
             const l = lane - w
             const r = lane
 
-            new Quad({
-                x1: r,
-                x2: l,
-                x3: l,
-                x4: r,
-                y1: b,
-                y2: b,
-                y3: t,
-                y4: t,
-            }).copyTo(this.arrow.layout)
+            leftRotated({ l, r, b, t }).copyTo(this.arrow.layout)
         } else {
             const lane = this.data.lane + this.directionalFlickData.size - 0.5
 
             const l = lane
             const r = lane + w
 
-            new Quad({
-                x1: l,
-                x2: r,
-                x3: r,
-                x4: l,
-                y1: t,
-                y2: t,
-                y3: b,
-                y4: b,
-            }).copyTo(this.arrow.layout)
+            rightRotated({ l, r, b, t }).copyTo(this.arrow.layout)
         }
 
         if (options.markerAnimation)
@@ -281,40 +269,12 @@ export class DirectionalFlickNote extends VisibleNote {
             const l = this.data.lane - w
             const r = this.data.lane
 
-            particle.effects.spawn(
-                this.effects.linear,
-                {
-                    x1: r,
-                    x2: l,
-                    x3: l,
-                    x4: r,
-                    y1: b,
-                    y2: b,
-                    y3: t,
-                    y4: t,
-                },
-                0.4,
-                false,
-            )
+            particle.effects.spawn(this.effects.linear, leftRotated({ l, r, b, t }), 0.4, false)
         } else {
             const l = this.data.lane
             const r = this.data.lane + w
 
-            particle.effects.spawn(
-                this.effects.linear,
-                {
-                    x1: l,
-                    x2: r,
-                    x3: r,
-                    x4: l,
-                    y1: t,
-                    y2: t,
-                    y3: b,
-                    y4: b,
-                },
-                0.4,
-                false,
-            )
+            particle.effects.spawn(this.effects.linear, rightRotated({ l, r, b, t }), 0.4, false)
         }
     }
 
