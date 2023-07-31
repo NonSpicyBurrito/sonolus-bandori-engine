@@ -137,6 +137,7 @@ export const optionsDefinition = {
     stageCover: {
         name: NameText.VerticalStageCover,
         scope: 'Bandori',
+        advanced: true,
         type: 'slider',
         def: 0,
         min: 0,
