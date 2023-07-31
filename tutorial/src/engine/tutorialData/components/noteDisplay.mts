@@ -1,9 +1,34 @@
 import { note } from '../constants.mjs'
 import { layer } from '../layer.mjs'
-import { noteSprites } from '../noteSprites.mjs'
 import { segment } from '../shared.mjs'
 import { skin } from '../skin.mjs'
 import { approach, perspectiveLayout } from '../utils.mjs'
+
+const noteSprites = {
+    tapNote: {
+        note: skin.sprites.tapNote,
+    },
+    flickNote: {
+        note: skin.sprites.flickNote,
+    },
+    flickEndNote: {
+        note: skin.sprites.flickEndNote,
+    },
+    directionalFlickLeftNote: {
+        note: skin.sprites.directionalFlickLeftNote,
+        fallback: skin.sprites.directionalFlickLeftNoteFallback,
+    },
+    directionalFlickRightNote: {
+        note: skin.sprites.directionalFlickRightNote,
+        fallback: skin.sprites.directionalFlickRightNoteFallback,
+    },
+    slideNote: {
+        note: skin.sprites.slideNote,
+    },
+    slideEndNote: {
+        note: skin.sprites.slideEndNote,
+    },
+}
 
 let mode = tutorialMemory(DataType<0 | 1 | 2 | 3>)
 

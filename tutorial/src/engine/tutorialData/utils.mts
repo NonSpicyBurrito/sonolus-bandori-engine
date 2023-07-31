@@ -39,7 +39,7 @@ export const perspectiveLayout = ({ l, r, b, t }: RectLike) =>
         y4: b,
     })
 
-export const circularEffectLayout = ({ w, h }: { w: number; h: number }) => {
+const circularEffectLayout = ({ w, h }: { w: number; h: number }) => {
     const l = -w
     const r = w
 
@@ -49,7 +49,7 @@ export const circularEffectLayout = ({ w, h }: { w: number; h: number }) => {
     return new Rect({ l, r, b, t })
 }
 
-export const linearEffectLayout = () =>
+const linearEffectLayout = () =>
     new Rect({
         l: -0.5,
         r: 0.5,
@@ -57,7 +57,7 @@ export const linearEffectLayout = () =>
         b: 1,
     })
 
-export const leftRotatedLinearEffectLayout = () =>
+const leftRotatedLinearEffectLayout = () =>
     leftRotated({
         l: -1,
         r: 0,
@@ -65,7 +65,7 @@ export const leftRotatedLinearEffectLayout = () =>
         b: 1 + 0.5 * scaledScreen.wToH,
     })
 
-export const rightRotatedLinearEffectLayout = () =>
+const rightRotatedLinearEffectLayout = () =>
     rightRotated({
         l: 0,
         r: 1,

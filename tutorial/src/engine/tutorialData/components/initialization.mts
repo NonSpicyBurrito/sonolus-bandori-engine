@@ -28,11 +28,6 @@ export const initialization = {
 
         scaledScreen.l = screen.l / w
         scaledScreen.r = screen.r / w
-        scaledScreen.b = screen.b / (b - t)
-        scaledScreen.t = screen.t / (b - t)
-
-        scaledScreen.w = screen.w / w
-        scaledScreen.h = screen.h / (b - t)
 
         scaledScreen.wToH = w / (t - b)
 

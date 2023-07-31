@@ -9,4 +9,4 @@ export const layer = {
     slot: 2,
     judgmentLine: 1,
     stage: 0,
-}
+} as const
