@@ -1,6 +1,6 @@
 import { options } from '../../../../configuration/options.mjs'
 import { particle } from '../../../particle.mjs'
-import { lane } from '../../constants.mjs'
+import { lane } from '../../lane.mjs'
 import { layer } from '../../layer.mjs'
 import { getScheduleSFXTime, getZ, perspectiveLayout } from '../../utils.mjs'
 import { Note } from '../Note.mjs'

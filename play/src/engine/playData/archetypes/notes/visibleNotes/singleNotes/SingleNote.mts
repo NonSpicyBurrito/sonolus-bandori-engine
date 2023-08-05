@@ -1,5 +1,6 @@
 import { options } from '../../../../../configuration/options.mjs'
-import { minSFXDistance, note } from '../../../constants.mjs'
+import { sfxDistance } from '../../../../effect.mjs'
+import { note } from '../../../note.mjs'
 import {
     circularEffectLayout,
     getHitbox,
@@ -48,7 +49,7 @@ export abstract class SingleNote extends VisibleNote {
     scheduleSFX() {
         super.scheduleSFX()
 
-        this.clips.perfect.schedule(this.targetTime, minSFXDistance)
+        this.clips.perfect.schedule(this.targetTime, sfxDistance)
     }
 
     render() {
@@ -59,11 +60,11 @@ export abstract class SingleNote extends VisibleNote {
 
     playSFX() {
         if (this.result.judgment === Judgment.Perfect) {
-            this.clips.perfect.play(minSFXDistance)
+            this.clips.perfect.play(sfxDistance)
         } else if (this.result.judgment === Judgment.Great) {
-            this.clips.great.play(minSFXDistance)
+            this.clips.great.play(sfxDistance)
         } else if (this.result.judgment === Judgment.Good) {
-            this.clips.good.play(minSFXDistance)
+            this.clips.good.play(sfxDistance)
         }
     }
 

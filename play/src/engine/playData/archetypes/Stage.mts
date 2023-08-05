@@ -1,11 +1,11 @@
 import { options } from '../../configuration/options.mjs'
-import { effect } from '../effect.mjs'
+import { effect, sfxDistance } from '../effect.mjs'
 import { particle } from '../particle.mjs'
 import { skin } from '../skin.mjs'
 import { isUsed } from './InputManager.mjs'
-import { lane, minSFXDistance } from './constants.mjs'
+import { lane } from './lane.mjs'
 import { layer } from './layer.mjs'
-import { scaledScreen } from './shared.mjs'
+import { scaledScreen } from './scaledScreen.mjs'
 import { perspectiveLayout } from './utils.mjs'
 
 export class Stage extends Archetype {
@@ -71,7 +71,7 @@ export class Stage extends Archetype {
     }
 
     playEmptySFX() {
-        effect.clips.stage.play(minSFXDistance)
+        effect.clips.stage.play(sfxDistance)
     }
 
     playEmptyLaneEffects(l: number) {

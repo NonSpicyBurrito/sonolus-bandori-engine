@@ -1,8 +1,9 @@
 import { options } from '../../configuration/options.mjs'
 import { particle } from '../particle.mjs'
 import { skin } from '../skin.mjs'
+import { flick } from './flick.mjs'
 import { archetypes } from './index.mjs'
-import { flick, scaledScreen } from './shared.mjs'
+import { scaledScreen } from './scaledScreen.mjs'
 
 export class Initialization extends Archetype {
     preprocess() {

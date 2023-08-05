@@ -9,7 +9,3 @@ export const scaledScreen = levelData({
 
     wToH: Number,
 })
-
-export const flick = levelData({
-    distance: Number,
-})

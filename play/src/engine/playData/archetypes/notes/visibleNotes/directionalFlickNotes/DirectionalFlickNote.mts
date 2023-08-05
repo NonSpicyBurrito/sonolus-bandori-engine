@@ -1,12 +1,13 @@
 import { options } from '../../../../../configuration/options.mjs'
 import { buckets } from '../../../../buckets.mjs'
-import { effect } from '../../../../effect.mjs'
+import { effect, sfxDistance } from '../../../../effect.mjs'
 import { particle } from '../../../../particle.mjs'
 import { skin } from '../../../../skin.mjs'
 import { isUsed, markAsUsed } from '../../../InputManager.mjs'
-import { minSFXDistance, note } from '../../../constants.mjs'
+import { flick } from '../../../flick.mjs'
 import { layer } from '../../../layer.mjs'
-import { flick, scaledScreen } from '../../../shared.mjs'
+import { note } from '../../../note.mjs'
+import { scaledScreen } from '../../../scaledScreen.mjs'
 import {
     circularEffectLayout,
     getHitbox,
@@ -208,7 +209,7 @@ export class DirectionalFlickNote extends VisibleNote {
     scheduleSFX() {
         super.scheduleSFX()
 
-        effect.clips.schedule(this.clip, this.targetTime, minSFXDistance)
+        effect.clips.schedule(this.clip, this.targetTime, sfxDistance)
     }
 
     render() {
@@ -255,7 +256,7 @@ export class DirectionalFlickNote extends VisibleNote {
     }
 
     playSFX() {
-        effect.clips.play(this.clip, minSFXDistance)
+        effect.clips.play(this.clip, sfxDistance)
     }
 
     playLinearNoteEffect() {
