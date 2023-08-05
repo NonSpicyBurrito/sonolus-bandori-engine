@@ -2,17 +2,12 @@ import { options } from '../../../../../configuration/options.mjs'
 import { buckets } from '../../../../buckets.mjs'
 import { effect, sfxDistance } from '../../../../effect.mjs'
 import { flick } from '../../../../flick.mjs'
+import { lane } from '../../../../lane.mjs'
 import { note } from '../../../../note.mjs'
-import { particle } from '../../../../particle.mjs'
+import { circularEffectLayout, particle } from '../../../../particle.mjs'
 import { scaledScreen } from '../../../../scaledScreen.mjs'
-import { layer, skin } from '../../../../skin.mjs'
-import {
-    circularEffectLayout,
-    getHitbox,
-    getZ,
-    leftRotated,
-    rightRotated,
-} from '../../../../utils.mjs'
+import { getZ, layer, skin } from '../../../../skin.mjs'
+import { leftRotated, rightRotated } from '../../../../utils.mjs'
 import { windows } from '../../../../windows.mjs'
 import { isUsed, markAsUsed } from '../../../InputManager.mjs'
 import { VisibleNote } from '../VisibleNote.mjs'
@@ -65,12 +60,12 @@ export class DirectionalFlickNote extends VisibleNote {
             const l = this.data.lane - size
             const r = this.data.lane
 
-            getHitbox({ l, r }).copyTo(this.hitbox)
+            lane.hitbox.get({ l, r }).copyTo(this.hitbox)
         } else {
             const l = this.data.lane
             const r = this.data.lane + size
 
-            getHitbox({ l, r }).copyTo(this.hitbox)
+            lane.hitbox.get({ l, r }).copyTo(this.hitbox)
         }
 
         if (this.directionalFlickData.direction === FlickDirection.Left) {
