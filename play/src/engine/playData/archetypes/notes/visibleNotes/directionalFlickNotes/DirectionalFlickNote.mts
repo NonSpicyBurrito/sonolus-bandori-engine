@@ -2,11 +2,10 @@ import { options } from '../../../../../configuration/options.mjs'
 import { buckets } from '../../../../buckets.mjs'
 import { effect, sfxDistance } from '../../../../effect.mjs'
 import { flick } from '../../../../flick.mjs'
-import { layer } from '../../../../layer.mjs'
 import { note } from '../../../../note.mjs'
 import { particle } from '../../../../particle.mjs'
 import { scaledScreen } from '../../../../scaledScreen.mjs'
-import { skin } from '../../../../skin.mjs'
+import { layer, skin } from '../../../../skin.mjs'
 import {
     circularEffectLayout,
     getHitbox,
