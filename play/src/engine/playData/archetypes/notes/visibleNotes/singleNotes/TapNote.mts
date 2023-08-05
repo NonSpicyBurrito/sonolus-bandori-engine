@@ -3,8 +3,8 @@ import { buckets } from '../../../../buckets.mjs'
 import { effect } from '../../../../effect.mjs'
 import { particle } from '../../../../particle.mjs'
 import { skin } from '../../../../skin.mjs'
+import { windows } from '../../../../windows.mjs'
 import { isUsed, markAsUsed } from '../../../InputManager.mjs'
-import { windows } from '../../../windows.mjs'
 import { SingleNote } from './SingleNote.mjs'
 
 export class TapNote extends SingleNote {

@@ -1,21 +1,21 @@
 import { options } from '../../../../../configuration/options.mjs'
 import { buckets } from '../../../../buckets.mjs'
 import { effect, sfxDistance } from '../../../../effect.mjs'
+import { flick } from '../../../../flick.mjs'
+import { layer } from '../../../../layer.mjs'
+import { note } from '../../../../note.mjs'
 import { particle } from '../../../../particle.mjs'
+import { scaledScreen } from '../../../../scaledScreen.mjs'
 import { skin } from '../../../../skin.mjs'
-import { isUsed, markAsUsed } from '../../../InputManager.mjs'
-import { flick } from '../../../flick.mjs'
-import { layer } from '../../../layer.mjs'
-import { note } from '../../../note.mjs'
-import { scaledScreen } from '../../../scaledScreen.mjs'
 import {
     circularEffectLayout,
     getHitbox,
     getZ,
     leftRotated,
     rightRotated,
-} from '../../../utils.mjs'
-import { windows } from '../../../windows.mjs'
+} from '../../../../utils.mjs'
+import { windows } from '../../../../windows.mjs'
+import { isUsed, markAsUsed } from '../../../InputManager.mjs'
 import { VisibleNote } from '../VisibleNote.mjs'
 import { FlickDirection } from './FlickDirection.mjs'
 

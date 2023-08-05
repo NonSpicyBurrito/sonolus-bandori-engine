@@ -1,8 +1,8 @@
 import { options } from '../../../../configuration/options.mjs'
+import { lane } from '../../../lane.mjs'
+import { layer } from '../../../layer.mjs'
 import { particle } from '../../../particle.mjs'
-import { lane } from '../../lane.mjs'
-import { layer } from '../../layer.mjs'
-import { getScheduleSFXTime, getZ, perspectiveLayout } from '../../utils.mjs'
+import { getScheduleSFXTime, getZ, perspectiveLayout } from '../../../utils.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class VisibleNote extends Note {

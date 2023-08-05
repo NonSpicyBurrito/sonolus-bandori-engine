@@ -1,12 +1,12 @@
 import { options } from '../../../../../configuration/options.mjs'
 import { sfxDistance } from '../../../../effect.mjs'
-import { note } from '../../../note.mjs'
+import { note } from '../../../../note.mjs'
 import {
     circularEffectLayout,
     getHitbox,
     linearEffectLayout,
     perspectiveLayout,
-} from '../../../utils.mjs'
+} from '../../../../utils.mjs'
 import { VisibleNote } from '../VisibleNote.mjs'
 
 export abstract class SingleNote extends VisibleNote {
