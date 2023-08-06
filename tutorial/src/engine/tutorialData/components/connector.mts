@@ -1,8 +1,7 @@
-import { note } from '../constants.mjs'
-import { layer } from '../layer.mjs'
-import { segment } from '../shared.mjs'
-import { skin } from '../skin.mjs'
-import { approach, perspectiveLayout } from '../utils.mjs'
+import { note } from '../../../../../shared/src/engine/data/note.mjs'
+import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.mjs'
+import { segment } from '../segment.mjs'
+import { layer, skin } from '../skin.mjs'
 
 const sprites = {
     connector: skin.sprites.straightSlideConnector,
@@ -15,7 +14,7 @@ export const connector = {
         if (!mode) return
 
         if (mode === 1 || mode === 2) {
-            const a = 0.8 * Math.unlerpClamped(1, 0.75, segment.time)
+            const a = 0.8 * Math.unlerpClamped(1, 0.75, segment.time.now)
 
             const l = -1
             const r = 1
@@ -27,8 +26,8 @@ export const connector = {
 
             sprites.connector.draw(layout, layer.note.connector, a)
         } else {
-            const t = approach(mode === 4 ? segment.time : 0) // t 0 0
-            const b = approach(mode === 3 ? segment.time : 2) // 2 t 2
+            const t = note.approach(0, 2, mode === 4 ? segment.time.now : 0)
+            const b = note.approach(0, 2, mode === 3 ? segment.time.now : 2)
 
             const layout = perspectiveLayout({ l: -0.5, r: 0.5, b, t })
 

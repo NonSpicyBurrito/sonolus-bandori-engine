@@ -1,8 +1,7 @@
-import { lane } from '../constants.mjs'
-import { layer } from '../layer.mjs'
-import { scaledScreen } from '../shared.mjs'
-import { skin } from '../skin.mjs'
-import { perspectiveLayout } from '../utils.mjs'
+import { lane } from '../../../../../shared/src/engine/data/lane.mjs'
+import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.mjs'
+import { scaledScreen } from '../scaledScreen.mjs'
+import { layer, skin } from '../skin.mjs'
 
 const sprites = {
     stage: skin.sprites.bandoriStage,

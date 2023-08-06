@@ -1,6 +1,10 @@
-import { effect } from '../../effect.mjs'
+import {
+    effect,
+    playCircularNoteEffect,
+    playLaneEffects,
+    playLinearNoteEffect,
+} from '../../effect.mjs'
 import { particle } from '../../particle.mjs'
-import { playCircularNoteEffect, playLaneEffects, playLinearNoteEffect } from '../../utils.mjs'
 
 export const flickNoteHit = {
     enter() {

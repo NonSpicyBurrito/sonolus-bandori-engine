@@ -4,6 +4,7 @@ import { initialization } from './components/initialization.mjs'
 import { noteDisplay } from './components/noteDisplay.mjs'
 import { slide } from './components/slide.mjs'
 import { stage } from './components/stage.mjs'
+import { segment } from './segment.mjs'
 import { directionalFlickLeftNoteFall } from './segments/directionalFlickLeftNote/fall.mjs'
 import { directionalFlickLeftNoteFrozen } from './segments/directionalFlickLeftNote/frozen.mjs'
 import { directionalFlickLeftNoteHit } from './segments/directionalFlickLeftNote/hit.mjs'
@@ -32,7 +33,6 @@ import { tapNoteFall } from './segments/tapNote/fall.mjs'
 import { tapNoteFrozen } from './segments/tapNote/frozen.mjs'
 import { tapNoteHit } from './segments/tapNote/hit.mjs'
 import { tapNoteIntro } from './segments/tapNote/intro.mjs'
-import { segment } from './shared.mjs'
 
 const components = [initialization, stage, flickArrow, noteDisplay, slide, connector] as const
 
@@ -73,13 +73,8 @@ const segments = [
     slideEndFlickNoteHit,
 ] as const
 
-let current = tutorialMemory(Number)
-let next = tutorialMemory(Number)
-let startTime = tutorialMemory(Number)
-let endTime = tutorialMemory(Number)
-
 const preprocess = () => {
-    current = -1
+    segment.current = -1
 }
 
 const preprocessComponent = (index: number) => {
@@ -93,73 +88,76 @@ const preprocessComponent = (index: number) => {
 
 const navigate = () => {
     if (navigation.direction > 0) {
-        next = Math.mod(current + navigation.direction * (current % 4 ? 1 : 4), segments.length)
+        segment.next = Math.mod(
+            segment.current + navigation.direction * (segment.current % 4 ? 1 : 4),
+            segments.length,
+        )
     } else {
-        next = Math.mod(Math.floor(current / 4) * 4 - 4, segments.length)
+        segment.next = Math.mod(Math.floor(segment.current / 4) * 4 - 4, segments.length)
     }
 }
 
 const finishSegment = () => {
-    if (current !== next) return
-    if (time.now < endTime) return
+    if (segment.current !== segment.next) return
+    if (time.now < segment.time.end) return
 
-    next = Math.mod(current + 1, segments.length)
+    segment.next = Math.mod(segment.current + 1, segments.length)
 }
 
 const exitCurrentSegment = (index: number) => {
-    if (current === next) return
+    if (segment.current === segment.next) return
 
     index -= 1
-    if (index !== current) return
+    if (index !== segment.current) return
 
-    const segment = segments[index]
-    if (!('exit' in segment)) return
+    const s = segments[index]
+    if (!('exit' in s)) return
 
-    segment.exit()
+    s.exit()
 }
 
 const enterNextSegment = (index: number) => {
-    if (current === next) return
+    if (segment.current === segment.next) return
 
     index -= 1 + segments.length
-    if (index !== next) return
+    if (index !== segment.next) return
 
-    const segment = segments[index]
-    if (!('enter' in segment)) return
+    const s = segments[index]
+    if (!('enter' in s)) return
 
-    segment.enter()
+    s.enter()
 }
 
 const moveNext = () => {
-    if (current === next) return
+    if (segment.current === segment.next) return
 
-    current = next
+    segment.current = segment.next
 
-    startTime = time.now
-    endTime = startTime
+    segment.time.start = time.now
+    segment.time.end = segment.time.start
 
-    const index = current % 4
+    const index = segment.current % 4
     if (index === 0) {
-        endTime += 1
+        segment.time.end += 1
     } else if (index === 2) {
-        endTime += 4
+        segment.time.end += 4
     } else {
-        endTime += 2
+        segment.time.end += 2
     }
 }
 
 const updateSegmentTime = () => {
-    segment.time = time.now - startTime
+    segment.time.now = time.now - segment.time.start
 }
 
 const updateCurrentSegment = (index: number) => {
     index -= 3 + segments.length * 2
-    if (index !== current) return
+    if (index !== segment.current) return
 
-    const segment = segments[index]
-    if (!('update' in segment)) return
+    const s = segments[index]
+    if (!('update' in s)) return
 
-    segment.update()
+    s.update()
 }
 
 const updateComponent = (index: number) => {

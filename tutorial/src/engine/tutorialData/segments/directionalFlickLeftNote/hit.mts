@@ -1,10 +1,10 @@
-import { effect } from '../../effect.mjs'
-import { particle } from '../../particle.mjs'
 import {
+    effect,
     playCircularNoteEffect,
     playLaneEffects,
     playLeftRotatedLinearNoteEffect,
-} from '../../utils.mjs'
+} from '../../effect.mjs'
+import { particle } from '../../particle.mjs'
 
 export const directionalFlickLeftNoteHit = {
     enter() {

@@ -1,15 +1,15 @@
 import { connector } from '../../components/connector.mjs'
 import { slide } from '../../components/slide.mjs'
-import { effect } from '../../effect.mjs'
-import { particle } from '../../particle.mjs'
 import {
-    drawHand,
+    effect,
     playCircularNoteEffect,
     playLaneEffects,
     playLinearNoteEffect,
     spawnCircularHoldEffect,
     spawnLinearHoldEffect,
-} from '../../utils.mjs'
+} from '../../effect.mjs'
+import { drawHand } from '../../instruction.mjs'
+import { particle } from '../../particle.mjs'
 
 let sfxInstanceId = tutorialMemory(LoopedEffectClipInstanceId)
 const effectInstanceIds = tutorialMemory({
