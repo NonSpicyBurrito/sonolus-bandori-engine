@@ -5,7 +5,6 @@ import { particle } from '../../../../../particle.mjs'
 import { skin } from '../../../../../skin.mjs'
 import { windows } from '../../../../../windows.mjs'
 import { isUsed, markAsUsed } from '../../../../InputManager.mjs'
-import { SlideConnector } from '../../../../sliderConnectors/SlideConnector.mjs'
 import { SlideNote } from './SlideNote.mjs'
 
 export class SlideStartNote extends SlideNote {
@@ -33,13 +32,13 @@ export class SlideStartNote extends SlideNote {
 
         if (time.now < this.targetTime) return
 
-        if (SlideConnector.shouldScheduleCircularEffect)
-            this.sharedMemory.effectInstanceIds.circular ||= SlideConnector.spawnCircularEffect(
+        if (this.shouldScheduleCircularHoldEffect)
+            this.sharedMemory.effectInstanceIds.circular ||= this.spawnCircularHoldEffect(
                 this.data.lane,
             )
 
-        if (SlideConnector.shouldScheduleLinearEffect)
-            this.sharedMemory.effectInstanceIds.linear ||= SlideConnector.spawnLinearEffect(
+        if (this.shouldScheduleLinearHoldEffect)
+            this.sharedMemory.effectInstanceIds.linear ||= this.spawnLinearHoldEffect(
                 this.data.lane,
             )
     }
