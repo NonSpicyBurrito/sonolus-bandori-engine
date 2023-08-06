@@ -30,14 +30,4 @@ export abstract class Note extends Archetype {
     }
 
     touchOrder = 1
-
-    static approach(fromTime: number, toTime: number, now: number) {
-        return Math.lerp(0.05, 1, 1.1 ** (50 * Math.remap(fromTime, toTime, -1, 0, now)))
-    }
-
-    static get duration() {
-        return options.noteSpeed <= 11
-            ? (12 - options.noteSpeed) / 2
-            : (16 - options.noteSpeed) / 10
-    }
 }

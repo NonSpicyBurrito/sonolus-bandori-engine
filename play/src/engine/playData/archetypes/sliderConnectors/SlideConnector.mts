@@ -5,7 +5,6 @@ import { circularEffectLayout, linearEffectLayout, particle } from '../../partic
 import { getZ, layer, skin } from '../../skin.mjs'
 import { perspectiveLayout } from '../../utils.mjs'
 import { archetypes } from '../index.mjs'
-import { Note } from '../notes/Note.mjs'
 
 export abstract class SlideConnector extends Archetype {
     data = this.defineData({
@@ -58,7 +57,7 @@ export abstract class SlideConnector extends Archetype {
 
         this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
-        this.visualTime.min = this.head.time - Note.duration
+        this.visualTime.min = this.head.time - note.duration
 
         this.spawnTime = Math.min(this.visualTime.min, this.scheduleSFXTime)
     }
@@ -85,7 +84,7 @@ export abstract class SlideConnector extends Archetype {
         this.tail.r = this.tail.lane + w
 
         if (options.hidden > 0)
-            this.visualTime.hidden = this.tail.time - Note.duration * options.hidden
+            this.visualTime.hidden = this.tail.time - note.duration * options.hidden
 
         this.connector.z = getZ(layer.note.connector, this.head.time, this.headData.lane)
 
@@ -163,11 +162,11 @@ export abstract class SlideConnector extends Archetype {
     renderConnector() {
         if (options.hidden > 0 && time.now > this.visualTime.hidden) return
 
-        const hiddenDuration = options.hidden > 0 ? Note.duration * options.hidden : 0
+        const hiddenDuration = options.hidden > 0 ? note.duration * options.hidden : 0
 
         const visibleTime = {
             min: Math.max(this.head.time, time.now + hiddenDuration),
-            max: Math.min(this.tail.time, time.now + Note.duration),
+            max: Math.min(this.tail.time, time.now + note.duration),
         }
 
         const l = {
@@ -181,8 +180,8 @@ export abstract class SlideConnector extends Archetype {
         }
 
         const y = {
-            min: Note.approach(visibleTime.min - Note.duration, visibleTime.min, time.now),
-            max: Note.approach(visibleTime.max - Note.duration, visibleTime.max, time.now),
+            min: note.approach(visibleTime.min - note.duration, visibleTime.min, time.now),
+            max: note.approach(visibleTime.max - note.duration, visibleTime.max, time.now),
         }
 
         const layout = {

@@ -1,6 +1,7 @@
 import { options } from '../../../../configuration/options.mjs'
 import { getScheduleSFXTime } from '../../../effect.mjs'
 import { lane } from '../../../lane.mjs'
+import { note } from '../../../note.mjs'
 import { particle } from '../../../particle.mjs'
 import { getZ, layer } from '../../../skin.mjs'
 import { perspectiveLayout } from '../../../utils.mjs'
@@ -54,14 +55,14 @@ export abstract class VisibleNote extends Note {
         this.scheduleSFXTime = getScheduleSFXTime(this.targetTime)
 
         this.visualTime.max = this.targetTime
-        this.visualTime.min = this.visualTime.max - Note.duration
+        this.visualTime.min = this.visualTime.max - note.duration
 
         this.spawnTime = Math.min(this.visualTime.min, this.scheduleSFXTime)
     }
 
     initialize() {
         if (options.hidden > 0)
-            this.visualTime.hidden = this.visualTime.max - Note.duration * options.hidden
+            this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
 
         this.inputTime.min = this.targetTime + this.windows.good.min + input.offset
         this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
@@ -126,7 +127,7 @@ export abstract class VisibleNote extends Note {
     }
 
     render() {
-        this.y = Note.approach(this.visualTime.min, this.visualTime.max, time.now)
+        this.y = note.approach(this.visualTime.min, this.visualTime.max, time.now)
     }
 
     playHitEffects() {
