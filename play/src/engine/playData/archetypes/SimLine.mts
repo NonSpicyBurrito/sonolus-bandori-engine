@@ -1,7 +1,7 @@
+import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../configuration/options.mjs'
 import { note } from '../note.mjs'
 import { getZ, layer, skin } from '../skin.mjs'
-import { perspectiveLayout } from '../utils.mjs'
 import { archetypes } from './index.mjs'
 
 export class SimLine extends Archetype {

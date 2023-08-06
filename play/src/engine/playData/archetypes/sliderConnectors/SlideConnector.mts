@@ -1,9 +1,9 @@
+import { perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../configuration/options.mjs'
 import { effect, getScheduleSFXTime } from '../../effect.mjs'
 import { note } from '../../note.mjs'
 import { circularEffectLayout, linearEffectLayout, particle } from '../../particle.mjs'
 import { getZ, layer, skin } from '../../skin.mjs'
-import { perspectiveLayout } from '../../utils.mjs'
 import { archetypes } from '../index.mjs'
 
 export abstract class SlideConnector extends Archetype {

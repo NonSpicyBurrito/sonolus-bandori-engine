@@ -1,10 +1,10 @@
+import { perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../../configuration/options.mjs'
 import { getScheduleSFXTime } from '../../../effect.mjs'
 import { lane } from '../../../lane.mjs'
 import { note } from '../../../note.mjs'
 import { particle } from '../../../particle.mjs'
 import { getZ, layer } from '../../../skin.mjs'
-import { perspectiveLayout } from '../../../utils.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class VisibleNote extends Note {

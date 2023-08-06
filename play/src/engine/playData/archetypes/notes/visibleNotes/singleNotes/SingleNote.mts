@@ -1,9 +1,9 @@
+import { perspectiveLayout } from '../../../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../../../configuration/options.mjs'
 import { sfxDistance } from '../../../../effect.mjs'
 import { lane } from '../../../../lane.mjs'
 import { note } from '../../../../note.mjs'
 import { circularEffectLayout, linearEffectLayout } from '../../../../particle.mjs'
-import { perspectiveLayout } from '../../../../utils.mjs'
 import { VisibleNote } from '../VisibleNote.mjs'
 
 export abstract class SingleNote extends VisibleNote {

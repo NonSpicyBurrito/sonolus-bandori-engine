@@ -1,11 +1,8 @@
+import { note as _note } from '../../../../shared/src/engine/data/note.mjs'
 import { options } from '../configuration/options.mjs'
 
 export const note = {
-    h: 0.11625 / 2,
-
-    approach(fromTime: number, toTime: number, now: number) {
-        return Math.lerp(0.05, 1, 1.1 ** (50 * Math.remap(fromTime, toTime, -1, 0, now)))
-    },
+    ..._note,
 
     get duration() {
         return options.noteSpeed <= 11
