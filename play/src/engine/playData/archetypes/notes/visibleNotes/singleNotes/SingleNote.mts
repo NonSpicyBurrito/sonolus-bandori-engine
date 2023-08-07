@@ -1,7 +1,7 @@
 import { perspectiveLayout } from '../../../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../../../configuration/options.mjs'
 import { sfxDistance } from '../../../../effect.mjs'
-import { lane } from '../../../../lane.mjs'
+import { getHitbox } from '../../../../lane.mjs'
 import { note } from '../../../../note.mjs'
 import { circularEffectLayout, linearEffectLayout } from '../../../../particle.mjs'
 import { VisibleNote } from '../VisibleNote.mjs'
@@ -37,12 +37,10 @@ export abstract class SingleNote extends VisibleNote {
             b: 1 + h,
         }).copyTo(this.spriteLayout)
 
-        lane.hitbox
-            .get({
-                l: this.data.lane,
-                r: this.data.lane,
-            })
-            .copyTo(this.hitbox)
+        getHitbox({
+            l: this.data.lane,
+            r: this.data.lane,
+        }).copyTo(this.hitbox)
     }
 
     scheduleSFX() {

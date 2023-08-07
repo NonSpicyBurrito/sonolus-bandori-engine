@@ -1,3 +1,4 @@
+import { approach } from '../../../../../shared/src/engine/data/note.mjs'
 import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../configuration/options.mjs'
 import { note } from '../note.mjs'
@@ -100,7 +101,7 @@ export class SimLine extends Archetype {
     }
 
     render() {
-        this.y = note.approach(this.visualTime.min, this.visualTime.max, time.now)
+        this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
 
         skin.sprites.simLine.draw(this.spriteLayout.mul(this.y), this.z, 1)
     }

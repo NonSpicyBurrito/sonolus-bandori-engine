@@ -1,3 +1,4 @@
+import { approach } from '../../../../../../../shared/src/engine/data/note.mjs'
 import { perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../../configuration/options.mjs'
 import { getScheduleSFXTime } from '../../../effect.mjs'
@@ -127,7 +128,7 @@ export abstract class VisibleNote extends Note {
     }
 
     render() {
-        this.y = note.approach(this.visualTime.min, this.visualTime.max, time.now)
+        this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
     }
 
     playHitEffects() {

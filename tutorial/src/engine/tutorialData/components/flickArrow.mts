@@ -1,4 +1,4 @@
-import { note } from '../../../../../shared/src/engine/data/note.mjs'
+import { approach } from '../../../../../shared/src/engine/data/note.mjs'
 import { leftRotated, rightRotated } from '../../../../../shared/src/engine/data/utils.mjs'
 import { scaledScreen } from '../scaledScreen.mjs'
 import { segment } from '../segment.mjs'
@@ -34,7 +34,7 @@ export const flickArrow = {
 
             skin.sprites.draw(id, overlay, layer.note.arrow, a)
         } else {
-            const y = mode === 2 ? note.approach(0, 2, segment.time.now) : 1
+            const y = mode === 2 ? approach(0, 2, segment.time.now) : 1
             const s = mode === 2 ? Math.lerp(-0.25, 0.25, Math.frac(segment.time.now * 3 + 0.5)) : 0
 
             skin.sprites.draw(id, layout.add(animation.mul(s)).mul(y), layer.note.arrow, 1)

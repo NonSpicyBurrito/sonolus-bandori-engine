@@ -1,3 +1,4 @@
+import { approach } from '../../../../../../shared/src/engine/data/note.mjs'
 import { perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../configuration/options.mjs'
 import { effect, getScheduleSFXTime } from '../../effect.mjs'
@@ -180,8 +181,8 @@ export abstract class SlideConnector extends Archetype {
         }
 
         const y = {
-            min: note.approach(visibleTime.min - note.duration, visibleTime.min, time.now),
-            max: note.approach(visibleTime.max - note.duration, visibleTime.max, time.now),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, time.now),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, time.now),
         }
 
         const layout = {

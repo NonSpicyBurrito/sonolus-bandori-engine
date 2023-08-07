@@ -1,4 +1,4 @@
-import { note } from '../../../../../shared/src/engine/data/note.mjs'
+import { approach, note } from '../../../../../shared/src/engine/data/note.mjs'
 import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.mjs'
 import { segment } from '../segment.mjs'
 import { layer, skin } from '../skin.mjs'
@@ -26,8 +26,8 @@ export const connector = {
 
             sprites.connector.draw(layout, layer.note.connector, a)
         } else {
-            const t = note.approach(0, 2, mode === 4 ? segment.time.now : 0)
-            const b = note.approach(0, 2, mode === 3 ? segment.time.now : 2)
+            const t = approach(0, 2, mode === 4 ? segment.time.now : 0)
+            const b = approach(0, 2, mode === 3 ? segment.time.now : 2)
 
             const layout = perspectiveLayout({ l: -0.5, r: 0.5, b, t })
 
