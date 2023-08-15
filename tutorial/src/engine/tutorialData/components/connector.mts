@@ -7,27 +7,36 @@ const sprites = {
     connector: skin.sprites.straightSlideConnector,
 }
 
-let mode = tutorialMemory(DataType<0 | 1 | 2 | 3 | 4 | 5>)
+enum Mode {
+    None,
+    OverlayIn,
+    OverlayOut,
+    FallIn,
+    FallOut,
+    Frozen,
+}
+
+let mode = tutorialMemory(DataType<Mode>)
 
 export const connector = {
     update() {
         if (!mode) return
 
-        if (mode === 1 || mode === 2) {
+        if (mode === Mode.OverlayIn || mode === Mode.OverlayOut) {
             const a = 0.8 * Math.unlerpClamped(1, 0.75, segment.time.now)
 
             const l = -1
             const r = 1
 
-            const t = 0.5 - (mode === 1 ? note.h * 6 : 0)
-            const b = 0.5 + (mode === 2 ? note.h * 6 : 0)
+            const t = 0.5 - (mode === Mode.OverlayIn ? note.h * 6 : 0)
+            const b = 0.5 + (mode === Mode.OverlayOut ? note.h * 6 : 0)
 
             const layout = new Rect({ l, r, t, b })
 
             sprites.connector.draw(layout, layer.note.connector, a)
         } else {
-            const t = approach(0, 2, mode === 4 ? segment.time.now : 0)
-            const b = approach(0, 2, mode === 3 ? segment.time.now : 2)
+            const t = approach(0, 2, mode === Mode.FallOut ? segment.time.now : 0)
+            const b = approach(0, 2, mode === Mode.FallIn ? segment.time.now : 2)
 
             const layout = perspectiveLayout({ l: -0.5, r: 0.5, b, t })
 
@@ -36,26 +45,26 @@ export const connector = {
     },
 
     showOverlayIn() {
-        mode = 1
+        mode = Mode.OverlayIn
     },
 
     showOverlayOut() {
-        mode = 2
+        mode = Mode.OverlayOut
     },
 
     showFallIn() {
-        mode = 3
+        mode = Mode.FallIn
     },
 
     showFallOut() {
-        mode = 4
+        mode = Mode.FallOut
     },
 
     showFrozen() {
-        mode = 5
+        mode = Mode.Frozen
     },
 
     clear() {
-        mode = 0
+        mode = Mode.None
     },
 }
