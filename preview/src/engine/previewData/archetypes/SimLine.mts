@@ -22,8 +22,8 @@ export class SimLine extends Archetype {
         const position = panel.positionFromTime(time)
         const z = getZ(layer.simLine, time, l)
 
-        const b = -note.h
-        const t = note.h
+        const b = -note.h * options.noteSize
+        const t = note.h * options.noteSize
 
         skin.sprites.simLine.draw(new Rect({ l, r, b, t }).add(position), z, 1)
     }
