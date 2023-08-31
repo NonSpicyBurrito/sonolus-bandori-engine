@@ -6,7 +6,10 @@ import { layer, line, skin } from '../skin.mjs'
 export class Stage extends Archetype {
     preprocessOrder = 1
     preprocess() {
-        canvas.size = (panel.count * screen.h * 11) / 20
+        canvas.set({
+            scroll: Scroll.LeftToRight,
+            size: (panel.count * screen.h * 11) / 20,
+        })
     }
 
     render() {
