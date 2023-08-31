@@ -5,17 +5,15 @@ import { getZ, layer } from '../../../skin.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class SingleNote extends Note {
-    abstract sprites: {
-        note: SkinSprite
-    }
+    abstract sprite: SkinSprite
 
     render() {
         const time = bpmChanges.at(this.data.beat).time
-
         const position = panel.positionFromTime(time)
+
         const z = getZ(layer.note.body, time, this.data.lane)
 
-        this.sprites.note.draw(
+        this.sprite.draw(
             new Rect({
                 l: this.data.lane - 0.5 * options.noteSize,
                 r: this.data.lane + 0.5 * options.noteSize,
@@ -25,5 +23,7 @@ export abstract class SingleNote extends Note {
             z,
             1,
         )
+
+        return { time, position }
     }
 }

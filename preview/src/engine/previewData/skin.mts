@@ -37,7 +37,6 @@ export const skin = defineSkin({
 
         beatLine: SkinSpriteName.GridNeutral,
         bpmChangeLine: SkinSpriteName.GridPurple,
-        timeScaleChangeLine: SkinSpriteName.GridYellow,
     },
 })
 
@@ -69,5 +68,6 @@ export const line = (sprite: SkinSprite, beat: number, a: number) => {
         a,
     )
 }
+
 export const getZ = (layer: number, time: number, lane: number) =>
     layer - time / 1000 - lane / 100000
