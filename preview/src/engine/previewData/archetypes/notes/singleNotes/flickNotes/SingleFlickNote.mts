@@ -5,7 +5,7 @@ import { SingleNote } from '../SingleNote.mjs'
 
 export abstract class SingleFlickNote extends SingleNote {
     render() {
-        const { time, position } = super.render()
+        const { time, pos } = super.render()
 
         const z = getZ(layer.note.arrow, time, this.data.lane)
 
@@ -15,11 +15,11 @@ export abstract class SingleFlickNote extends SingleNote {
                 r: this.data.lane + 0.5 * options.noteSize,
                 b: 0,
                 t: scaledScreen.wToH * options.noteSize,
-            }).add(position),
+            }).add(pos),
             z,
             1,
         )
 
-        return { time, position }
+        return { time, pos }
     }
 }

@@ -9,7 +9,7 @@ export abstract class SingleNote extends Note {
 
     render() {
         const time = bpmChanges.at(this.data.beat).time
-        const position = panel.positionFromTime(time)
+        const pos = panel.getPos(time)
 
         const z = getZ(layer.note.body, time, this.data.lane)
 
@@ -19,11 +19,11 @@ export abstract class SingleNote extends Note {
                 r: this.data.lane + 0.5 * options.noteSize,
                 b: -note.h * options.noteSize,
                 t: note.h * options.noteSize,
-            }).add(position),
+            }).add(pos),
             z,
             1,
         )
 
-        return { time, position }
+        return { time, pos }
     }
 }

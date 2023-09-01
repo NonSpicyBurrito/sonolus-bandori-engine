@@ -21,8 +21,8 @@ export class DirectionalFlickNote extends Note {
 
     render() {
         const time = bpmChanges.at(this.data.beat).time
+        const pos = panel.getPos(time)
 
-        const position = panel.positionFromTime(time)
         const noteZ = getZ(layer.note.body, time, this.data.lane)
         const arrowZ = getZ(layer.note.arrow, time, this.data.lane)
 
@@ -53,7 +53,7 @@ export class DirectionalFlickNote extends Note {
                     r: this.data.lane + i * direction + 0.5 * options.noteSize,
                     b: -note.h * options.noteSize,
                     t: note.h * options.noteSize,
-                }).add(position),
+                }).add(pos),
                 noteZ,
                 1,
             )
@@ -68,14 +68,14 @@ export class DirectionalFlickNote extends Note {
             const l = lane - options.noteSize
             const r = lane
 
-            skin.sprites.draw(arrowSpriteId, leftRotated({ l, r, b, t }).add(position), arrowZ, 1)
+            skin.sprites.draw(arrowSpriteId, leftRotated({ l, r, b, t }).add(pos), arrowZ, 1)
         } else {
             const lane = this.data.lane + size - 0.5
 
             const l = lane
             const r = lane + options.noteSize
 
-            skin.sprites.draw(arrowSpriteId, rightRotated({ l, r, b, t }).add(position), arrowZ, 1)
+            skin.sprites.draw(arrowSpriteId, rightRotated({ l, r, b, t }).add(pos), arrowZ, 1)
         }
     }
 }

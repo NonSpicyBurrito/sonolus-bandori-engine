@@ -18,8 +18,8 @@ export abstract class SlideConnector extends Archetype {
         }
 
         const index = {
-            min: Math.floor(t.min / panel.duration),
-            max: Math.floor(t.max / panel.duration),
+            min: Math.floor(t.min / panel.h),
+            max: Math.floor(t.max / panel.h),
         }
 
         const lane = {
@@ -30,9 +30,11 @@ export abstract class SlideConnector extends Archetype {
         const z = getZ(layer.note.connector, t.min, this.headData.lane)
 
         for (let i = index.min; i <= index.max; i++) {
+            const x = i * panel.w
+
             const pt = {
-                min: Math.max(t.min, i * panel.duration),
-                max: Math.min(t.max, (i + 1) * panel.duration),
+                min: Math.max(t.min, i * panel.h),
+                max: Math.min(t.max, (i + 1) * panel.h),
             }
 
             const pl = {
@@ -40,16 +42,16 @@ export abstract class SlideConnector extends Archetype {
                 max: Math.lerp(lane.min, lane.max, Math.unlerp(t.min, t.max, pt.max)),
             }
 
-            const y = {
-                min: panel.positionFromLocation(i, pt.min - i * panel.duration),
-                max: panel.positionFromLocation(i, pt.max - i * panel.duration),
+            const pos = {
+                min: new Vec(x, pt.min - i * panel.h),
+                max: new Vec(x, pt.max - i * panel.h),
             }
 
             const layout = new Quad({
-                p1: y.min.translate(pl.min - 0.5 * options.noteSize, 0),
-                p2: y.max.translate(pl.max - 0.5 * options.noteSize, 0),
-                p3: y.max.translate(pl.max + 0.5 * options.noteSize, 0),
-                p4: y.min.translate(pl.min + 0.5 * options.noteSize, 0),
+                p1: pos.min.translate(pl.min - 0.5 * options.noteSize, 0),
+                p2: pos.max.translate(pl.max - 0.5 * options.noteSize, 0),
+                p3: pos.max.translate(pl.max + 0.5 * options.noteSize, 0),
+                p4: pos.min.translate(pl.min + 0.5 * options.noteSize, 0),
             })
 
             this.sprite.draw(layout, z, options.connectorAlpha)
