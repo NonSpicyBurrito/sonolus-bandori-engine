@@ -136,13 +136,16 @@ const moveNext = () => {
     segment.time.start = time.now
     segment.time.end = segment.time.start
 
-    const index = segment.current % 4
-    if (index === 0) {
-        segment.time.end += 1
-    } else if (index === 2) {
-        segment.time.end += 4
-    } else {
-        segment.time.end += 2
+    switch (segment.current % 4) {
+        case 0:
+            segment.time.end += 1
+            break
+        case 2:
+            segment.time.end += 4
+            break
+        default:
+            segment.time.end += 2
+            break
     }
 }
 

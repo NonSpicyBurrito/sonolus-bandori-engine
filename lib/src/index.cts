@@ -4,11 +4,11 @@ import { Resource } from './Resource.cjs'
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
 
-export const version = '1.1.0'
+export const version = '1.2.1'
 
 export const engineInfo = {
     name: 'bandori',
-    version: 9,
+    version: 10,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
@@ -41,5 +41,6 @@ export const engineInfo = {
 
 export const engineConfiguration = new Resource('EngineConfiguration')
 export const enginePlayData = new Resource('EnginePlayData')
+export const enginePreviewData = new Resource('EnginePreviewData')
 export const engineTutorialData = new Resource('EngineTutorialData')
 export const engineThumbnail = new Resource('thumbnail.png')

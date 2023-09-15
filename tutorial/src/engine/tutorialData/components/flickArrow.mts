@@ -18,7 +18,14 @@ const arrowSprites = {
     },
 }
 
-let mode = tutorialMemory(DataType<0 | 1 | 2 | 3>)
+enum Mode {
+    None,
+    Overlay,
+    Fall,
+    Frozen,
+}
+
+let mode = tutorialMemory(DataType<Mode>)
 
 let id = tutorialMemory(SkinSpriteId)
 const overlay = tutorialMemory(Quad)
@@ -29,38 +36,41 @@ export const flickArrow = {
     update() {
         if (!mode) return
 
-        if (mode === 1) {
+        if (mode === Mode.Overlay) {
             const a = Math.unlerpClamped(1, 0.75, segment.time.now)
 
             skin.sprites.draw(id, overlay, layer.note.arrow, a)
         } else {
-            const y = mode === 2 ? approach(0, 2, segment.time.now) : 1
-            const s = mode === 2 ? Math.lerp(-0.25, 0.25, Math.frac(segment.time.now * 3 + 0.5)) : 0
+            const y = mode === Mode.Fall ? approach(0, 2, segment.time.now) : 1
+            const s =
+                mode === Mode.Fall
+                    ? Math.lerp(-0.25, 0.25, Math.frac(segment.time.now * 3 + 0.5))
+                    : 0
 
             skin.sprites.draw(id, layout.add(animation.mul(s)).mul(y), layer.note.arrow, 1)
         }
     },
 
     showOverlay(type: keyof typeof arrowSprites) {
-        mode = 1
+        mode = Mode.Overlay
         this.setType(type)
         this.setOverlay(type)
     },
 
     showFall(type: keyof typeof arrowSprites) {
-        mode = 2
+        mode = Mode.Fall
         this.setType(type)
         this.setLayoutAndAnimation(type)
     },
 
     showFrozen(type: keyof typeof arrowSprites) {
-        mode = 3
+        mode = Mode.Frozen
         this.setType(type)
         this.setLayoutAndAnimation(type)
     },
 
     clear() {
-        mode = 0
+        mode = Mode.None
     },
 
     setType(type: keyof typeof arrowSprites) {

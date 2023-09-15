@@ -124,7 +124,7 @@ export class Stage extends Archetype {
         for (let i = 0; i < 7; i++) {
             const layout = perspectiveLayout({ l: i - 3.5, r: i - 2.5, t: lane.t, b: lane.b })
 
-            if (skin.sprites.laneAlternative.exists && i % 2 === 1) {
+            if (i % 2 === 1) {
                 skin.sprites.laneAlternative.draw(layout, layer.stage, 1)
             } else {
                 skin.sprites.lane.draw(layout, layer.stage, 1)
