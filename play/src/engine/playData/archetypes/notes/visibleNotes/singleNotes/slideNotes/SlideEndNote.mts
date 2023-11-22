@@ -1,4 +1,3 @@
-import { options } from '../../../../../../configuration/options.mjs'
 import { buckets } from '../../../../../buckets.mjs'
 import { effect } from '../../../../../effect.mjs'
 import { particle } from '../../../../../particle.mjs'
@@ -36,8 +35,6 @@ export class SlideEndNote extends SlideNote {
     }
 
     touch() {
-        if (options.autoplay) return
-
         const id = this.prevSharedMemory.activatedTouchId
         if (id) {
             if (time.now > this.inputTime.max) {
@@ -78,16 +75,6 @@ export class SlideEndNote extends SlideNote {
             this.complete(touch.t)
             return
         }
-    }
-
-    terminate() {
-        super.terminate()
-
-        if (this.shouldScheduleCircularHoldEffect)
-            particle.effects.destroy(this.prevSharedMemory.effectInstanceIds.circular)
-
-        if (this.shouldScheduleLinearHoldEffect)
-            particle.effects.destroy(this.prevSharedMemory.effectInstanceIds.linear)
     }
 
     complete(hitTime: number) {

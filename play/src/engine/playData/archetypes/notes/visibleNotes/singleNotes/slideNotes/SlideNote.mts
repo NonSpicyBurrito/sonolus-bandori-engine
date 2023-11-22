@@ -30,27 +30,15 @@ export abstract class SlideNote extends SingleNote {
     }
 
     get shouldPlayHoldSFX() {
-        return (
-            options.sfxEnabled && effect.clips.hold.exists && !options.autoplay && !options.autoSFX
-        )
-    }
-
-    get shouldScheduleCircularHoldEffect() {
-        return options.noteEffectEnabled && particle.effects.holdCircular.exists && options.autoplay
+        return options.sfxEnabled && effect.clips.hold.exists && !options.autoSFX
     }
 
     get shouldPlayCircularHoldEffect() {
-        return (
-            options.noteEffectEnabled && particle.effects.holdCircular.exists && !options.autoplay
-        )
-    }
-
-    get shouldScheduleLinearHoldEffect() {
-        return options.noteEffectEnabled && particle.effects.holdLinear.exists && options.autoplay
+        return options.noteEffectEnabled && particle.effects.holdCircular.exists
     }
 
     get shouldPlayLinearHoldEffect() {
-        return options.noteEffectEnabled && particle.effects.holdLinear.exists && !options.autoplay
+        return options.noteEffectEnabled && particle.effects.holdLinear.exists
     }
 
     playHoldSFX() {

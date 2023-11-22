@@ -1,13 +1,6 @@
 import { EngineConfigurationOption, NameText, UnitText } from 'sonolus-core'
 
 export const optionsDefinition = {
-    autoplay: {
-        name: NameText.AutoPlay,
-        scope: 'Bandori',
-        standard: true,
-        type: 'toggle',
-        def: 0,
-    },
     strictJudgment: {
         name: NameText.StrictJudgment,
         scope: 'Bandori',

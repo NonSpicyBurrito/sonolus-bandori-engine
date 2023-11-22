@@ -1,4 +1,3 @@
-import { options } from '../../../../../configuration/options.mjs'
 import { buckets } from '../../../../buckets.mjs'
 import { effect } from '../../../../effect.mjs'
 import { particle } from '../../../../particle.mjs'
@@ -28,8 +27,6 @@ export class TapNote extends SingleNote {
     bucket = buckets.tapNote
 
     touch() {
-        if (options.autoplay) return
-
         if (time.now < this.inputTime.min) return
 
         for (const touch of touches) {

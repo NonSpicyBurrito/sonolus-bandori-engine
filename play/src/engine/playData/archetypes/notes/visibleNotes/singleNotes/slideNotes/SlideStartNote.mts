@@ -1,4 +1,3 @@
-import { options } from '../../../../../../configuration/options.mjs'
 import { buckets } from '../../../../../buckets.mjs'
 import { effect } from '../../../../../effect.mjs'
 import { particle } from '../../../../../particle.mjs'
@@ -27,25 +26,7 @@ export class SlideStartNote extends SlideNote {
 
     bucket = buckets.slideStartNote
 
-    updateSequential() {
-        if (!options.autoplay) return
-
-        if (time.now < this.targetTime) return
-
-        if (this.shouldScheduleCircularHoldEffect)
-            this.sharedMemory.effectInstanceIds.circular ||= this.spawnCircularHoldEffect(
-                this.data.lane,
-            )
-
-        if (this.shouldScheduleLinearHoldEffect)
-            this.sharedMemory.effectInstanceIds.linear ||= this.spawnLinearHoldEffect(
-                this.data.lane,
-            )
-    }
-
     touch() {
-        if (options.autoplay) return
-
         if (time.now < this.inputTime.min) return
 
         for (const touch of touches) {

@@ -68,16 +68,13 @@ export class SimLine extends Archetype {
     }
 
     updateParallel() {
-        if (options.autoplay) {
-            if (time.now >= this.targetTime) this.despawn = true
-        } else {
-            if (
-                this.aInfo.state === EntityState.Despawned ||
-                this.bInfo.state === EntityState.Despawned
-            )
-                this.despawn = true
+        if (
+            this.aInfo.state === EntityState.Despawned ||
+            this.bInfo.state === EntityState.Despawned
+        ) {
+            this.despawn = true
+            return
         }
-        if (this.despawn) return
 
         if (options.hidden > 0 && time.now > this.visualTime.hidden) return
 
