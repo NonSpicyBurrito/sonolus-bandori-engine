@@ -22,8 +22,8 @@ export class Initialization extends Archetype {
                     ? screen.h * highPosition
                     : (screen.w / targetAspectRatio) * lowPosition
                 : screen.aspectRatio > targetAspectRatio
-                ? screen.h * highPosition
-                : screen.h * lowPosition,
+                  ? screen.h * highPosition
+                  : screen.h * lowPosition,
         }
 
         const t = options.lockStageAspectRatio
