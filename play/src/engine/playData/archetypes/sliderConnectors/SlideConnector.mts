@@ -97,10 +97,9 @@ export abstract class SlideConnector extends Archetype {
     updateParallel() {
         if (
             time.now >= this.tail.time ||
-            (!options.autoplay &&
-                ((this.startInfo.state === EntityState.Despawned &&
-                    !this.startSharedMemory.activatedTouchId) ||
-                    this.endInfo.state === EntityState.Despawned))
+            (this.startInfo.state === EntityState.Despawned &&
+                !this.startSharedMemory.activatedTouchId) ||
+            this.endInfo.state === EntityState.Despawned
         ) {
             this.despawn = true
             return
@@ -140,9 +139,7 @@ export abstract class SlideConnector extends Archetype {
     }
 
     get shouldScheduleSFX() {
-        return (
-            options.sfxEnabled && effect.clips.hold.exists && (options.autoplay || options.autoSFX)
-        )
+        return options.sfxEnabled && effect.clips.hold.exists && options.autoSFX
     }
 
     get shouldUpdateCircularEffect() {

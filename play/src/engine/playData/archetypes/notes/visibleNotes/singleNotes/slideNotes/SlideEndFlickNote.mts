@@ -74,8 +74,6 @@ export class SlideEndFlickNote extends SlideNote {
     }
 
     touch() {
-        if (options.autoplay) return
-
         const id = this.prevSharedMemory.activatedTouchId
         if (id && time.now > this.inputTime.max) {
             this.endSlideEffects()
@@ -85,16 +83,6 @@ export class SlideEndFlickNote extends SlideNote {
         if (!this.activatedTouch.id) this.touchActivate(id)
 
         if (this.activatedTouch.id) this.touchComplete()
-    }
-
-    terminate() {
-        super.terminate()
-
-        if (this.shouldScheduleCircularHoldEffect)
-            particle.effects.destroy(this.prevSharedMemory.effectInstanceIds.circular)
-
-        if (this.shouldScheduleLinearHoldEffect)
-            particle.effects.destroy(this.prevSharedMemory.effectInstanceIds.linear)
     }
 
     touchActivate(id: TouchId) {

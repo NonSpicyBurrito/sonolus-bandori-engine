@@ -140,13 +140,10 @@ export class DirectionalFlickNote extends VisibleNote {
 
         this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.data.lane)
 
-        if (!options.autoplay)
-            this.distance = 0.01 * this.directionalFlickData.size * flick.distance
+        this.distance = 0.01 * this.directionalFlickData.size * flick.distance
     }
 
     touch() {
-        if (options.autoplay) return
-
         if (time.now < this.inputTime.min) return
 
         if (!this.activatedTouchId) this.touchActivate()

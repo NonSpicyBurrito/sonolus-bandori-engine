@@ -70,17 +70,10 @@ export abstract class VisibleNote extends Note {
 
         this.z = getZ(layer.note.body, this.targetTime, this.data.lane)
 
-        if (options.autoplay) {
-            this.result.judgment = Judgment.Perfect
-
-            this.result.bucket.index = this.bucket.index
-        } else {
-            this.result.accuracy = this.windows.good.max
-        }
+        this.result.accuracy = this.windows.good.max
     }
 
     updateParallel() {
-        if (options.autoplay && time.now >= this.targetTime) this.despawn = true
         if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
 
@@ -91,13 +84,6 @@ export abstract class VisibleNote extends Note {
         if (options.hidden > 0 && time.now > this.visualTime.hidden) return
 
         this.render()
-    }
-
-    terminate() {
-        if (!options.autoplay) return
-
-        if (options.noteEffectEnabled) this.playNoteEffects()
-        if (options.laneEffectEnabled) this.playLaneEffects()
     }
 
     get windows() {
@@ -116,11 +102,11 @@ export abstract class VisibleNote extends Note {
     }
 
     get shouldScheduleSFX() {
-        return options.sfxEnabled && (options.autoplay || options.autoSFX)
+        return options.sfxEnabled && options.autoSFX
     }
 
     get shouldPlaySFX() {
-        return options.sfxEnabled && !options.autoplay && !options.autoSFX
+        return options.sfxEnabled && !options.autoSFX
     }
 
     scheduleSFX() {

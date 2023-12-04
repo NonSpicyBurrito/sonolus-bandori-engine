@@ -34,16 +34,16 @@ export class DirectionalFlickNote extends Note {
                     ? skin.sprites.directionalFlickLeftNote.id
                     : skin.sprites.directionalFlickLeftNoteFallback.id
                 : skin.sprites.directionalFlickRightNote.exists
-                ? skin.sprites.directionalFlickRightNote.id
-                : skin.sprites.directionalFlickRightNoteFallback.id
+                  ? skin.sprites.directionalFlickRightNote.id
+                  : skin.sprites.directionalFlickRightNoteFallback.id
         const arrowSpriteId =
             direction === FlickDirection.Left
                 ? skin.sprites.directionalFlickLeftArrow.exists
                     ? skin.sprites.directionalFlickLeftArrow.id
                     : skin.sprites.directionalFlickLeftArrowFallback.id
                 : skin.sprites.directionalFlickRightArrow.exists
-                ? skin.sprites.directionalFlickRightArrow.id
-                : skin.sprites.directionalFlickRightArrowFallback.id
+                  ? skin.sprites.directionalFlickRightArrow.id
+                  : skin.sprites.directionalFlickRightArrowFallback.id
 
         for (let i = 0; i < size; i++) {
             skin.sprites.draw(

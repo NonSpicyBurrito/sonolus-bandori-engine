@@ -1,4 +1,3 @@
-import { options } from '../../../../../../configuration/options.mjs'
 import { buckets } from '../../../../../buckets.mjs'
 import { effect } from '../../../../../effect.mjs'
 import { particle } from '../../../../../particle.mjs'
@@ -46,23 +45,7 @@ export class SlideTickNote extends SlideNote {
         this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
 
-    updateSequential() {
-        if (!options.autoplay) return
-
-        if (time.now < this.targetTime) return
-
-        if (this.shouldScheduleCircularHoldEffect)
-            this.sharedMemory.effectInstanceIds.circular ||=
-                this.prevSharedMemory.effectInstanceIds.circular
-
-        if (this.shouldScheduleLinearHoldEffect)
-            this.sharedMemory.effectInstanceIds.linear ||=
-                this.prevSharedMemory.effectInstanceIds.linear
-    }
-
     touch() {
-        if (options.autoplay) return
-
         const id = this.prevSharedMemory.activatedTouchId
         if (id) {
             if (time.now > this.inputTime.max) {
