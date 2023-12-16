@@ -97,6 +97,11 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
         sim: false,
     })
     append({
+        archetype: 'HoldManager',
+        data: {},
+        sim: false,
+    })
+    append({
         archetype: 'Stage',
         data: {},
         sim: false,

@@ -6,6 +6,7 @@ import { particle } from '../../../../../particle.mjs'
 import { scaledScreen } from '../../../../../scaledScreen.mjs'
 import { getZ, layer, skin } from '../../../../../skin.mjs'
 import { windows } from '../../../../../windows.mjs'
+import { queueHold } from '../../../../HoldManager.mjs'
 import { SlideNote } from './SlideNote.mjs'
 
 export class SlideEndFlickNote extends SlideNote {
@@ -75,10 +76,6 @@ export class SlideEndFlickNote extends SlideNote {
 
     touch() {
         const id = this.prevSharedMemory.activatedTouchId
-        if (id && time.now > this.inputTime.max) {
-            this.endSlideEffects()
-            return
-        }
 
         if (!this.activatedTouch.id) this.touchActivate(id)
 
@@ -90,17 +87,17 @@ export class SlideEndFlickNote extends SlideNote {
             for (const touch of touches) {
                 if (touch.id !== id) continue
 
+                if (!touch.ended) queueHold(this.slideData.firstRef)
+
                 if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
                     this.activate(touch)
                 } else if (touch.ended) {
                     this.despawn = true
-                    this.endSlideEffects()
                 }
                 return
             }
 
             this.despawn = true
-            this.endSlideEffects()
             return
         }
 
@@ -129,10 +126,8 @@ export class SlideEndFlickNote extends SlideNote {
 
             if (d >= 0.04 * flick.distance) {
                 this.complete(touch)
-                this.endSlideEffects()
             } else if (touch.ended) {
                 this.despawn = true
-                this.endSlideEffects()
             }
             return
         }

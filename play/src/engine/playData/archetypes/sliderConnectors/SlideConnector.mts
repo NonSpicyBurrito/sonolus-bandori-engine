@@ -3,12 +3,14 @@ import { perspectiveLayout } from '../../../../../../shared/src/engine/data/util
 import { options } from '../../../configuration/options.mjs'
 import { effect, getScheduleSFXTime } from '../../effect.mjs'
 import { note } from '../../note.mjs'
-import { circularEffectLayout, linearEffectLayout, particle } from '../../particle.mjs'
+import { particle } from '../../particle.mjs'
 import { getZ, layer, skin } from '../../skin.mjs'
+import { moveHold } from '../HoldManager.mjs'
 import { archetypes } from '../index.mjs'
 
 export abstract class SlideConnector extends Archetype {
     data = this.defineData({
+        firstRef: { name: 'first', type: Number },
         startRef: { name: 'start', type: Number },
         endRef: { name: 'end', type: Number },
         headRef: { name: 'head', type: Number },
@@ -210,29 +212,7 @@ export abstract class SlideConnector extends Archetype {
     }
 
     updateEffects() {
-        const lane = this.getLane(time.now)
-
-        if (this.shouldUpdateCircularEffect) this.updateCircularEffect(lane)
-        if (this.shouldUpdateLinearEffect) this.updateLinearEffect(lane)
-    }
-
-    updateCircularEffect(lane: number) {
-        const layout = circularEffectLayout({
-            lane,
-            w: 0.9,
-            h: 0.6,
-        })
-
-        particle.effects.move(this.startSharedMemory.effectInstanceIds.circular, layout)
-    }
-
-    updateLinearEffect(lane: number) {
-        const layout = linearEffectLayout({
-            lane,
-            size: 0.5,
-        })
-
-        particle.effects.move(this.startSharedMemory.effectInstanceIds.linear, layout)
+        moveHold(this.data.firstRef, this.getLane(time.now))
     }
 
     getLane(time: number) {

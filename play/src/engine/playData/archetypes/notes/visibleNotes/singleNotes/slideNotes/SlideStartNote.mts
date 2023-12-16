@@ -35,7 +35,6 @@ export class SlideStartNote extends SlideNote {
             if (isUsed(touch)) continue
 
             this.complete(touch)
-            this.startSlideEffects()
             return
         }
     }

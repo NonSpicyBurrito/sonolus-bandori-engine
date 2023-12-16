@@ -11,7 +11,7 @@ export class Stage extends Archetype {
     hitbox = this.entityMemory(Rect)
 
     spawnOrder() {
-        return 2
+        return 3
     }
 
     initialize() {

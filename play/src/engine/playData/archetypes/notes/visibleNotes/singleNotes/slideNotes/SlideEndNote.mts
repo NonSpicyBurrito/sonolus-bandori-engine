@@ -3,6 +3,7 @@ import { effect } from '../../../../../effect.mjs'
 import { particle } from '../../../../../particle.mjs'
 import { skin } from '../../../../../skin.mjs'
 import { windows } from '../../../../../windows.mjs'
+import { queueHold } from '../../../../HoldManager.mjs'
 import { SlideNote } from './SlideNote.mjs'
 
 export class SlideEndNote extends SlideNote {
@@ -37,22 +38,19 @@ export class SlideEndNote extends SlideNote {
     touch() {
         const id = this.prevSharedMemory.activatedTouchId
         if (id) {
-            if (time.now > this.inputTime.max) {
-                this.endSlideEffects()
-                return
-            }
-
             for (const touch of touches) {
                 if (touch.id !== id) continue
 
-                if (!touch.ended) return
+                if (!touch.ended) {
+                    queueHold(this.slideData.firstRef)
+                    return
+                }
 
                 if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
                     this.complete(touch.t)
                 } else {
                     this.despawn = true
                 }
-                this.endSlideEffects()
                 return
             }
 
@@ -61,7 +59,6 @@ export class SlideEndNote extends SlideNote {
             } else {
                 this.despawn = true
             }
-            this.endSlideEffects()
             return
         }
 

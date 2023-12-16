@@ -3,6 +3,7 @@ import { effect } from '../../../../../effect.mjs'
 import { particle } from '../../../../../particle.mjs'
 import { skin } from '../../../../../skin.mjs'
 import { windows } from '../../../../../windows.mjs'
+import { queueHold } from '../../../../HoldManager.mjs'
 import { SlideNote } from './SlideNote.mjs'
 
 export class SlideTickNote extends SlideNote {
@@ -48,30 +49,23 @@ export class SlideTickNote extends SlideNote {
     touch() {
         const id = this.prevSharedMemory.activatedTouchId
         if (id) {
-            if (time.now > this.inputTime.max) {
-                this.endSlideEffects()
-                return
-            }
-
             for (const touch of touches) {
                 if (touch.id !== id) continue
 
+                if (!touch.ended) queueHold(this.slideData.firstRef)
+
                 if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
                     this.complete(id, touch.t)
-                    this.continueSlideEffects()
                 } else if (touch.ended) {
                     this.despawn = true
-                    this.endSlideEffects()
                 }
                 return
             }
 
             if (time.now >= this.inputTime.min) {
                 this.complete(id, time.now)
-                this.continueSlideEffects()
             } else {
                 this.despawn = true
-                this.endSlideEffects()
             }
             return
         }
@@ -83,7 +77,6 @@ export class SlideTickNote extends SlideNote {
             if (!this.hitbox.contains(touch.position)) continue
 
             this.complete(touch.id, touch.t)
-            this.startSlideEffects()
             return
         }
     }

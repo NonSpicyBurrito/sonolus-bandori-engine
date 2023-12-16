@@ -1,3 +1,4 @@
+import { HoldManager } from './HoldManager.mjs'
 import { Initialization } from './Initialization.mjs'
 import { InputManager } from './InputManager.mjs'
 import { SimLine } from './SimLine.mjs'
@@ -16,6 +17,7 @@ import { StraightSlideConnector } from './sliderConnectors/StraightSlideConnecto
 export const archetypes = defineArchetypes({
     Initialization,
     InputManager,
+    HoldManager,
 
     Stage,
 

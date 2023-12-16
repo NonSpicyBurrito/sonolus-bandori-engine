@@ -10,6 +10,10 @@
             "data": []
         },
         {
+            "archetype": "HoldManager",
+            "data": []
+        },
+        {
             "archetype": "Stage",
             "data": []
         },
