@@ -39,8 +39,10 @@ export class SimLine extends Archetype {
         return this.visualTime.min
     }
 
-    despawnTime() {
-        return this.visualTime.max
+    despawnTime(): number {
+        return replay.isReplay
+            ? Math.min(this.aSharedMemory.despawnTime, this.bSharedMemory.despawnTime)
+            : this.visualTime.max
     }
 
     initialize() {
@@ -60,8 +62,16 @@ export class SimLine extends Archetype {
         return archetypes.TapNote.import.get(this.import.aRef)
     }
 
+    get aSharedMemory() {
+        return archetypes.TapNote.sharedMemory.get(this.import.aRef)
+    }
+
     get bImport() {
         return archetypes.TapNote.import.get(this.import.bRef)
+    }
+
+    get bSharedMemory() {
+        return archetypes.TapNote.sharedMemory.get(this.import.bRef)
     }
 
     globalInitialize() {

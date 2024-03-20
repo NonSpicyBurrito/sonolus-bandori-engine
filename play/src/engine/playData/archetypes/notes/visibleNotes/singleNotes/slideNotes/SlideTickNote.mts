@@ -57,7 +57,7 @@ export class SlideTickNote extends SlideNote {
                 if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
                     this.complete(id, touch.t)
                 } else if (touch.ended) {
-                    this.despawn = true
+                    this.incomplete(touch.t)
                 }
                 return
             }
@@ -65,7 +65,7 @@ export class SlideTickNote extends SlideNote {
             if (time.now >= this.inputTime.min) {
                 this.complete(id, time.now)
             } else {
-                this.despawn = true
+                this.incomplete(time.now)
             }
             return
         }

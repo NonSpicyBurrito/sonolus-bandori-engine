@@ -179,7 +179,7 @@ export class DirectionalFlickNote extends VisibleNote {
             if (p >= 0 && d >= this.distance) {
                 this.complete(touch)
             } else if (touch.ended) {
-                this.despawn = true
+                this.incomplete(touch.t)
             }
             return
         }
@@ -188,6 +188,7 @@ export class DirectionalFlickNote extends VisibleNote {
     complete(touch: Touch) {
         this.result.judgment = input.judge(touch.startTime, this.targetTime, this.windows)
         this.result.accuracy = touch.startTime - this.targetTime
+        this.export('accuracyDiff', time.now - touch.startTime)
 
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000

@@ -6,7 +6,11 @@ import { getZ, layer, skin } from '../../../../../skin.mjs'
 import { SingleNote } from '../SingleNote.mjs'
 
 export abstract class SingleFlickNote extends SingleNote {
-    clip = effect.clips.flickPerfect
+    clips = {
+        perfect: effect.clips.flickPerfect,
+        great: effect.clips.flickGreat,
+        good: effect.clips.flickGood,
+    }
 
     effects = {
         circular: particle.effects.flickNoteCircular,

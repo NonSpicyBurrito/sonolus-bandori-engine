@@ -8,7 +8,11 @@ import { VisibleNote } from '../VisibleNote.mjs'
 export abstract class SingleNote extends VisibleNote {
     abstract sprite: SkinSprite
 
-    abstract clip: EffectClip
+    abstract clips: {
+        perfect: EffectClip
+        great: EffectClip
+        good: EffectClip
+    }
 
     abstract effects: {
         circular: ParticleEffect
@@ -32,7 +36,23 @@ export abstract class SingleNote extends VisibleNote {
     }
 
     scheduleSFX() {
-        this.clip.schedule(this.targetTime, sfxDistance)
+        this.clips.perfect.schedule(this.targetTime, sfxDistance)
+    }
+
+    scheduleReplaySFX() {
+        if (!this.import.judgment) return
+
+        switch (this.import.judgment) {
+            case Judgment.Perfect:
+                this.clips.perfect.schedule(this.hitTime, sfxDistance)
+                break
+            case Judgment.Great:
+                this.clips.great.schedule(this.hitTime, sfxDistance)
+                break
+            case Judgment.Good:
+                this.clips.good.schedule(this.hitTime, sfxDistance)
+                break
+        }
     }
 
     render() {

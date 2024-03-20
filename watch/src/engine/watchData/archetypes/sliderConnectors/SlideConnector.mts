@@ -70,8 +70,10 @@ export abstract class SlideConnector extends Archetype {
         return this.visualTime.min
     }
 
-    despawnTime() {
-        return this.tail.time
+    despawnTime(): number {
+        return replay.isReplay
+            ? Math.min(this.endSharedMemory.despawnTime, this.tail.time)
+            : this.tail.time
     }
 
     initialize() {
@@ -92,6 +94,10 @@ export abstract class SlideConnector extends Archetype {
 
         if (time.now < this.head.time) return
 
+        this.renderSlide()
+
+        if (time.now < this.startSharedMemory.despawnTime) return
+
         if (this.shouldScheduleCircularEffect && !this.effectInstanceIds.circular)
             this.spawnCircularEffect()
 
@@ -101,8 +107,6 @@ export abstract class SlideConnector extends Archetype {
         if (this.effectInstanceIds.circular) this.updateCircularEffect()
 
         if (this.effectInstanceIds.linear) this.updateLinearEffect()
-
-        this.renderSlide()
     }
 
     terminate() {
@@ -119,6 +123,14 @@ export abstract class SlideConnector extends Archetype {
 
     get tailImport() {
         return archetypes.SlideStartNote.import.get(this.import.tailRef)
+    }
+
+    get startSharedMemory() {
+        return archetypes.TapNote.sharedMemory.get(this.import.startRef)
+    }
+
+    get endSharedMemory() {
+        return archetypes.TapNote.sharedMemory.get(this.import.endRef)
     }
 
     get shouldScheduleCircularEffect() {

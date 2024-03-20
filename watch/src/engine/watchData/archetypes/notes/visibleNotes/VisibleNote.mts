@@ -10,6 +10,10 @@ import { Note } from '../Note.mjs'
 export abstract class VisibleNote extends Note {
     hasInput = true
 
+    sharedMemory = this.defineSharedMemory({
+        despawnTime: Number,
+    })
+
     targetTime = this.entityMemory(Number)
 
     visualTime = this.entityMemory({
@@ -36,7 +40,15 @@ export abstract class VisibleNote extends Note {
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
 
-        if (options.sfxEnabled) this.scheduleSFX()
+        this.sharedMemory.despawnTime = replay.isReplay ? this.hitTime : this.visualTime.max
+
+        if (options.sfxEnabled) {
+            if (replay.isReplay) {
+                this.scheduleReplaySFX()
+            } else {
+                this.scheduleSFX()
+            }
+        }
 
         this.result.time = this.targetTime
     }
@@ -46,7 +58,7 @@ export abstract class VisibleNote extends Note {
     }
 
     despawnTime() {
-        return this.visualTime.max
+        return this.sharedMemory.despawnTime
     }
 
     initialize() {
@@ -68,6 +80,10 @@ export abstract class VisibleNote extends Note {
         this.despawnTerminate()
     }
 
+    get hitTime() {
+        return this.targetTime + this.import.accuracy + this.import.accuracyDiff
+    }
+
     globalInitialize() {
         if (options.hidden > 0)
             this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
@@ -77,11 +93,15 @@ export abstract class VisibleNote extends Note {
 
     abstract scheduleSFX(): void
 
+    abstract scheduleReplaySFX(): void
+
     render() {
         this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
     }
 
     despawnTerminate() {
+        if (replay.isReplay && !this.import.judgment) return
+
         if (options.noteEffectEnabled) this.playNoteEffects()
         if (options.laneEffectEnabled) this.playLaneEffects()
     }

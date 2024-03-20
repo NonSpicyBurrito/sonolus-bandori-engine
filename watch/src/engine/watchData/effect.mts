@@ -3,8 +3,12 @@ import { EffectClipName } from 'sonolus-core'
 export const effect = defineEffect({
     clips: {
         tapPerfect: EffectClipName.Perfect,
+        tapGreat: EffectClipName.Great,
+        tapGood: EffectClipName.Good,
 
         flickPerfect: EffectClipName.PerfectAlternative,
+        flickGreat: EffectClipName.GreatAlternative,
+        flickGood: EffectClipName.GoodAlternative,
 
         directionalFlickSingle: 'Bandori Directional Flick Single',
         directionalFlickDouble: 'Bandori Directional Flick Double',

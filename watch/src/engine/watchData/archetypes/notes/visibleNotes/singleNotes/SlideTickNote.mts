@@ -6,7 +6,11 @@ import { SingleNote } from './SingleNote.mjs'
 export class SlideTickNote extends SingleNote {
     sprite = skin.sprites.tickNote
 
-    clip = effect.clips.tapPerfect
+    clips = {
+        perfect: effect.clips.tapPerfect,
+        great: effect.clips.tapGreat,
+        good: effect.clips.tapGood,
+    }
 
     effects = {
         circular: particle.effects.tapNoteCircular,
@@ -17,5 +21,11 @@ export class SlideTickNote extends SingleNote {
         super.globalPreprocess()
 
         this.life.miss = -20
+    }
+
+    render() {
+        if (time.now >= this.targetTime) return
+
+        super.render()
     }
 }

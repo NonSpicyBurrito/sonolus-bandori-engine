@@ -6,7 +6,11 @@ import { SingleNote } from './SingleNote.mjs'
 export class TapNote extends SingleNote {
     sprite = skin.sprites.tapNote
 
-    clip = effect.clips.tapPerfect
+    clips = {
+        perfect: effect.clips.tapPerfect,
+        great: effect.clips.tapGreat,
+        good: effect.clips.tapGood,
+    }
 
     effects = {
         circular: particle.effects.tapNoteCircular,

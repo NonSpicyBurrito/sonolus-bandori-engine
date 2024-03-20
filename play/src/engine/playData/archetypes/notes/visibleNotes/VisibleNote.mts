@@ -9,6 +9,10 @@ import { getZ, layer } from '../../../skin.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class VisibleNote extends Note {
+    export = this.defineExport({
+        accuracyDiff: { name: 'accuracyDiff', type: Number },
+    })
+
     abstract dualWindows: {
         normal: JudgmentWindows
         strict: JudgmentWindows
@@ -115,6 +119,12 @@ export abstract class VisibleNote extends Note {
 
     render() {
         this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
+    }
+
+    incomplete(hitTime: number) {
+        this.export('accuracyDiff', hitTime - this.result.accuracy - this.targetTime)
+
+        this.despawn = true
     }
 
     playHitEffects() {
