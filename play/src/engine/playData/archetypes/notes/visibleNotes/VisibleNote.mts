@@ -68,7 +68,7 @@ export abstract class VisibleNote extends Note {
         this.inputTime.min = this.targetTime + this.windows.good.min + input.offset
         this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
 
-        this.z = getZ(layer.note.body, this.targetTime, this.data.lane)
+        this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
 
         this.result.accuracy = this.windows.good.max
     }
@@ -137,8 +137,8 @@ export abstract class VisibleNote extends Note {
     playLaneEffects() {
         particle.effects.lane.spawn(
             perspectiveLayout({
-                l: this.data.lane - 0.5,
-                r: this.data.lane + 0.5,
+                l: this.import.lane - 0.5,
+                r: this.import.lane + 0.5,
                 b: lane.b,
                 t: lane.t,
             }),

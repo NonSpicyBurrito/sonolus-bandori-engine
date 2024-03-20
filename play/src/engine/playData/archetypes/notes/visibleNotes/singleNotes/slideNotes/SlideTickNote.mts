@@ -41,7 +41,7 @@ export class SlideTickNote extends SlideNote {
         super.preprocess()
 
         const minPrevInputTime =
-            bpmChanges.at(this.prevData.beat).time + windows.minGood + input.offset
+            bpmChanges.at(this.prevImport.beat).time + windows.minGood + input.offset
 
         this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
@@ -52,7 +52,7 @@ export class SlideTickNote extends SlideNote {
             for (const touch of touches) {
                 if (touch.id !== id) continue
 
-                if (!touch.ended) queueHold(this.slideData.firstRef)
+                if (!touch.ended) queueHold(this.slideImport.firstRef)
 
                 if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
                     this.complete(id, touch.t)

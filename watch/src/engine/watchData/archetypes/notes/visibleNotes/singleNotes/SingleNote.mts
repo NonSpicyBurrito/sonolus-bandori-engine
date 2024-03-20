@@ -24,8 +24,8 @@ export abstract class SingleNote extends VisibleNote {
         const h = note.h * options.noteSize
 
         perspectiveLayout({
-            l: this.data.lane - w,
-            r: this.data.lane + w,
+            l: this.import.lane - w,
+            r: this.import.lane + w,
             t: 1 - h,
             b: 1 + h,
         }).copyTo(this.spriteLayout)
@@ -43,7 +43,7 @@ export abstract class SingleNote extends VisibleNote {
 
     playLinearNoteEffect() {
         const layout = linearEffectLayout({
-            lane: this.data.lane,
+            lane: this.import.lane,
             size: 0.5,
         })
 
@@ -52,7 +52,7 @@ export abstract class SingleNote extends VisibleNote {
 
     playCircularNoteEffect() {
         const layout = circularEffectLayout({
-            lane: this.data.lane,
+            lane: this.import.lane,
             w: 1.5,
             h: 1,
         })

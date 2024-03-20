@@ -9,7 +9,7 @@ import { moveHold } from '../HoldManager.mjs'
 import { archetypes } from '../index.mjs'
 
 export abstract class SlideConnector extends Archetype {
-    data = this.defineData({
+    import = this.defineImport({
         firstRef: { name: 'first', type: Number },
         startRef: { name: 'start', type: Number },
         endRef: { name: 'end', type: Number },
@@ -56,7 +56,7 @@ export abstract class SlideConnector extends Archetype {
     })
 
     preprocess() {
-        this.head.time = bpmChanges.at(this.headData.beat).time
+        this.head.time = bpmChanges.at(this.headImport.beat).time
 
         this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
@@ -77,23 +77,23 @@ export abstract class SlideConnector extends Archetype {
         const w = 0.5 * options.noteSize
         const h = note.h * options.noteSize
 
-        this.head.lane = this.headData.lane
+        this.head.lane = this.headImport.lane
         this.head.l = this.head.lane - w
         this.head.r = this.head.lane + w
 
-        this.tail.time = bpmChanges.at(this.tailData.beat).time
-        this.tail.lane = this.tailData.lane
+        this.tail.time = bpmChanges.at(this.tailImport.beat).time
+        this.tail.lane = this.tailImport.lane
         this.tail.l = this.tail.lane - w
         this.tail.r = this.tail.lane + w
 
         if (options.hidden > 0)
             this.visualTime.hidden = this.tail.time - note.duration * options.hidden
 
-        this.connector.z = getZ(layer.note.connector, this.head.time, this.headData.lane)
+        this.connector.z = getZ(layer.note.connector, this.head.time, this.headImport.lane)
 
         this.slide.t = 1 - h
         this.slide.b = 1 + h
-        this.slide.z = getZ(layer.note.slide, this.head.time, this.headData.lane)
+        this.slide.z = getZ(layer.note.slide, this.head.time, this.headImport.lane)
     }
 
     updateParallel() {
@@ -121,23 +121,23 @@ export abstract class SlideConnector extends Archetype {
     }
 
     get startInfo() {
-        return entityInfos.get(this.data.startRef)
+        return entityInfos.get(this.import.startRef)
     }
 
     get startSharedMemory() {
-        return archetypes.SlideStartNote.sharedMemory.get(this.data.startRef)
+        return archetypes.SlideStartNote.sharedMemory.get(this.import.startRef)
     }
 
     get endInfo() {
-        return entityInfos.get(this.data.endRef)
+        return entityInfos.get(this.import.endRef)
     }
 
-    get headData() {
-        return archetypes.SlideStartNote.data.get(this.data.headRef)
+    get headImport() {
+        return archetypes.SlideStartNote.import.get(this.import.headRef)
     }
 
-    get tailData() {
-        return archetypes.SlideStartNote.data.get(this.data.tailRef)
+    get tailImport() {
+        return archetypes.SlideStartNote.import.get(this.import.tailRef)
     }
 
     get shouldScheduleSFX() {
@@ -212,7 +212,7 @@ export abstract class SlideConnector extends Archetype {
     }
 
     updateEffects() {
-        moveHold(this.data.firstRef, this.getLane(time.now))
+        moveHold(this.import.firstRef, this.getLane(time.now))
     }
 
     getLane(time: number) {

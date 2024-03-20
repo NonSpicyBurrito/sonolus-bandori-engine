@@ -1,7 +1,7 @@
 import { SingleNote } from '../SingleNote.mjs'
 
 export abstract class SlideNote extends SingleNote {
-    slideData = this.defineData({
+    slideImport = this.defineImport({
         firstRef: { name: 'first', type: Number },
         prevRef: { name: 'prev', type: Number },
     })
@@ -11,14 +11,14 @@ export abstract class SlideNote extends SingleNote {
     })
 
     get prevInfo() {
-        return entityInfos.get(this.slideData.prevRef)
+        return entityInfos.get(this.slideImport.prevRef)
     }
 
-    get prevData() {
-        return this.data.get(this.slideData.prevRef)
+    get prevImport() {
+        return this.import.get(this.slideImport.prevRef)
     }
 
     get prevSharedMemory() {
-        return this.sharedMemory.get(this.slideData.prevRef)
+        return this.sharedMemory.get(this.slideImport.prevRef)
     }
 }

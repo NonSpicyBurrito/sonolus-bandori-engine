@@ -1,14 +1,14 @@
 import { resolve } from 'node:path'
-import { EngineInfo } from 'sonolus-core'
+import { DatabaseEngineItem } from 'sonolus-core'
 
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
 
 export const version = '1.3.0'
 
-export const engineInfo = {
+export const databaseEngineItem = {
     name: 'bandori',
-    version: 11,
+    version: 12,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
@@ -37,7 +37,7 @@ export const engineInfo = {
             'https://github.com/NonSpicyBurrito/sonolus-bandori-engine',
         ].join('\n'),
     },
-} as const satisfies Partial<EngineInfo>
+} as const satisfies Partial<DatabaseEngineItem>
 
 export const engineConfigurationPath = resolve(__dirname, 'EngineConfiguration')
 export const enginePlayDataPath = resolve(__dirname, 'EnginePlayData')

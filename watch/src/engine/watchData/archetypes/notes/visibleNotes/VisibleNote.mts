@@ -31,7 +31,7 @@ export abstract class VisibleNote extends Note {
     preprocess() {
         super.preprocess()
 
-        this.targetTime = bpmChanges.at(this.data.beat).time
+        this.targetTime = bpmChanges.at(this.import.beat).time
 
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
@@ -72,7 +72,7 @@ export abstract class VisibleNote extends Note {
         if (options.hidden > 0)
             this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
 
-        this.z = getZ(layer.note.body, this.targetTime, this.data.lane)
+        this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
     }
 
     abstract scheduleSFX(): void
@@ -98,8 +98,8 @@ export abstract class VisibleNote extends Note {
     playLaneEffects() {
         particle.effects.lane.spawn(
             perspectiveLayout({
-                l: this.data.lane - 0.5,
-                r: this.data.lane + 0.5,
+                l: this.import.lane - 0.5,
+                r: this.import.lane + 0.5,
                 b: lane.b,
                 t: lane.t,
             }),

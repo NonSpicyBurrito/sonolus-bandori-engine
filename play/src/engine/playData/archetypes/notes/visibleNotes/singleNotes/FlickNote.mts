@@ -45,15 +45,15 @@ export class FlickNote extends SingleNote {
         const h = scaledScreen.wToH * options.noteSize
 
         new Rect({
-            l: this.data.lane - w,
-            r: this.data.lane + w,
+            l: this.import.lane - w,
+            r: this.import.lane + w,
             t: 1 - h,
             b: 1,
         }).copyTo(this.arrow.layout)
 
         if (options.markerAnimation) this.arrow.animation = 0.25 * h
 
-        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.data.lane)
+        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
     }
 
     touch() {

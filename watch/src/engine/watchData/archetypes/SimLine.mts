@@ -6,7 +6,7 @@ import { getZ, layer, skin } from '../skin.mjs'
 import { archetypes } from './index.mjs'
 
 export class SimLine extends Archetype {
-    data = this.defineData({
+    import = this.defineImport({
         aRef: { name: 'a', type: Number },
         bRef: { name: 'b', type: Number },
     })
@@ -29,7 +29,7 @@ export class SimLine extends Archetype {
     preprocess() {
         if (!options.simLineEnabled) return
 
-        this.targetTime = bpmChanges.at(this.aData.beat).time
+        this.targetTime = bpmChanges.at(this.aImport.beat).time
 
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
@@ -56,12 +56,12 @@ export class SimLine extends Archetype {
         this.render()
     }
 
-    get aData() {
-        return archetypes.TapNote.data.get(this.data.aRef)
+    get aImport() {
+        return archetypes.TapNote.import.get(this.import.aRef)
     }
 
-    get bData() {
-        return archetypes.TapNote.data.get(this.data.bRef)
+    get bImport() {
+        return archetypes.TapNote.import.get(this.import.bRef)
     }
 
     globalInitialize() {
@@ -70,8 +70,8 @@ export class SimLine extends Archetype {
 
         const h = note.h * options.noteSize
 
-        let l = this.aData.lane
-        let r = this.bData.lane
+        let l = this.aImport.lane
+        let r = this.bImport.lane
         if (l > r) [l, r] = [r, l]
 
         const b = 1 + h
