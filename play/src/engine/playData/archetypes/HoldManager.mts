@@ -28,11 +28,7 @@ export const moveHold = (id: number, lane: number) => {
     moveLinearHoldEffect(hold.effectInstanceIds.linear, lane)
 }
 
-export class HoldManager extends Archetype {
-    spawnOrder() {
-        return 2
-    }
-
+export class HoldManager extends SpawnableArchetype({}) {
     updateSequential() {
         for (const [id, hold] of holds.old) {
             if (holds.queue.has(id)) {
