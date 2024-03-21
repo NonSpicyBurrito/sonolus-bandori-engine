@@ -69,6 +69,7 @@ export class SimLine extends Archetype {
 
     updateParallel() {
         if (
+            time.now > this.targetTime ||
             this.aInfo.state === EntityState.Despawned ||
             this.bInfo.state === EntityState.Despawned
         ) {
