@@ -8,6 +8,13 @@ import { getZ, layer } from '../../../skin.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class VisibleNote extends Note {
+    abstract dualWindows: {
+        normal: JudgmentWindows
+        strict: JudgmentWindows
+    }
+
+    abstract bucket: Bucket
+
     hasInput = true
 
     sharedMemory = this.defineSharedMemory({
@@ -29,6 +36,17 @@ export abstract class VisibleNote extends Note {
     y = this.entityMemory(Number)
 
     globalPreprocess() {
+        const toMs = ({ min, max }: JudgmentWindow) => ({
+            min: Math.round(min * 1000),
+            max: Math.round(max * 1000),
+        })
+
+        this.bucket.set({
+            perfect: toMs(this.windows.perfect),
+            great: toMs(this.windows.great),
+            good: toMs(this.windows.good),
+        })
+
         this.life.miss = -100
     }
 
@@ -51,6 +69,13 @@ export abstract class VisibleNote extends Note {
         }
 
         this.result.time = this.targetTime
+
+        if (!replay.isReplay) {
+            this.result.bucket.index = this.bucket.index
+        } else if (this.import.judgment) {
+            this.result.bucket.index = this.bucket.index
+            this.result.bucket.value = this.import.accuracy * 1000
+        }
     }
 
     spawnTime() {
@@ -78,6 +103,21 @@ export abstract class VisibleNote extends Note {
         if (time.skip) return
 
         this.despawnTerminate()
+    }
+
+    get windows() {
+        const dualWindows = this.dualWindows
+
+        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
+            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
+            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
+        })
+
+        return {
+            perfect: toWindow('perfect'),
+            great: toWindow('great'),
+            good: toWindow('good'),
+        }
     }
 
     get hitTime() {

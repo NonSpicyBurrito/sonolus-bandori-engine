@@ -1,3 +1,5 @@
+import { windows } from '../../../../../../../../shared/src/engine/data/windows.mjs'
+import { buckets } from '../../../../buckets.mjs'
 import { effect } from '../../../../effect.mjs'
 import { particle } from '../../../../particle.mjs'
 import { skin } from '../../../../skin.mjs'
@@ -16,4 +18,8 @@ export class SlideEndNote extends SingleNote {
         circular: particle.effects.tapNoteCircular,
         linear: particle.effects.tapNoteLinear,
     }
+
+    dualWindows = windows.slideEndNote
+
+    bucket = buckets.slideEndNote
 }

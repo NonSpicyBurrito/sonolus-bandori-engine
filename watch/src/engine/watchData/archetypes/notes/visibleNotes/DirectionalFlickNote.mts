@@ -1,6 +1,8 @@
 import { FlickDirection } from '../../../../../../../shared/src/engine/data/FlickDirection.mjs'
 import { leftRotated, rightRotated } from '../../../../../../../shared/src/engine/data/utils.mjs'
+import { windows } from '../../../../../../../shared/src/engine/data/windows.mjs'
 import { options } from '../../../../configuration/options.mjs'
+import { buckets } from '../../../buckets.mjs'
 import { effect, sfxDistance } from '../../../effect.mjs'
 import { note } from '../../../note.mjs'
 import { circularEffectLayout, particle } from '../../../particle.mjs'
@@ -13,6 +15,10 @@ export class DirectionalFlickNote extends VisibleNote {
         direction: { name: 'direction', type: DataType<FlickDirection> },
         size: { name: 'size', type: Number },
     })
+
+    dualWindows = windows.directionalFlickNote
+
+    bucket = buckets.directionalFlickNote
 
     sprites = this.entityMemory({
         note: SkinSpriteId,
