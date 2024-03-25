@@ -61,8 +61,11 @@ export abstract class SlideConnector extends Archetype {
         this.visualTime.min = this.head.time - note.duration
 
         if (options.sfxEnabled) {
-            const id = effect.clips.hold.scheduleLoop(this.head.time)
-            effect.clips.scheduleStopLoop(id, this.tail.time)
+            if (replay.isReplay) {
+                this.scheduleReplaySFX()
+            } else {
+                this.scheduleSFX()
+            }
         }
     }
 
@@ -170,6 +173,22 @@ export abstract class SlideConnector extends Archetype {
         this.slide.t = 1 - h
         this.slide.b = 1 + h
         this.slide.z = getZ(layer.note.slide, this.head.time, this.headImport.lane)
+    }
+
+    scheduleSFX() {
+        const id = effect.clips.hold.scheduleLoop(this.head.time)
+        effect.clips.scheduleStopLoop(id, this.tail.time)
+    }
+
+    scheduleReplaySFX() {
+        if (!this.startImport.judgment) return
+
+        const start = Math.max(this.head.time, this.startSharedMemory.despawnTime)
+        const end = Math.min(this.tail.time, this.endSharedMemory.despawnTime)
+        if (start >= end) return
+
+        const id = effect.clips.hold.scheduleLoop(start)
+        effect.clips.scheduleStopLoop(id, end)
     }
 
     renderConnector() {
