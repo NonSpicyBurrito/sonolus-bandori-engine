@@ -72,7 +72,12 @@ export abstract class SlideConnector extends Archetype {
 
     despawnTime(): number {
         return replay.isReplay
-            ? Math.min(this.endSharedMemory.despawnTime, this.tail.time)
+            ? Math.min(
+                  this.startImport.judgment
+                      ? this.endSharedMemory.despawnTime
+                      : this.startSharedMemory.despawnTime,
+                  this.tail.time,
+              )
             : this.tail.time
     }
 
@@ -115,6 +120,10 @@ export abstract class SlideConnector extends Archetype {
 
         if (this.shouldScheduleLinearEffect && this.effectInstanceIds.linear)
             this.destroyLinearEffect()
+    }
+
+    get startImport() {
+        return archetypes.SlideStartNote.import.get(this.import.startRef)
     }
 
     get headImport() {
