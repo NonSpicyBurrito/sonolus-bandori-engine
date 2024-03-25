@@ -58,7 +58,7 @@ export abstract class VisibleNote extends Note {
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
 
-        this.sharedMemory.despawnTime = replay.isReplay ? this.hitTime : this.visualTime.max
+        this.sharedMemory.despawnTime = this.hitTime
 
         if (options.sfxEnabled) {
             if (replay.isReplay) {
@@ -121,7 +121,10 @@ export abstract class VisibleNote extends Note {
     }
 
     get hitTime() {
-        return this.targetTime + this.import.accuracy + this.import.accuracyDiff
+        return (
+            this.targetTime +
+            (replay.isReplay ? this.import.accuracy + this.import.accuracyDiff : 0)
+        )
     }
 
     globalInitialize() {

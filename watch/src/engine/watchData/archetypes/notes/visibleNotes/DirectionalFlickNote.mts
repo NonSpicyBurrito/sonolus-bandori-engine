@@ -107,23 +107,6 @@ export class DirectionalFlickNote extends VisibleNote {
 
     scheduleSFX() {
         if (effect.clips.directionalFlickSingle.exists && this.directionalFlickImport.size === 1) {
-            effect.clips.directionalFlickSingle.schedule(this.targetTime, sfxDistance)
-        } else if (
-            effect.clips.directionalFlickDouble.exists &&
-            this.directionalFlickImport.size === 2
-        ) {
-            effect.clips.directionalFlickDouble.schedule(this.targetTime, sfxDistance)
-        } else if (effect.clips.directionalFlickTriple.exists) {
-            effect.clips.directionalFlickTriple.schedule(this.targetTime, sfxDistance)
-        } else {
-            effect.clips.flickPerfect.schedule(this.targetTime, sfxDistance)
-        }
-    }
-
-    scheduleReplaySFX() {
-        if (!this.import.judgment) return
-
-        if (effect.clips.directionalFlickSingle.exists && this.directionalFlickImport.size === 1) {
             effect.clips.directionalFlickSingle.schedule(this.hitTime, sfxDistance)
         } else if (
             effect.clips.directionalFlickDouble.exists &&
@@ -135,6 +118,12 @@ export class DirectionalFlickNote extends VisibleNote {
         } else {
             effect.clips.flickPerfect.schedule(this.hitTime, sfxDistance)
         }
+    }
+
+    scheduleReplaySFX() {
+        if (!this.import.judgment) return
+
+        this.scheduleSFX()
     }
 
     render() {
