@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
 
-export const version = '1.3.0'
+export const version = '1.4.0'
 
 export const databaseEngineItem = {
     name: 'bandori',
