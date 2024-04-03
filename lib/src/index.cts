@@ -1,5 +1,5 @@
+import { DatabaseEngineItem } from '@sonolus/core'
 import { resolve } from 'node:path'
-import { DatabaseEngineItem } from 'sonolus-core'
 
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
