@@ -7,12 +7,12 @@ export abstract class SingleFlickNote extends SingleNote {
     render() {
         const { time, pos } = super.render()
 
-        const z = getZ(layer.note.arrow, time, this.data.lane)
+        const z = getZ(layer.note.arrow, time, this.import.lane)
 
         skin.sprites.flickArrow.draw(
             new Rect({
-                l: this.data.lane - 0.5 * options.noteSize,
-                r: this.data.lane + 0.5 * options.noteSize,
+                l: this.import.lane - 0.5 * options.noteSize,
+                r: this.import.lane + 0.5 * options.noteSize,
                 b: 0,
                 t: scaledScreen.wToH * options.noteSize,
             }).add(pos),

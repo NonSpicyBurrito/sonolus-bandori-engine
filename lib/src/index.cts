@@ -1,14 +1,14 @@
-import { EngineInfo } from 'sonolus-core'
-import { Resource } from './Resource.cjs'
+import { DatabaseEngineItem } from '@sonolus/core'
+import { resolve } from 'node:path'
 
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
 
-export const version = '1.3.0'
+export const version = '1.4.0'
 
-export const engineInfo = {
+export const databaseEngineItem = {
     name: 'bandori',
-    version: 11,
+    version: 12,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
@@ -37,11 +37,11 @@ export const engineInfo = {
             'https://github.com/NonSpicyBurrito/sonolus-bandori-engine',
         ].join('\n'),
     },
-} as const satisfies Partial<EngineInfo>
+} as const satisfies Partial<DatabaseEngineItem>
 
-export const engineConfiguration = new Resource('EngineConfiguration')
-export const enginePlayData = new Resource('EnginePlayData')
-export const engineWatchData = new Resource('EngineWatchData')
-export const enginePreviewData = new Resource('EnginePreviewData')
-export const engineTutorialData = new Resource('EngineTutorialData')
-export const engineThumbnail = new Resource('thumbnail.png')
+export const engineConfigurationPath = resolve(__dirname, 'EngineConfiguration')
+export const enginePlayDataPath = resolve(__dirname, 'EnginePlayData')
+export const engineWatchDataPath = resolve(__dirname, 'EngineWatchData')
+export const enginePreviewDataPath = resolve(__dirname, 'EnginePreviewData')
+export const engineTutorialDataPath = resolve(__dirname, 'EngineTutorialData')
+export const engineThumbnailPath = resolve(__dirname, 'thumbnail.png')

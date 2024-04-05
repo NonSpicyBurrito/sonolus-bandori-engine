@@ -3,7 +3,7 @@ import {
     EngineArchetypeName,
     LevelData,
     LevelDataEntity,
-} from 'sonolus-core'
+} from '@sonolus/core'
 import {
     BestdoriBpmObject,
     BestdoriChart,
@@ -42,7 +42,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
         intermediateToRef.set(intermediate, ref)
 
         const entity = intermediateToEntity.get(intermediate)
-        if (entity) entity.ref = ref
+        if (entity) entity.name = ref
 
         return ref
     }
@@ -66,7 +66,7 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
         }
 
         const ref = intermediateToRef.get(intermediate)
-        if (ref) entity.ref = ref
+        if (ref) entity.name = ref
 
         intermediateToEntity.set(intermediate, entity)
         entities.push(entity)
@@ -88,11 +88,6 @@ export function bestdoriToLevelData(chart: BestdoriChart, offset = 0): LevelData
 
     append({
         archetype: 'Initialization',
-        data: {},
-        sim: false,
-    })
-    append({
-        archetype: 'InputManager',
         data: {},
         sim: false,
     })
@@ -163,9 +158,12 @@ const directional: Handler<BestdoriDirectionalNote> = (object, append) => {
 }
 
 const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, append) => {
+    let first: Intermediate | undefined
     let start: Intermediate | undefined
     let head: Intermediate | undefined
     const connectors: Intermediate[] = []
+
+    const appends: Intermediate[] = []
 
     const connectorArchetype = object.connections
         .slice(1, -1)
@@ -175,18 +173,22 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
 
     for (const [i, connection] of object.connections.entries()) {
         if (i === 0) {
-            start = head = {
-                archetype: 'SlideStartNote',
-                data: {
-                    [EngineArchetypeDataName.Beat]: connection.beat,
-                    lane: connection.lane - 3,
-                },
-                sim: true,
-            }
-            append(start)
+            first =
+                start =
+                head =
+                    {
+                        archetype: 'SlideStartNote',
+                        data: {
+                            [EngineArchetypeDataName.Beat]: connection.beat,
+                            lane: connection.lane - 3,
+                        },
+                        sim: true,
+                    }
+            appends.push(first)
             continue
         }
 
+        if (!first) throw new Error('Unexpected missing first')
         if (!start) throw new Error('Unexpected missing start')
         if (!head) throw new Error('Unexpected missing head')
 
@@ -196,6 +198,7 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
                 data: {
                     [EngineArchetypeDataName.Beat]: connection.beat,
                     lane: connection.lane - 3,
+                    first,
                     prev: start,
                 },
                 sim: true,
@@ -206,11 +209,14 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
                     object.connections.length === 2 && head.data.lane === tail.data.lane ? 1 : 0
             }
 
-            append(tail)
+            appends.push(tail)
+
+            first.data.last = tail
 
             connectors.push({
                 archetype: connectorArchetype,
                 data: {
+                    first,
                     start,
                     head,
                     tail,
@@ -220,8 +226,9 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
 
             for (const connector of connectors) {
                 connector.data.end = tail
-                append(connector)
             }
+
+            appends.push(...connectors)
             connectors.length = 0
             continue
         }
@@ -235,11 +242,12 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
                 },
                 sim: false,
             }
-            append(tail)
+            appends.push(tail)
 
             connectors.push({
                 archetype: connectorArchetype,
                 data: {
+                    first,
                     start,
                     head,
                     tail,
@@ -256,15 +264,17 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
             data: {
                 [EngineArchetypeDataName.Beat]: connection.beat,
                 lane: connection.lane - 3,
+                first,
                 prev: start,
             },
             sim: false,
         }
-        append(tail)
+        appends.push(tail)
 
         connectors.push({
             archetype: connectorArchetype,
             data: {
+                first,
                 start,
                 head,
                 tail,
@@ -274,11 +284,16 @@ const longAndSlide: Handler<BestdoriLongNote | BestdoriSlideNote> = (object, app
 
         for (const connector of connectors) {
             connector.data.end = tail
-            append(connector)
         }
+
+        appends.push(...connectors)
         connectors.length = 0
 
         start = head = tail
+    }
+
+    for (const intermediate of appends) {
+        append(intermediate)
     }
 }
 

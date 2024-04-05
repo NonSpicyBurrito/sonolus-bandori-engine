@@ -1,8 +1,9 @@
+import { windows } from '../../../../../../../../../shared/src/engine/data/windows.mjs'
 import { buckets } from '../../../../../buckets.mjs'
 import { effect } from '../../../../../effect.mjs'
 import { particle } from '../../../../../particle.mjs'
 import { skin } from '../../../../../skin.mjs'
-import { windows } from '../../../../../windows.mjs'
+import { queueHold } from '../../../../HoldManager.mjs'
 import { SlideNote } from './SlideNote.mjs'
 
 export class SlideEndNote extends SlideNote {
@@ -29,7 +30,7 @@ export class SlideEndNote extends SlideNote {
         super.preprocess()
 
         const minPrevInputTime =
-            bpmChanges.at(this.prevData.beat).time + windows.minGood + input.offset
+            bpmChanges.at(this.prevImport.beat).time + windows.minGood + input.offset
 
         this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
@@ -37,31 +38,27 @@ export class SlideEndNote extends SlideNote {
     touch() {
         const id = this.prevSharedMemory.activatedTouchId
         if (id) {
-            if (time.now > this.inputTime.max) {
-                this.endSlideEffects()
-                return
-            }
-
             for (const touch of touches) {
                 if (touch.id !== id) continue
 
-                if (!touch.ended) return
+                if (!touch.ended) {
+                    queueHold(this.slideImport.firstRef)
+                    return
+                }
 
                 if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
                     this.complete(touch.t)
                 } else {
-                    this.despawn = true
+                    this.incomplete(touch.t)
                 }
-                this.endSlideEffects()
                 return
             }
 
             if (time.now >= this.inputTime.min) {
                 this.complete(time.now)
             } else {
-                this.despawn = true
+                this.incomplete(time.now)
             }
-            this.endSlideEffects()
             return
         }
 

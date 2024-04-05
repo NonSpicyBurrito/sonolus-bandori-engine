@@ -9,6 +9,10 @@ import { getZ, layer } from '../../../skin.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class VisibleNote extends Note {
+    export = this.defineExport({
+        accuracyDiff: { name: 'accuracyDiff', type: Number },
+    })
+
     abstract dualWindows: {
         normal: JudgmentWindows
         strict: JudgmentWindows
@@ -68,7 +72,7 @@ export abstract class VisibleNote extends Note {
         this.inputTime.min = this.targetTime + this.windows.good.min + input.offset
         this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
 
-        this.z = getZ(layer.note.body, this.targetTime, this.data.lane)
+        this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
 
         this.result.accuracy = this.windows.good.max
     }
@@ -117,6 +121,12 @@ export abstract class VisibleNote extends Note {
         this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
     }
 
+    incomplete(hitTime: number) {
+        this.export('accuracyDiff', hitTime - this.result.accuracy - this.targetTime)
+
+        this.despawn = true
+    }
+
     playHitEffects() {
         if (this.shouldPlaySFX) this.playSFX()
         if (options.noteEffectEnabled) this.playNoteEffects()
@@ -137,8 +147,8 @@ export abstract class VisibleNote extends Note {
     playLaneEffects() {
         particle.effects.lane.spawn(
             perspectiveLayout({
-                l: this.data.lane - 0.5,
-                r: this.data.lane + 0.5,
+                l: this.import.lane - 0.5,
+                r: this.import.lane + 0.5,
                 b: lane.b,
                 t: lane.t,
             }),

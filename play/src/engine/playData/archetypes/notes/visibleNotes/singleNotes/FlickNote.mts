@@ -1,3 +1,4 @@
+import { windows } from '../../../../../../../../shared/src/engine/data/windows.mjs'
 import { options } from '../../../../../configuration/options.mjs'
 import { buckets } from '../../../../buckets.mjs'
 import { effect } from '../../../../effect.mjs'
@@ -5,7 +6,6 @@ import { flick } from '../../../../flick.mjs'
 import { particle } from '../../../../particle.mjs'
 import { scaledScreen } from '../../../../scaledScreen.mjs'
 import { getZ, layer, skin } from '../../../../skin.mjs'
-import { windows } from '../../../../windows.mjs'
 import { isUsed, markAsUsed } from '../../../InputManager.mjs'
 import { SingleNote } from './SingleNote.mjs'
 
@@ -45,15 +45,15 @@ export class FlickNote extends SingleNote {
         const h = scaledScreen.wToH * options.noteSize
 
         new Rect({
-            l: this.data.lane - w,
-            r: this.data.lane + w,
+            l: this.import.lane - w,
+            r: this.import.lane + w,
             t: 1 - h,
             b: 1,
         }).copyTo(this.arrow.layout)
 
         if (options.markerAnimation) this.arrow.animation = 0.25 * h
 
-        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.data.lane)
+        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
     }
 
     touch() {
@@ -90,7 +90,7 @@ export class FlickNote extends SingleNote {
             if (d >= 0.04 * flick.distance) {
                 this.complete(touch)
             } else if (touch.ended) {
-                this.despawn = true
+                this.incomplete(touch.t)
             }
             return
         }
@@ -99,6 +99,7 @@ export class FlickNote extends SingleNote {
     complete(touch: Touch) {
         this.result.judgment = input.judge(touch.startTime, this.targetTime, this.windows)
         this.result.accuracy = touch.startTime - this.targetTime
+        this.export('accuracyDiff', time.now - touch.startTime)
 
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000

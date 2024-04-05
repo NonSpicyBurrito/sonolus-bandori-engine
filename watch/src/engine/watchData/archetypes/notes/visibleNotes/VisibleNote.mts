@@ -8,7 +8,18 @@ import { getZ, layer } from '../../../skin.mjs'
 import { Note } from '../Note.mjs'
 
 export abstract class VisibleNote extends Note {
+    abstract dualWindows: {
+        normal: JudgmentWindows
+        strict: JudgmentWindows
+    }
+
+    abstract bucket: Bucket
+
     hasInput = true
+
+    sharedMemory = this.defineSharedMemory({
+        despawnTime: Number,
+    })
 
     targetTime = this.entityMemory(Number)
 
@@ -25,20 +36,46 @@ export abstract class VisibleNote extends Note {
     y = this.entityMemory(Number)
 
     globalPreprocess() {
+        const toMs = ({ min, max }: JudgmentWindow) => ({
+            min: Math.round(min * 1000),
+            max: Math.round(max * 1000),
+        })
+
+        this.bucket.set({
+            perfect: toMs(this.windows.perfect),
+            great: toMs(this.windows.great),
+            good: toMs(this.windows.good),
+        })
+
         this.life.miss = -100
     }
 
     preprocess() {
         super.preprocess()
 
-        this.targetTime = bpmChanges.at(this.data.beat).time
+        this.targetTime = bpmChanges.at(this.import.beat).time
 
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
 
-        if (options.sfxEnabled) this.scheduleSFX()
+        this.sharedMemory.despawnTime = this.hitTime
+
+        if (options.sfxEnabled) {
+            if (replay.isReplay) {
+                this.scheduleReplaySFX()
+            } else {
+                this.scheduleSFX()
+            }
+        }
 
         this.result.time = this.targetTime
+
+        if (!replay.isReplay) {
+            this.result.bucket.index = this.bucket.index
+        } else if (this.import.judgment) {
+            this.result.bucket.index = this.bucket.index
+            this.result.bucket.value = this.import.accuracy * 1000
+        }
     }
 
     spawnTime() {
@@ -46,7 +83,7 @@ export abstract class VisibleNote extends Note {
     }
 
     despawnTime() {
-        return this.visualTime.max
+        return this.sharedMemory.despawnTime
     }
 
     initialize() {
@@ -68,20 +105,46 @@ export abstract class VisibleNote extends Note {
         this.despawnTerminate()
     }
 
+    get windows() {
+        const dualWindows = this.dualWindows
+
+        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
+            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
+            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
+        })
+
+        return {
+            perfect: toWindow('perfect'),
+            great: toWindow('great'),
+            good: toWindow('good'),
+        }
+    }
+
+    get hitTime() {
+        return (
+            this.targetTime +
+            (replay.isReplay ? this.import.accuracy + this.import.accuracyDiff : 0)
+        )
+    }
+
     globalInitialize() {
         if (options.hidden > 0)
             this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
 
-        this.z = getZ(layer.note.body, this.targetTime, this.data.lane)
+        this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
     }
 
     abstract scheduleSFX(): void
+
+    abstract scheduleReplaySFX(): void
 
     render() {
         this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
     }
 
     despawnTerminate() {
+        if (replay.isReplay && !this.import.judgment) return
+
         if (options.noteEffectEnabled) this.playNoteEffects()
         if (options.laneEffectEnabled) this.playLaneEffects()
     }
@@ -98,8 +161,8 @@ export abstract class VisibleNote extends Note {
     playLaneEffects() {
         particle.effects.lane.spawn(
             perspectiveLayout({
-                l: this.data.lane - 0.5,
-                r: this.data.lane + 0.5,
+                l: this.import.lane - 0.5,
+                r: this.import.lane + 0.5,
                 b: lane.b,
                 t: lane.t,
             }),

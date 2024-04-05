@@ -10,7 +10,7 @@ import { archetypes } from '../index.mjs'
 export abstract class SlideConnector extends Archetype {
     abstract sprite: SkinSprite
 
-    data = this.defineData({
+    import = this.defineImport({
         startRef: { name: 'start', type: Number },
         endRef: { name: 'end', type: Number },
         headRef: { name: 'head', type: Number },
@@ -55,14 +55,17 @@ export abstract class SlideConnector extends Archetype {
     })
 
     preprocess() {
-        this.head.time = bpmChanges.at(this.headData.beat).time
-        this.tail.time = bpmChanges.at(this.tailData.beat).time
+        this.head.time = bpmChanges.at(this.headImport.beat).time
+        this.tail.time = bpmChanges.at(this.tailImport.beat).time
 
         this.visualTime.min = this.head.time - note.duration
 
         if (options.sfxEnabled) {
-            const id = effect.clips.hold.scheduleLoop(this.head.time)
-            effect.clips.scheduleStopLoop(id, this.tail.time)
+            if (replay.isReplay) {
+                this.scheduleReplaySFX()
+            } else {
+                this.scheduleSFX()
+            }
         }
     }
 
@@ -70,8 +73,15 @@ export abstract class SlideConnector extends Archetype {
         return this.visualTime.min
     }
 
-    despawnTime() {
-        return this.tail.time
+    despawnTime(): number {
+        return replay.isReplay
+            ? Math.min(
+                  this.startImport.judgment
+                      ? this.endSharedMemory.despawnTime
+                      : this.startSharedMemory.despawnTime,
+                  this.tail.time,
+              )
+            : this.tail.time
     }
 
     initialize() {
@@ -92,6 +102,10 @@ export abstract class SlideConnector extends Archetype {
 
         if (time.now < this.head.time) return
 
+        this.renderSlide()
+
+        if (time.now < this.startSharedMemory.despawnTime) return
+
         if (this.shouldScheduleCircularEffect && !this.effectInstanceIds.circular)
             this.spawnCircularEffect()
 
@@ -101,8 +115,6 @@ export abstract class SlideConnector extends Archetype {
         if (this.effectInstanceIds.circular) this.updateCircularEffect()
 
         if (this.effectInstanceIds.linear) this.updateLinearEffect()
-
-        this.renderSlide()
     }
 
     terminate() {
@@ -113,12 +125,24 @@ export abstract class SlideConnector extends Archetype {
             this.destroyLinearEffect()
     }
 
-    get headData() {
-        return archetypes.SlideStartNote.data.get(this.data.headRef)
+    get startImport() {
+        return archetypes.SlideStartNote.import.get(this.import.startRef)
     }
 
-    get tailData() {
-        return archetypes.SlideStartNote.data.get(this.data.tailRef)
+    get headImport() {
+        return archetypes.SlideStartNote.import.get(this.import.headRef)
+    }
+
+    get tailImport() {
+        return archetypes.SlideStartNote.import.get(this.import.tailRef)
+    }
+
+    get startSharedMemory() {
+        return archetypes.TapNote.sharedMemory.get(this.import.startRef)
+    }
+
+    get endSharedMemory() {
+        return archetypes.TapNote.sharedMemory.get(this.import.endRef)
     }
 
     get shouldScheduleCircularEffect() {
@@ -133,22 +157,38 @@ export abstract class SlideConnector extends Archetype {
         const w = 0.5 * options.noteSize
         const h = note.h * options.noteSize
 
-        this.head.lane = this.headData.lane
+        this.head.lane = this.headImport.lane
         this.head.l = this.head.lane - w
         this.head.r = this.head.lane + w
 
-        this.tail.lane = this.tailData.lane
+        this.tail.lane = this.tailImport.lane
         this.tail.l = this.tail.lane - w
         this.tail.r = this.tail.lane + w
 
         if (options.hidden > 0)
             this.visualTime.hidden = this.tail.time - note.duration * options.hidden
 
-        this.connector.z = getZ(layer.note.connector, this.head.time, this.headData.lane)
+        this.connector.z = getZ(layer.note.connector, this.head.time, this.headImport.lane)
 
         this.slide.t = 1 - h
         this.slide.b = 1 + h
-        this.slide.z = getZ(layer.note.slide, this.head.time, this.headData.lane)
+        this.slide.z = getZ(layer.note.slide, this.head.time, this.headImport.lane)
+    }
+
+    scheduleSFX() {
+        const id = effect.clips.hold.scheduleLoop(this.head.time)
+        effect.clips.scheduleStopLoop(id, this.tail.time)
+    }
+
+    scheduleReplaySFX() {
+        if (!this.startImport.judgment) return
+
+        const start = Math.max(this.head.time, this.startSharedMemory.despawnTime)
+        const end = Math.min(this.tail.time, this.endSharedMemory.despawnTime)
+        if (start >= end) return
+
+        const id = effect.clips.hold.scheduleLoop(start)
+        effect.clips.scheduleStopLoop(id, end)
     }
 
     renderConnector() {

@@ -1,5 +1,6 @@
 import { FlickDirection } from '../../../../../../../shared/src/engine/data/FlickDirection.mjs'
 import { leftRotated, rightRotated } from '../../../../../../../shared/src/engine/data/utils.mjs'
+import { windows } from '../../../../../../../shared/src/engine/data/windows.mjs'
 import { options } from '../../../../configuration/options.mjs'
 import { buckets } from '../../../buckets.mjs'
 import { effect, sfxDistance } from '../../../effect.mjs'
@@ -9,12 +10,11 @@ import { note } from '../../../note.mjs'
 import { circularEffectLayout, particle } from '../../../particle.mjs'
 import { scaledScreen } from '../../../scaledScreen.mjs'
 import { getZ, layer, skin } from '../../../skin.mjs'
-import { windows } from '../../../windows.mjs'
 import { isUsed, markAsUsed } from '../../InputManager.mjs'
 import { VisibleNote } from './VisibleNote.mjs'
 
 export class DirectionalFlickNote extends VisibleNote {
-    directionalFlickData = this.defineData({
+    directionalFlickImport = this.defineImport({
         direction: { name: 'direction', type: DataType<FlickDirection> },
         size: { name: 'size', type: Number },
     })
@@ -48,27 +48,27 @@ export class DirectionalFlickNote extends VisibleNote {
     preprocess() {
         super.preprocess()
 
-        if (options.mirror) this.directionalFlickData.direction *= -1
+        if (options.mirror) this.directionalFlickImport.direction *= -1
     }
 
     initialize() {
         super.initialize()
 
-        const size = this.directionalFlickData.size - 1
+        const size = this.directionalFlickImport.size - 1
 
-        if (this.directionalFlickData.direction === FlickDirection.Left) {
-            const l = this.data.lane - size
-            const r = this.data.lane
+        if (this.directionalFlickImport.direction === FlickDirection.Left) {
+            const l = this.import.lane - size
+            const r = this.import.lane
 
             getHitbox({ l, r }).copyTo(this.hitbox)
         } else {
-            const l = this.data.lane
-            const r = this.data.lane + size
+            const l = this.import.lane
+            const r = this.import.lane + size
 
             getHitbox({ l, r }).copyTo(this.hitbox)
         }
 
-        if (this.directionalFlickData.direction === FlickDirection.Left) {
+        if (this.directionalFlickImport.direction === FlickDirection.Left) {
             this.sprites.note = skin.sprites.directionalFlickLeftNote.exists
                 ? skin.sprites.directionalFlickLeftNote.id
                 : skin.sprites.directionalFlickLeftNoteFallback.id
@@ -84,11 +84,11 @@ export class DirectionalFlickNote extends VisibleNote {
                 : skin.sprites.directionalFlickRightArrowFallback.id
         }
 
-        if (effect.clips.directionalFlickSingle.exists && this.directionalFlickData.size === 1) {
+        if (effect.clips.directionalFlickSingle.exists && this.directionalFlickImport.size === 1) {
             this.clip = effect.clips.directionalFlickSingle.id
         } else if (
             effect.clips.directionalFlickDouble.exists &&
-            this.directionalFlickData.size === 2
+            this.directionalFlickImport.size === 2
         ) {
             this.clip = effect.clips.directionalFlickDouble.id
         } else if (effect.clips.directionalFlickTriple.exists) {
@@ -97,7 +97,7 @@ export class DirectionalFlickNote extends VisibleNote {
             this.clip = effect.clips.flickPerfect.id
         }
 
-        if (this.directionalFlickData.direction === FlickDirection.Left) {
+        if (this.directionalFlickImport.direction === FlickDirection.Left) {
             this.effects.circular = particle.effects.directionalFlickNoteLeftCircular.exists
                 ? particle.effects.directionalFlickNoteLeftCircular.id
                 : particle.effects.directionalFlickNoteLeftCircularFallback.id
@@ -119,15 +119,15 @@ export class DirectionalFlickNote extends VisibleNote {
         const t = 1 - h
         const b = 1 + h
 
-        if (this.directionalFlickData.direction === FlickDirection.Left) {
-            const lane = this.data.lane - this.directionalFlickData.size + 0.5
+        if (this.directionalFlickImport.direction === FlickDirection.Left) {
+            const lane = this.import.lane - this.directionalFlickImport.size + 0.5
 
             const l = lane - w
             const r = lane
 
             leftRotated({ l, r, b, t }).copyTo(this.arrow.layout)
         } else {
-            const lane = this.data.lane + this.directionalFlickData.size - 0.5
+            const lane = this.import.lane + this.directionalFlickImport.size - 0.5
 
             const l = lane
             const r = lane + w
@@ -136,11 +136,11 @@ export class DirectionalFlickNote extends VisibleNote {
         }
 
         if (options.markerAnimation)
-            this.arrow.animation = 0.25 * options.noteSize * this.directionalFlickData.direction
+            this.arrow.animation = 0.25 * options.noteSize * this.directionalFlickImport.direction
 
-        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.data.lane)
+        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
 
-        this.distance = 0.01 * this.directionalFlickData.size * flick.distance
+        this.distance = 0.01 * this.directionalFlickImport.size * flick.distance
     }
 
     touch() {
@@ -173,13 +173,13 @@ export class DirectionalFlickNote extends VisibleNote {
             if (touch.id !== this.activatedTouchId) continue
 
             const p =
-                (touch.position.x - touch.startPosition.x) * this.directionalFlickData.direction
+                (touch.position.x - touch.startPosition.x) * this.directionalFlickImport.direction
             const d = touch.position.sub(touch.startPosition).length
 
             if (p >= 0 && d >= this.distance) {
                 this.complete(touch)
             } else if (touch.ended) {
-                this.despawn = true
+                this.incomplete(touch.t)
             }
             return
         }
@@ -188,6 +188,7 @@ export class DirectionalFlickNote extends VisibleNote {
     complete(touch: Touch) {
         this.result.judgment = input.judge(touch.startTime, this.targetTime, this.windows)
         this.result.accuracy = touch.startTime - this.targetTime
+        this.export('accuracyDiff', time.now - touch.startTime)
 
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
@@ -212,8 +213,8 @@ export class DirectionalFlickNote extends VisibleNote {
         const t = 1 - h
         const b = 1 + h
 
-        for (let i = 0; i < this.directionalFlickData.size; i++) {
-            const lane = this.data.lane + this.directionalFlickData.direction * i
+        for (let i = 0; i < this.directionalFlickImport.size; i++) {
+            const lane = this.import.lane + this.directionalFlickImport.direction * i
             const layout = new Quad({
                 x1: (lane - w) * b,
                 x2: (lane - w) * t,
@@ -257,14 +258,14 @@ export class DirectionalFlickNote extends VisibleNote {
         const t = 1 - h
         const b = 1 + h
 
-        if (this.directionalFlickData.direction === FlickDirection.Left) {
-            const l = this.data.lane - w
-            const r = this.data.lane
+        if (this.directionalFlickImport.direction === FlickDirection.Left) {
+            const l = this.import.lane - w
+            const r = this.import.lane
 
             particle.effects.spawn(this.effects.linear, leftRotated({ l, r, b, t }), 0.4, false)
         } else {
-            const l = this.data.lane
-            const r = this.data.lane + w
+            const l = this.import.lane
+            const r = this.import.lane + w
 
             particle.effects.spawn(this.effects.linear, rightRotated({ l, r, b, t }), 0.4, false)
         }
@@ -272,7 +273,7 @@ export class DirectionalFlickNote extends VisibleNote {
 
     playCircularNoteEffect() {
         const layout = circularEffectLayout({
-            lane: this.data.lane,
+            lane: this.import.lane,
             w: 1.5,
             h: 1,
         })

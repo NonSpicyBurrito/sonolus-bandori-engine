@@ -1,4 +1,4 @@
-import { EffectClipName } from 'sonolus-core'
+import { EffectClipName } from '@sonolus/core'
 import { lane } from '../../../../shared/src/engine/data/lane.mjs'
 import {
     leftRotated,
