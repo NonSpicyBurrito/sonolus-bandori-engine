@@ -16,7 +16,9 @@ const holds = levelMemory({
     now: Dictionary(16, Number, Hold),
 })
 
-export const queueHold = (id: number) => holds.queue.add(id)
+export const queueHold = (id: number) => {
+    holds.queue.add(id)
+}
 
 export const moveHold = (id: number, lane: number) => {
     const index = holds.old.indexOf(id)

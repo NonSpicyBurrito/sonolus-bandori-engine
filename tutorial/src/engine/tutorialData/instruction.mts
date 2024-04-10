@@ -15,7 +15,7 @@ export const instruction = defineInstruction({
     },
 })
 
-export const drawHand = (angle: number, x: number, y: number, a: number) =>
+export const drawHand = (angle: number, x: number, y: number, a: number) => {
     instruction.icons.hand.paint(
         new Vec(0, 1)
             .rotate(angle)
@@ -27,3 +27,4 @@ export const drawHand = (angle: number, x: number, y: number, a: number) =>
         0,
         a * ui.configuration.instruction.alpha,
     )
+}
