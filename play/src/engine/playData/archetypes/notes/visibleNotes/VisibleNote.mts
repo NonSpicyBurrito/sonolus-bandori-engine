@@ -1,7 +1,6 @@
 import { approach } from '../../../../../../../shared/src/engine/data/note.mjs'
 import { perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.mjs'
 import { options } from '../../../../configuration/options.mjs'
-import { getScheduleSFXTime } from '../../../effect.mjs'
 import { lane } from '../../../lane.mjs'
 import { note } from '../../../note.mjs'
 import { particle } from '../../../particle.mjs'
@@ -20,15 +19,11 @@ export abstract class VisibleNote extends Note {
 
     abstract bucket: Bucket
 
-    scheduleSFXTime = this.entityMemory(Number)
-
     visualTime = this.entityMemory({
         min: Number,
         max: Number,
         hidden: Number,
     })
-
-    hasSFXScheduled = this.entityMemory(Boolean)
 
     inputTime = this.entityMemory({
         min: Number,
@@ -57,12 +52,12 @@ export abstract class VisibleNote extends Note {
     preprocess() {
         super.preprocess()
 
-        this.scheduleSFXTime = getScheduleSFXTime(this.targetTime)
-
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
 
-        this.spawnTime = Math.min(this.visualTime.min, this.scheduleSFXTime)
+        this.spawnTime = this.visualTime.min
+
+        if (this.shouldScheduleSFX) this.scheduleSFX()
     }
 
     initialize() {
@@ -80,9 +75,6 @@ export abstract class VisibleNote extends Note {
     updateParallel() {
         if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
-
-        if (this.shouldScheduleSFX && !this.hasSFXScheduled && time.now >= this.scheduleSFXTime)
-            this.scheduleSFX()
 
         if (time.now < this.visualTime.min) return
         if (options.hidden > 0 && time.now > this.visualTime.hidden) return
@@ -113,9 +105,7 @@ export abstract class VisibleNote extends Note {
         return options.sfxEnabled && !options.autoSFX
     }
 
-    scheduleSFX() {
-        this.hasSFXScheduled = true
-    }
+    abstract scheduleSFX(): void
 
     render() {
         this.y = approach(this.visualTime.min, this.visualTime.max, time.now)

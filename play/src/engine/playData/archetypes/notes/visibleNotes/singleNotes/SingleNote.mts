@@ -44,8 +44,6 @@ export abstract class SingleNote extends VisibleNote {
     }
 
     scheduleSFX() {
-        super.scheduleSFX()
-
         this.clips.perfect.schedule(this.targetTime, sfxDistance)
     }
 
