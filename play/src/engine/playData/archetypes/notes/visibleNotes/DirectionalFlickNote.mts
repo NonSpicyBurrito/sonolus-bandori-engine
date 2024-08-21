@@ -199,8 +199,6 @@ export class DirectionalFlickNote extends VisibleNote {
     }
 
     scheduleSFX() {
-        super.scheduleSFX()
-
         effect.clips.schedule(this.clip, this.targetTime, sfxDistance)
     }
 
