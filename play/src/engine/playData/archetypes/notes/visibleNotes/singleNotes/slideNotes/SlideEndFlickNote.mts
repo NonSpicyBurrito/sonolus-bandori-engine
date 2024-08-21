@@ -57,8 +57,6 @@ export class SlideEndFlickNote extends SlideNote {
     initialize() {
         super.initialize()
 
-        if (!this.slideEndFlickImport.long) this.inputTime.min = this.targetTime + input.offset
-
         const w = 0.5 * options.noteSize
         const h = scaledScreen.wToH * options.noteSize
 
@@ -144,6 +142,12 @@ export class SlideEndFlickNote extends SlideNote {
         this.playHitEffects()
 
         this.despawn = true
+    }
+
+    getMinInputTime() {
+        return this.slideEndFlickImport.long
+            ? super.getMinInputTime()
+            : this.targetTime + input.offset
     }
 
     render() {

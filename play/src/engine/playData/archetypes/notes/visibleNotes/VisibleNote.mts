@@ -55,7 +55,9 @@ export abstract class VisibleNote extends Note {
         this.visualTime.max = this.targetTime
         this.visualTime.min = this.visualTime.max - note.duration
 
-        this.spawnTime = this.visualTime.min
+        this.inputTime.min = this.getMinInputTime()
+
+        this.spawnTime = Math.min(this.visualTime.min, this.inputTime.min)
 
         if (this.shouldScheduleSFX) this.scheduleSFX()
     }
@@ -64,7 +66,6 @@ export abstract class VisibleNote extends Note {
         if (options.hidden > 0)
             this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
 
-        this.inputTime.min = this.targetTime + this.windows.good.min + input.offset
         this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
 
         this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
@@ -103,6 +104,10 @@ export abstract class VisibleNote extends Note {
 
     get shouldPlaySFX() {
         return options.sfxEnabled && !options.autoSFX
+    }
+
+    getMinInputTime() {
+        return this.targetTime + this.windows.good.min + input.offset
     }
 
     abstract scheduleSFX(): void
