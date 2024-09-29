@@ -28,8 +28,6 @@ export class DirectionalFlickNote extends VisibleNote {
         arrow: SkinSpriteId,
     })
 
-    clip = this.entityMemory(EffectClipId)
-
     effects = this.entityMemory({
         circular: ParticleEffectId,
         linear: ParticleEffectId,
@@ -82,19 +80,6 @@ export class DirectionalFlickNote extends VisibleNote {
             this.sprites.arrow = skin.sprites.directionalFlickRightArrow.exists
                 ? skin.sprites.directionalFlickRightArrow.id
                 : skin.sprites.directionalFlickRightArrowFallback.id
-        }
-
-        if (effect.clips.directionalFlickSingle.exists && this.directionalFlickImport.size === 1) {
-            this.clip = effect.clips.directionalFlickSingle.id
-        } else if (
-            effect.clips.directionalFlickDouble.exists &&
-            this.directionalFlickImport.size === 2
-        ) {
-            this.clip = effect.clips.directionalFlickDouble.id
-        } else if (effect.clips.directionalFlickTriple.exists) {
-            this.clip = effect.clips.directionalFlickTriple.id
-        } else {
-            this.clip = effect.clips.flickPerfect.id
         }
 
         if (this.directionalFlickImport.direction === FlickDirection.Left) {
@@ -196,6 +181,19 @@ export class DirectionalFlickNote extends VisibleNote {
         this.playHitEffects()
 
         this.despawn = true
+    }
+
+    get clip() {
+        if (effect.clips.directionalFlickSingle.exists && this.directionalFlickImport.size === 1)
+            return effect.clips.directionalFlickSingle.id
+
+        if (effect.clips.directionalFlickDouble.exists && this.directionalFlickImport.size === 2)
+            return effect.clips.directionalFlickDouble.id
+
+        if (effect.clips.directionalFlickTriple.exists)
+            return effect.clips.directionalFlickTriple.id
+
+        return effect.clips.flickPerfect.id
     }
 
     scheduleSFX() {
