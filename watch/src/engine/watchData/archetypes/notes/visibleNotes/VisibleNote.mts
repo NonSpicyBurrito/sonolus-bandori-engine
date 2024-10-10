@@ -36,7 +36,7 @@ export abstract class VisibleNote extends Note {
     y = this.entityMemory(Number)
 
     globalPreprocess() {
-        const toMs = ({ min, max }: JudgmentWindow) => ({
+        const toMs = ({ min, max }: RangeLike) => ({
             min: Math.round(min * 1000),
             max: Math.round(max * 1000),
         })
