@@ -4,8 +4,8 @@ A recreation of BanG Dream! Girls Band Party engine in [Sonolus](https://sonolus
 
 ## Links
 
--   [Sonolus Website](https://sonolus.com)
--   [Sonolus Wiki](https://github.com/NonSpicyBurrito/sonolus-wiki)
+- [Sonolus Website](https://sonolus.com)
+- [Sonolus Wiki](https://github.com/NonSpicyBurrito/sonolus-wiki)
 
 ## Installation
 
@@ -57,18 +57,18 @@ Partial database engine item compatible with [sonolus-express](https://github.co
 
 Converts Bestdori chart to Level Data.
 
--   `chart`: Bestdori chart.
--   `offset`: offset (default: `0`).
+- `chart`: Bestdori chart.
+- `offset`: offset (default: `0`).
 
 ### Assets
 
 The following assets are exposed as package entry points:
 
--   `EngineConfiguration`
--   `EnginePlayData`
--   `EngineWatchData`
--   `EnginePreviewData`
--   `EngineTutorialData`
--   `EngineThumbnail`
+- `EngineConfiguration`
+- `EnginePlayData`
+- `EngineWatchData`
+- `EnginePreviewData`
+- `EngineTutorialData`
+- `EngineThumbnail`
 
 In Node.js, you can obtain path to assets using `require.resolve('sonolus-bandori-engine/EngineConfiguration')` or `import.meta.resolve('sonolus-bandori-engine/EngineConfiguration')`.
