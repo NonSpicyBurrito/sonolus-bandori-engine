@@ -23,11 +23,8 @@ export abstract class VisibleNote extends Note {
 
     targetTime = this.entityMemory(Number)
 
-    visualTime = this.entityMemory({
-        min: Number,
-        max: Number,
-        hidden: Number,
-    })
+    visualTime = this.entityMemory(Range)
+    hiddenTime = this.entityMemory(Number)
 
     initialized = this.entityMemory(Boolean)
 
@@ -55,8 +52,7 @@ export abstract class VisibleNote extends Note {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = this.targetTime
-        this.visualTime.min = this.visualTime.max - note.duration
+        this.visualTime.copyFrom(Range.l.mul(note.duration).add(this.targetTime))
 
         this.sharedMemory.despawnTime = this.hitTime
 
@@ -94,7 +90,7 @@ export abstract class VisibleNote extends Note {
     }
 
     updateParallel() {
-        if (options.hidden > 0 && time.now > this.visualTime.hidden) return
+        if (options.hidden > 0 && time.now > this.hiddenTime) return
 
         this.render()
     }
@@ -129,7 +125,7 @@ export abstract class VisibleNote extends Note {
 
     globalInitialize() {
         if (options.hidden > 0)
-            this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
+            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
 
         this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
     }
