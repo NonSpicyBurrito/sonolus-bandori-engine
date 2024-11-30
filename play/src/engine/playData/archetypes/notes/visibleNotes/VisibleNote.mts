@@ -19,16 +19,10 @@ export abstract class VisibleNote extends Note {
 
     abstract bucket: Bucket
 
-    visualTime = this.entityMemory({
-        min: Number,
-        max: Number,
-        hidden: Number,
-    })
+    visualTime = this.entityMemory(Range)
+    hiddenTime = this.entityMemory(Number)
 
-    inputTime = this.entityMemory({
-        min: Number,
-        max: Number,
-    })
+    inputTime = this.entityMemory(Range)
 
     z = this.entityMemory(Number)
 
@@ -52,8 +46,7 @@ export abstract class VisibleNote extends Note {
     preprocess() {
         super.preprocess()
 
-        this.visualTime.max = this.targetTime
-        this.visualTime.min = this.visualTime.max - note.duration
+        this.visualTime.copyFrom(Range.l.mul(note.duration).add(this.targetTime))
 
         this.inputTime.min = this.getMinInputTime()
 
@@ -64,7 +57,7 @@ export abstract class VisibleNote extends Note {
 
     initialize() {
         if (options.hidden > 0)
-            this.visualTime.hidden = this.visualTime.max - note.duration * options.hidden
+            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
 
         this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
 
@@ -78,7 +71,7 @@ export abstract class VisibleNote extends Note {
         if (this.despawn) return
 
         if (time.now < this.visualTime.min) return
-        if (options.hidden > 0 && time.now > this.visualTime.hidden) return
+        if (options.hidden > 0 && time.now > this.hiddenTime) return
 
         this.render()
     }
