@@ -3,7 +3,7 @@ import { DatabaseEngineItem } from '@sonolus/core'
 export { bestdoriToLevelData } from './bestdori/convert.cjs'
 export * from './bestdori/index.cjs'
 
-export const version = '1.5.0'
+export const version = '1.5.1'
 
 export const databaseEngineItem = {
     name: 'bandori',
