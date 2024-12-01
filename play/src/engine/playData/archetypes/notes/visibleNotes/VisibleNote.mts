@@ -1,5 +1,10 @@
 import { approach } from '../../../../../../../shared/src/engine/data/note.mjs'
 import { perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.mjs'
+import {
+    DualWindows,
+    toBucketWindows,
+    toWindows,
+} from '../../../../../../../shared/src/engine/data/windows.mjs'
 import { options } from '../../../../configuration/options.mjs'
 import { lane } from '../../../lane.mjs'
 import { note } from '../../../note.mjs'
@@ -12,10 +17,7 @@ export abstract class VisibleNote extends Note {
         accuracyDiff: { name: 'accuracyDiff', type: Number },
     })
 
-    abstract dualWindows: {
-        normal: JudgmentWindows
-        strict: JudgmentWindows
-    }
+    abstract dualWindows: DualWindows
 
     abstract bucket: Bucket
 
@@ -29,16 +31,7 @@ export abstract class VisibleNote extends Note {
     y = this.entityMemory(Number)
 
     globalPreprocess() {
-        const toMs = ({ min, max }: RangeLike) => ({
-            min: Math.round(min * 1000),
-            max: Math.round(max * 1000),
-        })
-
-        this.bucket.set({
-            perfect: toMs(this.windows.perfect),
-            great: toMs(this.windows.great),
-            good: toMs(this.windows.good),
-        })
+        this.bucket.set(toBucketWindows(this.windows))
 
         this.life.miss = -100
     }
@@ -77,18 +70,7 @@ export abstract class VisibleNote extends Note {
     }
 
     get windows() {
-        const dualWindows = this.dualWindows
-
-        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
-            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
-            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
-        })
-
-        return {
-            perfect: toWindow('perfect'),
-            great: toWindow('great'),
-            good: toWindow('good'),
-        }
+        return toWindows(this.dualWindows, options.strictJudgment)
     }
 
     get shouldScheduleSFX() {
