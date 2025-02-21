@@ -144,4 +144,38 @@ export const optionsDefinition = {
         type: 'toggle',
         def: 1,
     },
+    previewVerticalScale: {
+        name: Text.PreviewScaleVertical,
+        scope: 'Bandori',
+        type: 'slider',
+        def: 1,
+        min: 0.5,
+        max: 2,
+        step: 0.05,
+        unit: Text.PercentageUnit,
+    },
+    previewMeasure: {
+        name: Text.PreviewMeasure,
+        scope: 'Bandori',
+        type: 'toggle',
+        def: 1,
+    },
+    previewBeat: {
+        name: Text.PreviewBeat,
+        scope: 'Bandori',
+        type: 'toggle',
+        def: 1,
+    },
+    previewTime: {
+        name: Text.PreviewTime,
+        scope: 'Bandori',
+        type: 'toggle',
+        def: 1,
+    },
+    previewBpm: {
+        name: Text.PreviewBpm,
+        scope: 'Bandori',
+        type: 'toggle',
+        def: 1,
+    },
 } satisfies Record<string, EngineConfigurationOption>
