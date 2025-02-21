@@ -7,7 +7,7 @@ export const version = '1.5.2'
 
 export const databaseEngineItem = {
     name: 'bandori',
-    version: 12,
+    version: 13,
     title: {
         en: 'BanG Dream!',
         ja: 'バンドリ！',
