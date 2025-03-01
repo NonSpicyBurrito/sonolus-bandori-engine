@@ -2,6 +2,7 @@ import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.m
 import { options } from '../../configuration/options.mjs'
 import { effect, sfxDistance } from '../effect.mjs'
 import { lane } from '../lane.mjs'
+import { note } from '../note.mjs'
 import { particle } from '../particle.mjs'
 import { scaledScreen } from '../scaledScreen.mjs'
 import { layer, skin } from '../skin.mjs'
@@ -135,15 +136,13 @@ export class Stage extends Archetype {
     }
 
     drawFallbackJudgmentLine() {
-        const h = 0.11625 / 4
-
         skin.sprites.judgmentLine.draw(
-            new Rect({ l: scaledScreen.l, r: scaledScreen.r, t: 1 - h, b: 1 + h }),
+            new Rect({ l: scaledScreen.l, r: scaledScreen.r, t: 1 - note.h, b: 1 + note.h }),
             layer.judgmentLine,
             1,
         )
 
-        const sh = h * 0.85
+        const sh = note.h * 0.425
         const sw = sh / scaledScreen.wToH
 
         for (let i = 0; i < 7; i++) {
