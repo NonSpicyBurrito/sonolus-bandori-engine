@@ -23,7 +23,7 @@ export const databaseEngineItem = {
         zht: 'BanG Dream! 少女樂團派對',
     },
     author: {
-        en: 'Burrito',
+        en: 'Burrito#1000',
     },
     description: {
         en: [
