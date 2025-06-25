@@ -67,6 +67,9 @@ export class Stage extends Archetype {
     }
 
     playEmptyEffects(l: number) {
+        streams.set(-9999, time.now, 0)
+        streams.set(l, time.now, 0)
+
         if (options.sfxEnabled) this.playEmptySFX()
         if (options.laneEffectEnabled) this.playEmptyLaneEffects(l)
         if (options.slotEffectEnabled) this.playEmptySlotEffects(l)

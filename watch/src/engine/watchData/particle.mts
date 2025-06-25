@@ -5,6 +5,7 @@ import { scaledScreen } from './scaledScreen.mjs'
 export const particle = defineParticle({
     effects: {
         lane: ParticleEffectName.LaneLinear,
+        slot: ParticleEffectName.SlotLinear,
 
         tapNoteCircular: ParticleEffectName.NoteCircularTapCyan,
         tapNoteLinear: ParticleEffectName.NoteLinearTapCyan,
