@@ -1,3 +1,4 @@
+import { EmptyEffect } from './EmptyEffect.mjs'
 import { Initialization } from './Initialization.mjs'
 import { SimLine } from './SimLine.mjs'
 import { Stage } from './Stage.mjs'
@@ -16,6 +17,7 @@ export const archetypes = defineArchetypes({
     Initialization,
 
     Stage,
+    EmptyEffect,
 
     IgnoredNote,
 
