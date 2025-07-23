@@ -1,0 +1,127 @@
+import { windows } from '../../../../../../../../shared/src/engine/data/windows.js'
+import { options } from '../../../../../configuration/options.js'
+import { buckets } from '../../../../buckets.js'
+import { effect } from '../../../../effect.js'
+import { flick } from '../../../../flick.js'
+import { particle } from '../../../../particle.js'
+import { scaledScreen } from '../../../../scaledScreen.js'
+import { getZ, layer, skin } from '../../../../skin.js'
+import { isUsed, markAsUsed } from '../../../InputManager.js'
+import { SingleNote } from './SingleNote.js'
+
+export class FlickNote extends SingleNote {
+    sprites = {
+        note: skin.sprites.flickNote,
+        arrow: skin.sprites.flickArrow,
+    }
+
+    clips = {
+        perfect: effect.clips.flickPerfect,
+        great: effect.clips.flickGreat,
+        good: effect.clips.flickGood,
+    }
+
+    effects = {
+        circular: particle.effects.flickNoteCircular,
+        linear: particle.effects.flickNoteLinear,
+    }
+
+    dualWindows = windows.flickNote
+
+    bucket = buckets.flickNote
+
+    arrow = this.entityMemory({
+        layout: Rect,
+        animation: Number,
+        z: Number,
+    })
+
+    activatedTouchId = this.entityMemory(TouchId)
+
+    initialize() {
+        super.initialize()
+
+        const w = 0.5 * options.noteSize
+        const h = scaledScreen.wToH * options.noteSize
+
+        new Rect({
+            l: this.import.lane - w,
+            r: this.import.lane + w,
+            t: 1 - h,
+            b: 1,
+        }).copyTo(this.arrow.layout)
+
+        if (options.markerAnimation) this.arrow.animation = 0.25 * h
+
+        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
+    }
+
+    touch() {
+        if (time.now < this.inputTime.min) return
+
+        if (!this.activatedTouchId) this.touchActivate()
+
+        if (this.activatedTouchId) this.touchComplete()
+    }
+
+    touchActivate() {
+        for (const touch of touches) {
+            if (!touch.started) continue
+            if (!this.hitbox.contains(touch.position)) continue
+            if (isUsed(touch)) continue
+
+            markAsUsed(touch)
+
+            this.activate(touch)
+            return
+        }
+    }
+
+    activate(touch: Touch) {
+        this.activatedTouchId = touch.id
+    }
+
+    touchComplete() {
+        for (const touch of touches) {
+            if (touch.id !== this.activatedTouchId) continue
+
+            const d = touch.position.sub(touch.startPosition).length
+
+            if (d >= 0.04 * flick.distance) {
+                this.complete(touch)
+            } else if (touch.ended) {
+                this.incomplete(touch.t)
+            }
+            return
+        }
+    }
+
+    complete(touch: Touch) {
+        this.result.judgment = input.judge(touch.startTime, this.targetTime, this.windows)
+        this.result.accuracy = touch.startTime - this.targetTime
+        this.export('accuracyDiff', time.now - touch.startTime)
+
+        this.result.bucket.index = this.bucket.index
+        this.result.bucket.value = this.result.accuracy * 1000
+
+        this.playHitEffects()
+
+        this.despawn = true
+    }
+
+    render() {
+        super.render()
+
+        if (options.markerAnimation) {
+            const y = Math.lerp(
+                -this.arrow.animation,
+                this.arrow.animation,
+                Math.frac((time.now - this.targetTime) * 3 + 0.5),
+            )
+
+            this.sprites.arrow.draw(this.arrow.layout.sub({ x: 0, y }).mul(this.y), this.arrow.z, 1)
+        } else {
+            this.sprites.arrow.draw(this.arrow.layout.mul(this.y), this.arrow.z, 1)
+        }
+    }
+}
