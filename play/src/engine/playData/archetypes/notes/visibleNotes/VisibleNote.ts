@@ -33,7 +33,7 @@ export abstract class VisibleNote extends Note {
     globalPreprocess() {
         this.bucket.set(toBucketWindows(this.windows))
 
-        this.life.miss = -100
+        this.archetypeLife.miss = -100
     }
 
     preprocess() {

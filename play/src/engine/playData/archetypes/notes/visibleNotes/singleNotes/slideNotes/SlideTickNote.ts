@@ -34,7 +34,7 @@ export class SlideTickNote extends SlideNote {
     globalPreprocess() {
         super.globalPreprocess()
 
-        this.life.miss = -20
+        this.archetypeLife.miss = -20
     }
 
     preprocess() {
