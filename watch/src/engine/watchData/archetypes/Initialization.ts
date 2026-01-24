@@ -156,6 +156,17 @@ export class Initialization extends Archetype {
             horizontalAlign: HorizontalAlign.Center,
             background: true,
         })
+        ui.progress.graph.set({
+            anchor: uiRect.lb
+                .add(new Vec(0, gap))
+                .add(new Vec(0, 0.15 * ui.configuration.progress.scale)),
+            pivot: { x: 0, y: 0 },
+            size: { x: uiRect.w, y: 0.3 * ui.configuration.progress.scale },
+            rotation: 0,
+            alpha: ui.configuration.progress.alpha,
+            horizontalAlign: HorizontalAlign.Center,
+            background: true,
+        })
 
         for (const archetype of Object.values(archetypes)) {
             if (!('globalPreprocess' in archetype)) continue
