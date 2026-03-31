@@ -32,11 +32,11 @@
     "build": "tsc -p ./lib && sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial && node ./lib/build.js"
   },
   "dependencies": {
-    "@sonolus/core": "~7.15.0"
+    "@sonolus/core": "~7.15.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@sonolus/sonolus.js": "~9.7.0",
+    "@sonolus/sonolus.js": "~9.7.1",
     "@types/node": "^22.19.15",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
