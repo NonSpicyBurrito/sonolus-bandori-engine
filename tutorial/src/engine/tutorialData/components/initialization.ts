@@ -43,7 +43,7 @@ export const initialization = {
         particle.transform.set(transform)
 
         const gap = 0.05
-        const uiRect = screen.rect.shrink(gap, gap)
+        const uiRect = safeArea.rect.shrink(gap, gap)
 
         ui.menu.set({
             anchor: uiRect.rt,
