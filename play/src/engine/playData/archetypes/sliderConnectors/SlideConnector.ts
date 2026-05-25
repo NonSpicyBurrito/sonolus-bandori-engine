@@ -4,7 +4,7 @@ import { options } from '../../../configuration/options.js'
 import { effect } from '../../effect.js'
 import { note } from '../../note.js'
 import { particle } from '../../particle.js'
-import { getZ, layer, skin } from '../../skin.js'
+import { layer, skin } from '../../skin.js'
 import { moveHold } from '../HoldManager.js'
 import { archetypes } from '../index.js'
 
@@ -41,14 +41,9 @@ export abstract class SlideConnector extends Archetype {
 
     spawnTime = this.entityMemory(Number)
 
-    connector = this.entityMemory({
-        z: Number,
-    })
-
     slide = this.entityMemory({
         t: Number,
         b: Number,
-        z: Number,
     })
 
     preprocess() {
@@ -84,11 +79,8 @@ export abstract class SlideConnector extends Archetype {
 
         if (options.hidden > 0) this.hiddenTime = this.tail.time - note.duration * options.hidden
 
-        this.connector.z = getZ(layer.note.connector, this.head.time, this.headImport.lane)
-
         this.slide.t = 1 - h
         this.slide.b = 1 + h
-        this.slide.z = getZ(layer.note.slide, this.head.time, this.headImport.lane)
     }
 
     updateParallel() {
@@ -185,7 +177,11 @@ export abstract class SlideConnector extends Archetype {
             y4: y.min,
         }
 
-        this.sprite.draw(layout, this.connector.z, options.connectorAlpha)
+        this.sprite.draw(
+            layout,
+            [layer.note.connector, -this.head.time, -this.head.lane],
+            options.connectorAlpha,
+        )
     }
 
     renderSlide() {
@@ -196,7 +192,7 @@ export abstract class SlideConnector extends Archetype {
                 b: this.slide.b,
                 t: this.slide.t,
             }),
-            this.slide.z,
+            [layer.note.slide, -this.head.time, -this.head.lane],
             1,
         )
     }

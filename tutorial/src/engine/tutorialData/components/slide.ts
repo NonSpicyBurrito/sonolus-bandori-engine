@@ -18,7 +18,7 @@ export const slide = {
         const t = 1 - note.h
         const b = 1 + note.h
 
-        sprites.slide.draw(perspectiveLayout({ l, r, t, b }), layer.note.slide, 1)
+        sprites.slide.draw(perspectiveLayout({ l, r, t, b }), [layer.note.slide], 1)
     },
 
     show() {

@@ -5,7 +5,7 @@ import { effect } from '../../../../effect.js'
 import { flick } from '../../../../flick.js'
 import { particle } from '../../../../particle.js'
 import { scaledScreen } from '../../../../scaledScreen.js'
-import { getZ, layer, skin } from '../../../../skin.js'
+import { layer, skin } from '../../../../skin.js'
 import { isUsed, markAsUsed } from '../../../InputManager.js'
 import { SingleNote } from './SingleNote.js'
 
@@ -33,7 +33,6 @@ export class FlickNote extends SingleNote {
     arrow = this.entityMemory({
         layout: Rect,
         animation: Number,
-        z: Number,
     })
 
     activatedTouchId = this.entityMemory(TouchId)
@@ -52,8 +51,6 @@ export class FlickNote extends SingleNote {
         }).copyTo(this.arrow.layout)
 
         if (options.markerAnimation) this.arrow.animation = 0.25 * h
-
-        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
     }
 
     touch() {
@@ -119,9 +116,17 @@ export class FlickNote extends SingleNote {
                 Math.frac((time.now - this.targetTime) * 3 + 0.5),
             )
 
-            this.sprites.arrow.draw(this.arrow.layout.sub({ x: 0, y }).mul(this.y), this.arrow.z, 1)
+            this.sprites.arrow.draw(
+                this.arrow.layout.sub({ x: 0, y }).mul(this.y),
+                [layer.note.arrow, -this.targetTime, -this.import.lane],
+                1,
+            )
         } else {
-            this.sprites.arrow.draw(this.arrow.layout.mul(this.y), this.arrow.z, 1)
+            this.sprites.arrow.draw(
+                this.arrow.layout.mul(this.y),
+                [layer.note.arrow, -this.targetTime, -this.import.lane],
+                1,
+            )
         }
     }
 }

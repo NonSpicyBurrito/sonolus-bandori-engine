@@ -4,7 +4,7 @@ import { options } from '../../../configuration/options.js'
 import { note } from '../../note.js'
 import { panel } from '../../panel.js'
 import { scaledScreen } from '../../scaledScreen.js'
-import { getZ, layer, skin } from '../../skin.js'
+import { layer, skin } from '../../skin.js'
 import { Note } from './Note.js'
 
 export class DirectionalFlickNote extends Note {
@@ -22,9 +22,6 @@ export class DirectionalFlickNote extends Note {
     render() {
         const time = bpmChanges.at(this.import.beat).time
         const pos = panel.getPos(time)
-
-        const noteZ = getZ(layer.note.body, time, this.import.lane)
-        const arrowZ = getZ(layer.note.arrow, time, this.import.lane)
 
         const { size, direction } = this.directionalFlickImport
 
@@ -54,7 +51,7 @@ export class DirectionalFlickNote extends Note {
                     b: -note.h * options.noteSize,
                     t: note.h * options.noteSize,
                 }).add(pos),
-                noteZ,
+                [layer.note.body, -time, -this.import.lane],
                 1,
             )
         }
@@ -68,14 +65,24 @@ export class DirectionalFlickNote extends Note {
             const l = lane - options.noteSize
             const r = lane
 
-            skin.sprites.draw(arrowSpriteId, leftRotated({ l, r, b, t }).add(pos), arrowZ, 1)
+            skin.sprites.draw(
+                arrowSpriteId,
+                leftRotated({ l, r, b, t }).add(pos),
+                [layer.note.arrow, -time, -this.import.lane],
+                1,
+            )
         } else {
             const lane = this.import.lane + size - 0.5
 
             const l = lane
             const r = lane + options.noteSize
 
-            skin.sprites.draw(arrowSpriteId, rightRotated({ l, r, b, t }).add(pos), arrowZ, 1)
+            skin.sprites.draw(
+                arrowSpriteId,
+                rightRotated({ l, r, b, t }).add(pos),
+                [layer.note.arrow, -time, -this.import.lane],
+                1,
+            )
         }
     }
 }

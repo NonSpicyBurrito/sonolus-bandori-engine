@@ -2,7 +2,7 @@ import { approach } from '../../../../../shared/src/engine/data/note.js'
 import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { note } from '../note.js'
-import { getZ, layer, skin } from '../skin.js'
+import { layer, skin } from '../skin.js'
 import { archetypes } from './index.js'
 
 export class SimLine extends Archetype {
@@ -19,7 +19,6 @@ export class SimLine extends Archetype {
     initialized = this.entityMemory(Boolean)
 
     spriteLayout = this.entityMemory(Quad)
-    z = this.entityMemory(Number)
 
     y = this.entityMemory(Number)
 
@@ -88,13 +87,15 @@ export class SimLine extends Archetype {
         const t = 1 - h
 
         perspectiveLayout({ l, r, b, t }).copyTo(this.spriteLayout)
-
-        this.z = getZ(layer.simLine, this.targetTime, l)
     }
 
     render() {
         this.y = approach(this.visualTime.min, this.visualTime.max, time.now)
 
-        skin.sprites.simLine.draw(this.spriteLayout.mul(this.y), this.z, 1)
+        skin.sprites.simLine.draw(
+            this.spriteLayout.mul(this.y),
+            [layer.simLine, -this.targetTime],
+            1,
+        )
     }
 }

@@ -2,7 +2,7 @@ import { options } from '../../../../../../configuration/options.js'
 import { effect } from '../../../../../effect.js'
 import { particle } from '../../../../../particle.js'
 import { scaledScreen } from '../../../../../scaledScreen.js'
-import { getZ, layer, skin } from '../../../../../skin.js'
+import { layer, skin } from '../../../../../skin.js'
 import { SingleNote } from '../SingleNote.js'
 
 export abstract class SingleFlickNote extends SingleNote {
@@ -37,8 +37,6 @@ export abstract class SingleFlickNote extends SingleNote {
         }).copyTo(this.arrow.layout)
 
         if (options.markerAnimation) this.arrow.animation = 0.25 * h
-
-        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
     }
 
     render() {
@@ -53,11 +51,15 @@ export abstract class SingleFlickNote extends SingleNote {
 
             skin.sprites.flickArrow.draw(
                 this.arrow.layout.sub({ x: 0, y }).mul(this.y),
-                this.arrow.z,
+                [layer.note.arrow, -this.targetTime, -this.import.lane],
                 1,
             )
         } else {
-            skin.sprites.flickArrow.draw(this.arrow.layout.mul(this.y), this.arrow.z, 1)
+            skin.sprites.flickArrow.draw(
+                this.arrow.layout.mul(this.y),
+                [layer.note.arrow, -this.targetTime, -this.import.lane],
+                1,
+            )
         }
     }
 }

@@ -3,6 +3,7 @@ import { options } from '../../../../../configuration/options.js'
 import { sfxDistance } from '../../../../effect.js'
 import { note } from '../../../../note.js'
 import { circularEffectLayout, linearEffectLayout } from '../../../../particle.js'
+import { layer } from '../../../../skin.js'
 import { VisibleNote } from '../VisibleNote.js'
 
 export abstract class SingleNote extends VisibleNote {
@@ -58,7 +59,11 @@ export abstract class SingleNote extends VisibleNote {
     render() {
         super.render()
 
-        this.sprite.draw(this.spriteLayout.mul(this.y), this.z, 1)
+        this.sprite.draw(
+            this.spriteLayout.mul(this.y),
+            [layer.note.body, -this.targetTime, -this.import.lane],
+            1,
+        )
     }
 
     playLinearNoteEffect() {

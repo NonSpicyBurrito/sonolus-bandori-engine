@@ -7,7 +7,7 @@ import { effect, sfxDistance } from '../../../effect.js'
 import { note } from '../../../note.js'
 import { circularEffectLayout, particle } from '../../../particle.js'
 import { scaledScreen } from '../../../scaledScreen.js'
-import { getZ, layer, skin } from '../../../skin.js'
+import { layer, skin } from '../../../skin.js'
 import { VisibleNote } from './VisibleNote.js'
 
 export class DirectionalFlickNote extends VisibleNote {
@@ -33,7 +33,6 @@ export class DirectionalFlickNote extends VisibleNote {
     arrow = this.entityMemory({
         layout: Quad,
         animation: Number,
-        z: Number,
     })
 
     preprocess() {
@@ -101,8 +100,6 @@ export class DirectionalFlickNote extends VisibleNote {
 
         if (options.markerAnimation)
             this.arrow.animation = 0.25 * options.noteSize * this.directionalFlickImport.direction
-
-        this.arrow.z = getZ(layer.note.arrow, this.targetTime, this.import.lane)
     }
 
     scheduleSFX() {
@@ -148,7 +145,12 @@ export class DirectionalFlickNote extends VisibleNote {
                 y4: b,
             })
 
-            skin.sprites.draw(this.sprites.note, layout.mul(this.y), this.z, 1)
+            skin.sprites.draw(
+                this.sprites.note,
+                layout.mul(this.y),
+                [layer.note.body, -this.targetTime, -this.import.lane],
+                1,
+            )
         }
 
         if (options.markerAnimation) {
@@ -161,11 +163,16 @@ export class DirectionalFlickNote extends VisibleNote {
             skin.sprites.draw(
                 this.sprites.arrow,
                 this.arrow.layout.add({ x, y: 0 }).mul(this.y),
-                this.arrow.z,
+                [layer.note.arrow, -this.targetTime, -this.import.lane],
                 1,
             )
         } else {
-            skin.sprites.draw(this.sprites.arrow, this.arrow.layout.mul(this.y), this.arrow.z, 1)
+            skin.sprites.draw(
+                this.sprites.arrow,
+                this.arrow.layout.mul(this.y),
+                [layer.note.arrow, -this.targetTime, -this.import.lane],
+                1,
+            )
         }
     }
 

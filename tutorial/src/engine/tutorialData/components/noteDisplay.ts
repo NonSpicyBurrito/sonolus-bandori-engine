@@ -53,7 +53,7 @@ export const noteDisplay = {
             const t = 0.5 - note.h * 2
             const b = 0.5 + note.h * 2
 
-            skin.sprites.draw(id, new Rect({ l, r, t, b }), layer.note.body, a)
+            skin.sprites.draw(id, new Rect({ l, r, t, b }), [layer.note.body], a)
         } else {
             const y = mode === Mode.Fall ? approach(0, 2, segment.time.now) : 1
 
@@ -63,7 +63,7 @@ export const noteDisplay = {
             const t = 1 - note.h
             const b = 1 + note.h
 
-            skin.sprites.draw(id, perspectiveLayout({ l, r, t, b }).mul(y), layer.note.body, 1)
+            skin.sprites.draw(id, perspectiveLayout({ l, r, t, b }).mul(y), [layer.note.body], 1)
         }
     },
 
