@@ -9,7 +9,6 @@ import {
 import { options } from '../../../../configuration/options.js'
 import { note } from '../../../note.js'
 import { particle } from '../../../particle.js'
-import { getZ, layer } from '../../../skin.js'
 import { Note } from '../Note.js'
 
 export abstract class VisibleNote extends Note {
@@ -29,8 +28,6 @@ export abstract class VisibleNote extends Note {
     hiddenTime = this.entityMemory(Number)
 
     initialized = this.entityMemory(Boolean)
-
-    z = this.entityMemory(Number)
 
     y = this.entityMemory(Number)
 
@@ -108,8 +105,6 @@ export abstract class VisibleNote extends Note {
     globalInitialize() {
         if (options.hidden > 0)
             this.hiddenTime = this.visualTime.max - note.duration * options.hidden
-
-        this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
     }
 
     abstract scheduleSFX(): void

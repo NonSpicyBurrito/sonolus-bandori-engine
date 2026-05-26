@@ -44,7 +44,7 @@ export const stage = {
     drawBandoriStage() {
         const w = 4.375 * 0.865
 
-        sprites.stage.draw(new Rect({ l: -w, r: w, t: 0.015, b: 1 }), layer.stage, 1)
+        sprites.stage.draw(new Rect({ l: -w, r: w, t: 0.015, b: 1 }), [layer.stage], 1)
     },
 
     drawBandoriJudgmentLine() {
@@ -53,7 +53,7 @@ export const stage = {
 
         sprites.judgmentLine.draw(
             new Rect({ l: -w, r: w, t: 1 - h, b: 1 + h }),
-            layer.judgmentLine,
+            [layer.judgmentLine],
             1,
         )
     },
@@ -61,12 +61,12 @@ export const stage = {
     drawFallbackStage() {
         sprites.fallback.leftBorder.draw(
             perspectiveLayout({ l: -3.75, r: -3.5, t: lane.t, b: lane.b }),
-            layer.stage,
+            [layer.stage],
             1,
         )
         sprites.fallback.rightBorder.draw(
             perspectiveLayout({ l: 3.5, r: 3.75, t: lane.t, b: lane.b }),
-            layer.stage,
+            [layer.stage],
             1,
         )
 
@@ -74,9 +74,9 @@ export const stage = {
             const layout = perspectiveLayout({ l: i - 3.5, r: i - 2.5, t: lane.t, b: lane.b })
 
             if (i % 2 === 1) {
-                sprites.fallback.laneAlternative.draw(layout, layer.stage, 1)
+                sprites.fallback.laneAlternative.draw(layout, [layer.stage], 1)
             } else {
-                sprites.fallback.lane.draw(layout, layer.stage, 1)
+                sprites.fallback.lane.draw(layout, [layer.stage], 1)
             }
         }
     },
@@ -84,7 +84,7 @@ export const stage = {
     drawFallbackJudgmentLine() {
         sprites.fallback.judgmentLine.draw(
             new Rect({ l: scaledScreen.l, r: scaledScreen.r, t: 1 - note.h, b: 1 + note.h }),
-            layer.judgmentLine,
+            [layer.judgmentLine],
             1,
         )
 
@@ -99,7 +99,7 @@ export const stage = {
                     t: 1 - sh,
                     b: 1 + sh,
                 }),
-                layer.slot,
+                [layer.slot],
                 1,
             )
         }

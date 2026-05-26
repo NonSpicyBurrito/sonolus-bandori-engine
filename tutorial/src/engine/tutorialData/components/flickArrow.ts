@@ -39,7 +39,7 @@ export const flickArrow = {
         if (mode === Mode.Overlay) {
             const a = Math.unlerpClamped(1, 0.75, segment.time.now)
 
-            skin.sprites.draw(id, overlay, layer.note.arrow, a)
+            skin.sprites.draw(id, overlay, [layer.note.arrow], a)
         } else {
             const y = mode === Mode.Fall ? approach(0, 2, segment.time.now) : 1
             const s =
@@ -47,7 +47,7 @@ export const flickArrow = {
                     ? Math.lerp(-0.25, 0.25, Math.frac(segment.time.now * 3 + 0.5))
                     : 0
 
-            skin.sprites.draw(id, layout.add(animation.mul(s)).mul(y), layer.note.arrow, 1)
+            skin.sprites.draw(id, layout.add(animation.mul(s)).mul(y), [layer.note.arrow], 1)
         }
     },
 

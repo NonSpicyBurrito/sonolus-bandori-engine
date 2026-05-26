@@ -9,7 +9,6 @@ import { options } from '../../../../configuration/options.js'
 import { lane } from '../../../lane.js'
 import { note } from '../../../note.js'
 import { particle } from '../../../particle.js'
-import { getZ, layer } from '../../../skin.js'
 import { Note } from '../Note.js'
 
 export abstract class VisibleNote extends Note {
@@ -25,8 +24,6 @@ export abstract class VisibleNote extends Note {
     hiddenTime = this.entityMemory(Number)
 
     inputTime = this.entityMemory(Range)
-
-    z = this.entityMemory(Number)
 
     y = this.entityMemory(Number)
 
@@ -53,8 +50,6 @@ export abstract class VisibleNote extends Note {
             this.hiddenTime = this.visualTime.max - note.duration * options.hidden
 
         this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
-
-        this.z = getZ(layer.note.body, this.targetTime, this.import.lane)
 
         this.result.accuracy = this.windows.good.max
     }

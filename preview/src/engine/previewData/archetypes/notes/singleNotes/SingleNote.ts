@@ -1,7 +1,7 @@
 import { options } from '../../../../configuration/options.js'
 import { note } from '../../../note.js'
 import { panel } from '../../../panel.js'
-import { getZ, layer } from '../../../skin.js'
+import { layer } from '../../../skin.js'
 import { Note } from '../Note.js'
 
 export abstract class SingleNote extends Note {
@@ -11,8 +11,6 @@ export abstract class SingleNote extends Note {
         const time = bpmChanges.at(this.import.beat).time
         const pos = panel.getPos(time)
 
-        const z = getZ(layer.note.body, time, this.import.lane)
-
         this.sprite.draw(
             new Rect({
                 l: this.import.lane - 0.5 * options.noteSize,
@@ -20,7 +18,7 @@ export abstract class SingleNote extends Note {
                 b: -note.h * options.noteSize,
                 t: note.h * options.noteSize,
             }).add(pos),
-            z,
+            [layer.note.body, -time, -this.import.lane],
             1,
         )
 

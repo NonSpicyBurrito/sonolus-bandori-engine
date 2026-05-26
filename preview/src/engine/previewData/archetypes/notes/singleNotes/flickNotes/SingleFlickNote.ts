@@ -1,13 +1,11 @@
 import { options } from '../../../../../configuration/options.js'
 import { scaledScreen } from '../../../../scaledScreen.js'
-import { getZ, layer, skin } from '../../../../skin.js'
+import { layer, skin } from '../../../../skin.js'
 import { SingleNote } from '../SingleNote.js'
 
 export abstract class SingleFlickNote extends SingleNote {
     render() {
         const { time, pos } = super.render()
-
-        const z = getZ(layer.note.arrow, time, this.import.lane)
 
         skin.sprites.flickArrow.draw(
             new Rect({
@@ -16,7 +14,7 @@ export abstract class SingleFlickNote extends SingleNote {
                 b: 0,
                 t: scaledScreen.wToH * options.noteSize,
             }).add(pos),
-            z,
+            [layer.note.arrow, -time, -this.import.lane],
             1,
         )
 

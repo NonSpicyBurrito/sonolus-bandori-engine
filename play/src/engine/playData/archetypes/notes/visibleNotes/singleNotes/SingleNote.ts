@@ -4,6 +4,7 @@ import { sfxDistance } from '../../../../effect.js'
 import { getHitbox } from '../../../../lane.js'
 import { note } from '../../../../note.js'
 import { circularEffectLayout, linearEffectLayout } from '../../../../particle.js'
+import { layer } from '../../../../skin.js'
 import { VisibleNote } from '../VisibleNote.js'
 
 export abstract class SingleNote extends VisibleNote {
@@ -50,7 +51,11 @@ export abstract class SingleNote extends VisibleNote {
     render() {
         super.render()
 
-        this.sprites.note.draw(this.spriteLayout.mul(this.y), this.z, 1)
+        this.sprites.note.draw(
+            this.spriteLayout.mul(this.y),
+            [layer.note.body, -this.targetTime, -this.import.lane],
+            1,
+        )
     }
 
     playSFX() {

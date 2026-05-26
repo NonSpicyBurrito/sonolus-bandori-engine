@@ -101,7 +101,7 @@ export class Stage extends Archetype {
     drawBandoriStage() {
         const w = 4.375 * 0.865
 
-        skin.sprites.bandoriStage.draw(new Rect({ l: -w, r: w, t: 0.015, b: 1 }), layer.stage, 1)
+        skin.sprites.bandoriStage.draw(new Rect({ l: -w, r: w, t: 0.015, b: 1 }), [layer.stage], 1)
     }
 
     drawBandoriJudgmentLine() {
@@ -110,7 +110,7 @@ export class Stage extends Archetype {
 
         skin.sprites.bandoriJudgmentLine.draw(
             new Rect({ l: -w, r: w, t: 1 - h, b: 1 + h }),
-            layer.judgmentLine,
+            [layer.judgmentLine],
             1,
         )
     }
@@ -118,12 +118,12 @@ export class Stage extends Archetype {
     drawFallbackStage() {
         skin.sprites.stageLeftBorder.draw(
             perspectiveLayout({ l: -3.75, r: -3.5, t: lane.t, b: lane.b }),
-            layer.stage,
+            [layer.stage],
             1,
         )
         skin.sprites.stageRightBorder.draw(
             perspectiveLayout({ l: 3.5, r: 3.75, t: lane.t, b: lane.b }),
-            layer.stage,
+            [layer.stage],
             1,
         )
 
@@ -131,9 +131,9 @@ export class Stage extends Archetype {
             const layout = perspectiveLayout({ l: i - 3.5, r: i - 2.5, t: lane.t, b: lane.b })
 
             if (i % 2 === 1) {
-                skin.sprites.laneAlternative.draw(layout, layer.stage, 1)
+                skin.sprites.laneAlternative.draw(layout, [layer.stage], 1)
             } else {
-                skin.sprites.lane.draw(layout, layer.stage, 1)
+                skin.sprites.lane.draw(layout, [layer.stage], 1)
             }
         }
     }
@@ -141,7 +141,7 @@ export class Stage extends Archetype {
     drawFallbackJudgmentLine() {
         skin.sprites.judgmentLine.draw(
             new Rect({ l: scaledScreen.l, r: scaledScreen.r, t: 1 - note.h, b: 1 + note.h }),
-            layer.judgmentLine,
+            [layer.judgmentLine],
             1,
         )
 
@@ -156,7 +156,7 @@ export class Stage extends Archetype {
                     t: 1 - sh,
                     b: 1 + sh,
                 }),
-                layer.slot,
+                [layer.slot],
                 1,
             )
         }
@@ -172,7 +172,7 @@ export class Stage extends Archetype {
                 t: scaledScreen.t,
                 b: Math.lerp(lane.t, 1, options.stageCover),
             }),
-            layer.cover,
+            [layer.cover],
             1,
         )
     }
