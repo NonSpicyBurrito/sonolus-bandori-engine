@@ -26,23 +26,20 @@
     "dev-watch": "sonolus-cli --dev ./watch",
     "dev-preview": "sonolus-cli --dev ./preview",
     "dev-tutorial": "sonolus-cli --dev ./tutorial",
-    "check-type": "tsc -p ./lib --noEmit && tsc -p ./shared --noEmit && tsc -p ./play --noEmit && tsc -p ./watch --noEmit && tsc -p ./preview --noEmit && tsc -p ./tutorial --noEmit",
-    "check-lint": "eslint .",
-    "check-format": "prettier . --check",
+    "check-type": "tsc -p ./lib --noEmit && tsc -p ./shared && tsc -p ./play && tsc -p ./watch && tsc -p ./preview && tsc -p ./tutorial",
+    "check-lint": "oxlint",
+    "check-format": "oxfmt --check",
     "build": "tsc -p ./lib && sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial && node ./lib/build.js"
   },
   "dependencies": {
-    "@sonolus/core": "~7.15.2"
+    "@sonolus/core": "~7.15.3"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@sonolus/sonolus.js": "~9.7.2",
-    "@types/node": "^22.19.19",
-    "eslint": "^10.4.0",
-    "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.8.3",
-    "prettier-plugin-organize-imports": "^4.3.0",
-    "typescript": "~6.0.3",
-    "typescript-eslint": "^8.59.4"
+    "@sonolus/sonolus.js": "~9.7.3",
+    "@types/node": "^22.20.1",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "typescript": "~7.0.2"
   }
 }

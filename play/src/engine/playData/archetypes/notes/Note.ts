@@ -1,4 +1,5 @@
 import { EngineArchetypeDataName } from '@sonolus/core'
+
 import { options } from '../../../configuration/options.js'
 
 export abstract class Note extends Archetype {

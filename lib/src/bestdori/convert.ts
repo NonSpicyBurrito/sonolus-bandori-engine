@@ -4,6 +4,7 @@ import {
     LevelData,
     LevelDataEntity,
 } from '@sonolus/core'
+
 import {
     BestdoriBpmObject,
     BestdoriChart,
