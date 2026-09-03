@@ -32,10 +32,10 @@
     "build": "tsc -p ./lib && sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial && node ./lib/build.js"
   },
   "dependencies": {
-    "@sonolus/core": "~7.15.3"
+    "@sonolus/core": "~7.15.4"
   },
   "devDependencies": {
-    "@sonolus/sonolus.js": "~9.7.3",
+    "@sonolus/sonolus.js": "~9.7.4",
     "@types/node": "^22.20.1",
     "oxfmt": "^0.66.0",
     "oxlint": "^1.81.0",

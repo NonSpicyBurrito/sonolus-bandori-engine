@@ -3,6 +3,7 @@ import { EngineConfigurationOption, Text } from '@sonolus/core'
 export const optionsDefinition = {
     strictJudgment: {
         name: Text.JudgmentStrict,
+        category: 'gameplay',
         scope: 'Bandori',
         standard: true,
         advanced: true,
@@ -11,6 +12,7 @@ export const optionsDefinition = {
     },
     speed: {
         name: Text.Speed,
+        category: 'gameplay',
         standard: true,
         advanced: true,
         type: 'slider',
@@ -22,6 +24,7 @@ export const optionsDefinition = {
     },
     hidden: {
         name: Text.Hidden,
+        category: 'gameplay',
         standard: true,
         advanced: true,
         type: 'slider',
@@ -33,6 +36,7 @@ export const optionsDefinition = {
     },
     noteSpeed: {
         name: Text.NoteSpeed,
+        category: 'gameplay',
         scope: 'Bandori',
         type: 'slider',
         def: 5,
@@ -42,23 +46,27 @@ export const optionsDefinition = {
     },
     mirror: {
         name: Text.Mirror,
+        category: 'gameplay',
         type: 'toggle',
         def: 0,
     },
     sfxEnabled: {
         name: Text.Effect,
+        category: 'audio',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     autoSFX: {
         name: Text.EffectAuto,
+        category: 'audio',
         scope: 'Bandori',
         type: 'toggle',
         def: 0,
     },
     noteSize: {
         name: Text.NoteSize,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'slider',
         def: 1,
@@ -69,12 +77,14 @@ export const optionsDefinition = {
     },
     noteEffectEnabled: {
         name: Text.NoteEffect,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     noteEffectSize: {
         name: Text.NoteEffectSize,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'slider',
         def: 1,
@@ -85,18 +95,21 @@ export const optionsDefinition = {
     },
     markerAnimation: {
         name: Text.MarkerAnimation,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     simLineEnabled: {
         name: Text.Simline,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     connectorAlpha: {
         name: Text.ConnectorAlpha,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'slider',
         def: 0.8,
@@ -107,18 +120,21 @@ export const optionsDefinition = {
     },
     laneEffectEnabled: {
         name: Text.LaneEffect,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     slotEffectEnabled: {
         name: Text.SlotEffect,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     slotEffectSize: {
         name: Text.SlotEffectSize,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'slider',
         def: 1,
@@ -129,6 +145,7 @@ export const optionsDefinition = {
     },
     stageCover: {
         name: Text.StageCoverVertical,
+        category: 'graphics',
         scope: 'Bandori',
         advanced: true,
         type: 'slider',
@@ -140,12 +157,14 @@ export const optionsDefinition = {
     },
     lockStageAspectRatio: {
         name: Text.StageAspectratioLock,
+        category: 'graphics',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     previewVerticalScale: {
         name: Text.PreviewScaleVertical,
+        category: 'miscellaneous',
         scope: 'Bandori',
         type: 'slider',
         def: 1,
@@ -156,24 +175,28 @@ export const optionsDefinition = {
     },
     previewMeasure: {
         name: Text.PreviewMeasure,
+        category: 'miscellaneous',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     previewBeat: {
         name: Text.PreviewBeat,
+        category: 'miscellaneous',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     previewTime: {
         name: Text.PreviewTime,
+        category: 'miscellaneous',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
     },
     previewBpm: {
         name: Text.PreviewBpm,
+        category: 'miscellaneous',
         scope: 'Bandori',
         type: 'toggle',
         def: 1,
