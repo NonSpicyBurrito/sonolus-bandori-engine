@@ -1,4 +1,5 @@
 import { ParticleEffectName } from '@sonolus/core'
+
 import { options } from '../configuration/options.js'
 import { scaledScreen } from './scaledScreen.js'
 
