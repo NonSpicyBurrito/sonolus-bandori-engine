@@ -3,7 +3,7 @@ import { DatabaseEngineItem, TextFunction } from '@sonolus/core'
 export { bestdoriToLevelData } from './bestdori/convert.js'
 export * from './bestdori/index.js'
 
-export const version = '1.6.3'
+export const version = '1.6.4'
 
 export const engineFullName = {
     en: 'BanG Dream! Girls Band Party!',
